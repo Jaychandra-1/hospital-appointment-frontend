@@ -1,0 +1,258 @@
+/* ==========================================================================
+   GLOBAL STYLE VARS & RESET CORE
+   ========================================================================== */
+   :root {
+    --primary-sky-blue: #4FC3F7;
+    --app-white: #FFFFFF;
+    --card-light-blue: #E3F2FD;
+    --text-dark-gray: #333333;
+    --sidebar-width: 260px;
+    --transition-speed: 0.25s;
+}
+
+body {
+    background-color: var(--app-white);
+    color: var(--text-dark-gray);
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Custom Space Helper utilities */
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.text-xs { font-size: 0.75rem; }
+.tracking-wider { letter-spacing: 0.05em; }
+
+/* Custom Links & Color Accents */
+.custom-link {
+    color: #0288D1;
+    font-weight: 500;
+    transition: color var(--transition-speed);
+}
+.custom-link:hover {
+    color: #01579B;
+}
+
+.btn-primary {
+    background-color: var(--primary-sky-blue) !important;
+    border-color: var(--primary-sky-blue) !important;
+    color: #1A237E !important;
+}
+.btn-primary:hover {
+    background-color: #29B6F6 !important;
+    border-color: #29B6F6 !important;
+}
+
+/* ==========================================================================
+   MODULE CARDS & COMPONENT DESIGNS
+   ========================================================================== */
+.style-card {
+    background-color: var(--card-light-blue) !important;
+    border: 1px solid rgba(79, 195, 247, 0.15) !important;
+}
+
+.welcome-banner {
+    background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+    color: white;
+    border-radius: 24px;
+}
+
+.welcome-banner p,
+.welcome-banner small {
+    color: rgba(255,255,255,0.9);
+}
+
+.banner-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: floatIcon 3s ease-in-out infinite;
+}
+
+.banner-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+@keyframes floatIcon {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.brand-logo, .brand-logo-sm {
+    background-color: var(--primary-sky-blue);
+    border-radius: 8px;
+}
+.brand-logo { width: 50px; height: 50px; }
+.brand-logo-sm { width: 36px; height: 36px; }
+
+.stat-icon {
+    color: #0288D1 !important;
+}
+
+.cursor-pointer { cursor: pointer; }
+.action-btn {
+    transition: all var(--transition-speed) ease;
+}
+.action-btn:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary-sky-blue) !important;
+    background-color: var(--card-light-blue) !important;
+}
+
+.status-card-select {
+    opacity: 0.75;
+}
+.status-card-select:hover {
+    opacity: 1;
+    transform: scale(1.02);
+}
+
+.avatar-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+.avatar-placeholder {
+    width: 70px;
+    height: 70px;
+    background-color: var(--card-light-blue) !important;
+}
+
+/* ==========================================================================
+   DASHBOARD NEW ACCENTS & TRANSLATIONS
+   ========================================================================== */
+.transition-card {
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.quick-action-item {
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+.quick-action-item:hover {
+    background-color: var(--card-light-blue) !important;
+    border-color: var(--primary-sky-blue) !important;
+    transform: translateX(4px);
+}
+
+.fade-in-view {
+    animation: fadeIn var(--transition-speed) ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   MODIFICATION 1 & 2: DASHBOARD STAT CARDS INTERACTIVITY
+   ========================================================================== */
+.dashboard-stat-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid transparent !important;
+}
+
+.dashboard-stat-card:hover,
+.dashboard-stat-card.active-stat-card {
+    background-color: #0EA5E9 !important;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3) !important;
+    border-color: #0EA5E9 !important;
+}
+
+.dashboard-stat-card:hover .card-title-text,
+.dashboard-stat-card.active-stat-card .card-title-text,
+.dashboard-stat-card:hover .card-value-text,
+.dashboard-stat-card.active-stat-card .card-value-text,
+.dashboard-stat-card:hover .card-icon-wrapper i,
+.dashboard-stat-card.active-stat-card .card-icon-wrapper i {
+    color: #FFFFFF !important;
+}
+
+.dashboard-stat-card:hover .card-icon-wrapper,
+.dashboard-stat-card.active-stat-card .card-icon-wrapper {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   MODIFICATION 5: PROFILE DROPDOWN PANEL
+   ========================================================================== */
+.nav-profile-hover:hover {
+    background-color: var(--card-light-blue);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 15px;
+    width: 280px;
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid rgba(14, 165, 233, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    z-index: 1050;
+    animation: fadeSlideDown 0.3s ease forwards;
+    transform-origin: top right;
+}
+
+@keyframes fadeSlideDown {
+    from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE SPA SIDEBAR FRAMEWORK LAYOUTS
+   ========================================================================== */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    z-index: 1040;
+    transition: transform var(--transition-speed) ease-in-out;
+}
+
+#main-wrapper {
+    margin-left: var(--sidebar-width);
+    transition: margin var(--transition-speed) ease-in-out;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex-grow: 1;
+}
+
+#sidebar .nav-link:hover, #sidebar .nav-link.active {
+    background-color: var(--card-light-blue) !important;
+    color: #0288D1 !important;
+    font-weight: 600;
+}
+
+/* Small Device Screen Breakpoint Rules */
+@media (max-width: 767.98px) {
+    #sidebar {
+        transform: translateX(-100%);
+    }
+    #sidebar.open {
+        transform: translateX(0);
+    }
+    #main-wrapper {
+        margin-left: 0 !important;
+    }
+}
