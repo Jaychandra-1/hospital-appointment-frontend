@@ -64,229 +64,216 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.c
             <span>Settings</span>
         </a>
         
-        <a href="landing.html" class="logout">
+        <a href="#" class="logout" onclick="logoutPatient()">
             <i class="bi bi-box-arrow-right"></i>
             <span>Logout</span>
         </a>
         
+    </div>
+
+    <div class="main">
+
+        <div class="topbar">
+            <h3 id="welcomeText"></h3>
         </div>
 
+        <br>
+
+        <div class="row">
+
+            <div class="col-md-3 mb-4">
+                <div class="stats-card">
+                    <h1 class="text-primary" id="totalAppointments">0</h1>
+                    <h5>Total Appointments</h5>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="stats-card">
+                    <h1 class="text-success" id="completedAppointments">0</h1>
+                    <h5>Completed</h5>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="stats-card">
+                    <h1 class="text-warning" id="pendingAppointments">0</h1>
+                    <h5>Pending</h5>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="stats-card">
+                    <h1 class="text-danger" id="cancelledAppointments">0</h1>
+                    <h5>Cancelled</h5>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card p-4">
+
+            <h4>Recent Appointments</h4>
+
+            <div class="table-responsive">
+
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="appointmentTable">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // ===== FIXED: Get patient data from email-based storage =====
+        function getPatientData() {
+            // First check if we have currentPatientEmail in session
+            let currentEmail = localStorage.getItem("currentPatientEmail");
+            
+            if (currentEmail) {
+                let patient = JSON.parse(localStorage.getItem(currentEmail));
+                if (patient) {
+                    // Update patientData for compatibility
+                    localStorage.setItem("patientData", JSON.stringify(patient));
+                    return patient;
+                }
+            }
+            
+            // Fallback: check patientData
+            let patientData = JSON.parse(localStorage.getItem("patientData"));
+            if (patientData && patientData.email) {
+                localStorage.setItem("currentPatientEmail", patientData.email);
+                return patientData;
+            }
+            
+            // Last resort: search all localStorage for patient role
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.includes('@')) {
+                    try {
+                        const user = JSON.parse(localStorage.getItem(key));
+                        if (user && user.role === 'Patient') {
+                            localStorage.setItem("currentPatientEmail", key);
+                            localStorage.setItem("patientData", JSON.stringify(user));
+                            return user;
+                        }
+                    } catch (e) {}
+                }
+            }
+            
+            return null;
+        }
+
+        // ===== Logout function =====
+        function logoutPatient() {
+            if (confirm("Are you sure you want to logout?")) {
+                localStorage.removeItem("currentPatientEmail");
+                localStorage.removeItem("patientData");
+                window.location.href = "landing.html";
+            }
+        }
+
+        // ===== Get patient and display data =====
+        let patient = getPatientData();
+
+        // Display welcome message
+        if (patient && (patient.fullname || patient.name)) {
+            document.getElementById("welcomeText").innerHTML = 
+                "Welcome Back, " + (patient.fullname || patient.name) + " 👋";
+        } else {
+            document.getElementById("welcomeText").innerHTML = "Welcome Back, Patient 👋";
+            if (!patient) {
+                alert("Please login first");
+                window.location.href = "landing.html";
+            }
+        }
+
+        // Load appointments
+        let allAppointments = JSON.parse(localStorage.getItem("appointments")) || [];
+        let appointments = allAppointments.filter(app =>
+            app.patientEmail === patient?.email
+        );
+
+        // Update stats - Total
+        document.getElementById("totalAppointments").innerHTML = appointments.length;
+
+        // Completed
+        let completed = appointments.filter(a => 
+            a.status && (a.status.toLowerCase() === "completed")
+        );
+        document.getElementById("completedAppointments").innerHTML = completed.length;
+
+        // Pending (includes Pending and Confirmed)
+        let pending = appointments.filter(a =>
+            a.status && (a.status.toLowerCase() === "pending" || a.status.toLowerCase() === "confirmed")
+        );
+        document.getElementById("pendingAppointments").innerHTML = pending.length;
+
+        // Cancelled
+        let cancelled = appointments.filter(a =>
+            a.status && (a.status.toLowerCase() === "cancelled" || a.status.toLowerCase() === "canceled")
+        );
+        document.getElementById("cancelledAppointments").innerHTML = cancelled.length;
+
+        // Populate table
+        let table = document.getElementById("appointmentTable");
+        if (appointments.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No appointments found</td>
+                </tr>
+            `;
+        } else {
+            appointments.forEach(function(app, index) {
+                let statusClass = 'bg-primary';
+                let statusText = app.status || 'Pending';
+                
+                if (statusText.toLowerCase() === 'completed') statusClass = 'bg-success';
+                else if (statusText.toLowerCase() === 'confirmed') statusClass = 'bg-info';
+                else if (statusText.toLowerCase() === 'pending') statusClass = 'bg-warning';
+                else if (statusText.toLowerCase() === 'cancelled' || statusText.toLowerCase() === 'canceled') statusClass = 'bg-danger';
+                
+                table.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${app.doctor || 'N/A'}</td>
+                        <td>${app.date || 'N/A'}</td>
+                        <td>
+                            <span class="badge ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Dark mode
+        let theme = localStorage.getItem("theme");
+        if (theme === "dark") {
+            document.body.style.background = "#1e293b";
+            document.body.style.color = "white";
+            document.querySelectorAll(".card").forEach(card => {
+                card.style.background = "#334155";
+                card.style.color = "white";
+            });
+        }
+    </script>
 
-<div class="main">
-
-<div class="topbar">
-
-<h3 id="welcomeText"></h3>
-
-</div>
-
-<br>
-
-<div class="row">
-
-<div class="col-md-4 mb-4">
-
-<div class="stats-card">
-
-<h1 class="text-primary" id="totalAppointments">
-0
-</h1>
-
-<h5>Total Appointments</h5>
-
-</div>
-
-</div>
-
-
-<div class="col-md-4 mb-4">
-
-<div class="stats-card">
-
-<h1 class="text-success" id="completedAppointments">
-0
-</h1>
-
-<h5>Completed</h5>
-
-</div>
-
-</div>
-
-
-<div class="col-md-4 mb-4">
-
-<div class="stats-card">
-
-<h1 class="text-warning" id="pendingAppointments">
-0
-</h1>
-
-<h5>Pending</h5>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="card p-4">
-
-<h4>Recent Appointments</h4>
-
-<div class="table-responsive">
-
-<table class="table">
-
-<thead>
-
-<tr>
-
-<th>ID</th>
-<th>Doctor</th>
-<th>Date</th>
-<th>Status</th>
-
-</tr>
-
-</thead>
-
-<tbody id="appointmentTable">
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-
-<script>
-
-let patient =
-JSON.parse(localStorage.getItem("patientData"));
-
-document.getElementById("welcomeText").innerHTML =
-"Welcome Back, " +
-(patient?.fullname || "Patient") +
-" 👋";
-
-let Patient =
-JSON.parse(localStorage.getItem("patientData"));
-
-document.getElementById("welcomeText").innerHTML =
-"Welcome Back, " +
-(patient?.fullname || "Patient") +
-" 👋";
-
-let allAppointments =
-JSON.parse(localStorage.getItem("appointments")) || [];
-
-let appointments =
-allAppointments.filter(app =>
-app.patientEmail === patient.email
-);
-
-document.getElementById("totalAppointments").innerHTML=
-appointments.length;
-
-let completed=
-appointments.filter(a=>a.status==="Completed");
-
-document.getElementById("completedAppointments").innerHTML=
-completed.length;
-
-let pending=
-appointments.filter(a =>
-a.status==="Pending" ||
-a.status==="Confirmed"
-);
-document.getElementById("pendingAppointments").innerHTML=
-pending.length;
-
-let table=document.getElementById("appointmentTable");
-
-appointments.forEach(function(app){
-
-table.innerHTML+=`
-
-<tr>
-
-<td>${app.id}</td>
-
-<td>${app.doctor}</td>
-
-<td>${app.date}</td>
-
-<td>
-<span class="badge bg-primary">
-${app.status}
-</span>
-</td>
-
-</tr>
-
-`;
-
-});
-
-</script>
-<script>
-
-let currentuser = JSON.parse(localStorage.getItem("patientData"));
-
-console.log("Patient:", currentuser);
-
-let Appointments =
-JSON.parse(localStorage.getItem("appointments")) || [];
-
-appointments.push({
-    id: Date.now(),
-    patientName: patientName,
-    doctor: doctorName,
-    date: date,
-    time: time,
-    status: "Pending"
-});
-
-localStorage.setItem(
-    "appointments",
-    JSON.stringify(appointments)
-);
-console.log("Appointments:", Appointments);
-
-if(currentuser && currentuser.fullname){
-
-    document.getElementById("welcomeText").innerHTML =
-    "Welcome Back, " + currentuser.fullname + " 👋";
-
-}else{
-
-    document.getElementById("welcomeText").innerHTML =
-    "Welcome Back, Patient 👋";
-
-}
-
-</script>
-<script>
-
-let theme = localStorage.getItem("theme");
-
-if(theme === "dark"){
-
-document.body.style.background = "#1e293b";
-document.body.style.color = "white";
-
-document.querySelectorAll(".card").forEach(card=>{
-    card.style.background = "#334155";
-    card.style.color = "white";
-});
-
-}
-
-</script>
 </body>
 </html>
