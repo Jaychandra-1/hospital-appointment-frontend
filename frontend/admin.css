@@ -1,0 +1,364 @@
+/* ==========================================
+   MEDCARE ADMIN DASHBOARD CSS
+========================================== */
+
+:root{
+    --primary:#4FC3F7;
+    --primary-dark:#0288D1;
+    --light-blue:#E3F2FD;
+    --white:#FFFFFF;
+    --text:#333333;
+    --sidebar-width:260px;
+    --transition:0.3s;
+}
+
+/* ==========================================
+   GLOBAL
+========================================== */
+
+body{
+    background:#f8fbff;
+    color:var(--text);
+    font-family:'Segoe UI',sans-serif;
+    overflow-x:hidden;
+}
+
+a{
+    text-decoration:none;
+}
+
+.cursor-pointer{
+    cursor:pointer;
+}
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+
+#sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    width:var(--sidebar-width);
+    background:white;
+    z-index:1000;
+    transition:var(--transition);
+    box-shadow:0 0 20px rgba(0,0,0,.08);
+}
+
+.brand-logo-sm{
+    width:40px;
+    height:40px;
+    background:var(--primary);
+    border-radius:10px;
+}
+
+#main-wrapper{
+    margin-left:var(--sidebar-width);
+    min-height:100vh;
+    transition:var(--transition);
+}
+
+.nav-link{
+    color:#555;
+    border-radius:12px;
+    padding:12px 15px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:var(--transition);
+}
+
+.nav-link:hover{
+    background:var(--light-blue);
+    color:var(--primary-dark);
+    transform:translateX(5px);
+}
+
+.nav-link.active{
+    background:var(--primary);
+    color:white !important;
+    font-weight:600;
+}
+
+.nav-link.active i{
+    color:white;
+}
+
+/* ==========================================
+   TOPBAR
+========================================== */
+
+.navbar{
+    height:70px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+
+#sidebar-toggle{
+    border:none;
+    background:none;
+}
+
+/* ==========================================
+   WELCOME BANNER
+========================================== */
+
+.welcome-banner{
+    background:linear-gradient(
+        135deg,
+        #0EA5E9,
+        #38BDF8
+    );
+    color:white;
+    border-radius:25px;
+    box-shadow:0 15px 35px rgba(14,165,233,.25);
+    animation:slideDown .6s ease;
+}
+
+@keyframes slideDown{
+    from{
+        opacity:0;
+        transform:translateY(-20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ==========================================
+   DASHBOARD CARDS
+========================================== */
+
+.stat-card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+    transition:var(--transition);
+    box-shadow:0 5px 15px rgba(0,0,0,.06);
+}
+
+.stat-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 30px rgba(79,195,247,.25);
+}
+
+.stat-card .card-body{
+    padding:25px;
+}
+
+.stat-card h6{
+    color:#777;
+}
+
+.stat-card h2{
+    font-weight:700;
+    color:var(--primary-dark);
+}
+
+/* ==========================================
+   TABLES
+========================================== */
+
+.table{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+.table thead{
+    background:var(--light-blue);
+}
+
+.table th{
+    font-weight:600;
+}
+
+.table tbody tr{
+    transition:var(--transition);
+}
+
+.table tbody tr:hover{
+    background:#f3fbff;
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.btn-primary{
+    background:var(--primary);
+    border:none;
+    color:#0d47a1;
+    font-weight:600;
+}
+
+.btn-primary:hover{
+    background:#29B6F6;
+    transform:translateY(-2px);
+}
+
+.btn-danger:hover,
+.btn-warning:hover,
+.btn-success:hover{
+    transform:translateY(-2px);
+}
+
+.btn{
+    transition:var(--transition);
+}
+
+/* ==========================================
+   SEARCH BOX
+========================================== */
+
+.form-control{
+    border-radius:12px;
+    border:1px solid #d9edf7;
+}
+
+.form-control:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 .2rem rgba(79,195,247,.25);
+}
+
+/* ==========================================
+   CARDS
+========================================== */
+
+.card{
+    border:none;
+    border-radius:18px;
+    box-shadow:0 5px 15px rgba(0,0,0,.06);
+    transition:var(--transition);
+}
+
+.card:hover{
+    transform:translateY(-4px);
+}
+
+/* ==========================================
+   NOTIFICATION ITEM
+========================================== */
+
+.notification-item{
+    background:white;
+    border-left:5px solid var(--primary);
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    transition:var(--transition);
+}
+
+.notification-item:hover{
+    transform:translateX(5px);
+}
+
+/* ==========================================
+   SETTINGS CARD
+========================================== */
+
+.settings-card{
+    background:white;
+    border-radius:20px;
+    padding:25px;
+}
+
+/* ==========================================
+   MODAL
+========================================== */
+
+.modal-content{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.modal-header{
+    background:var(--light-blue);
+}
+
+/* ==========================================
+   REPORT CHART
+========================================== */
+
+#reportChart{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+}
+
+/* ==========================================
+   VIEW ANIMATION
+========================================== */
+
+.app-view{
+    animation:fadeIn .4s ease;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ==========================================
+   DARK MODE
+========================================== */
+
+.dark-mode{
+    background:#121212 !important;
+    color:white !important;
+}
+
+.dark-mode .card,
+.dark-mode .table,
+.dark-mode .navbar,
+.dark-mode #sidebar{
+    background:#1e293b !important;
+    color:white !important;
+}
+
+.dark-mode .table th,
+.dark-mode .table td{
+    color:white !important;
+}
+
+.dark-mode .form-control{
+    background:#334155;
+    color:white;
+    border:1px solid #475569;
+}
+
+.dark-mode .nav-link{
+    color:white;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:768px){
+
+    #sidebar{
+        transform:translateX(-100%);
+    }
+
+    #sidebar.open{
+        transform:translateX(0);
+    }
+
+    #main-wrapper{
+        margin-left:0;
+    }
+
+    .stat-card{
+        margin-bottom:15px;
+    }
+}

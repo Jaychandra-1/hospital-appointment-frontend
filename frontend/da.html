@@ -243,6 +243,19 @@ console.log("Patient:", currentuser);
 let Appointments =
 JSON.parse(localStorage.getItem("appointments")) || [];
 
+appointments.push({
+    id: Date.now(),
+    patientName: patientName,
+    doctor: doctorName,
+    date: date,
+    time: time,
+    status: "Pending"
+});
+
+localStorage.setItem(
+    "appointments",
+    JSON.stringify(appointments)
+);
 console.log("Appointments:", Appointments);
 
 if(currentuser && currentuser.fullname){
