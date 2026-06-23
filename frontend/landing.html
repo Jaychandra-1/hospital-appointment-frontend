@@ -379,7 +379,7 @@ grid-template-columns:1fr;
 
 <div class="hero">
 
-<h1>  min hospital </h1>
+<h1>Smart Hospital</h1>
 
 <p>
 Your Health,
@@ -523,7 +523,6 @@ Board-certified doctors ready to care for you
         <h3>Create Account</h3>
         <p>Register as a patient in under 2 minutes.</p>
     </div>
-
     <div class="how-card">
         <i class="fas fa-search"></i>
         <h3>Find a Doctor</h3>
@@ -721,17 +720,25 @@ if(user.password !== password){
     return;
 }
 
+console.log("Role =", user.role);
+
 if(user.role === "Patient"){
 
+    console.log("Going to Patient Dashboard");
     window.location.href="da.html";
+
 }
 else if(user.role === "Doctor"){
 
+    console.log("Going to Doctor Dashboard");
     window.location.href="doctor.html";
+
 }
 else{
 
+    console.log("Going to Admin Dashboard");
     window.location.href="admin.html";
+
 }
 }
 function registerUser(){

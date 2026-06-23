@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedCare Admin Dashboard</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+
+<link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<div id="app-container">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="bg-white border-end shadow-sm">
+
+        <div class="sidebar-header p-3 border-bottom d-flex align-items-center justify-content-between">
+
+            <div class="d-flex align-items-center gap-2">
+
+                <div class="brand-logo-sm d-flex align-items-center justify-content-center text-white">
+                    <i class="bi bi-hospital-fill"></i>
+                </div>
+
+                <span class="fw-bold">MedCare Admin</span>
+
+            </div>
+
+        </div>
+
+        <div class="p-3">
+
+            <ul class="nav flex-column gap-1">
+
+                <li>
+                    <a href="#" class="nav-link active"
+                       data-view="dashboard">
+                       <i class="bi bi-grid"></i>
+                       Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link"
+                       data-view="doctors">
+                       <i class="bi bi-person-badge"></i>
+                       Doctors
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link"
+                       data-view="patients">
+                       <i class="bi bi-people"></i>
+                       Patients
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link"
+                       data-view="appointments">
+                       <i class="bi bi-calendar-check"></i>
+                       Appointments
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link"
+                       data-view="staff">
+                       <i class="bi bi-person-workspace"></i>
+                       Staff
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link"
+                       data-view="billing">
+                       <i class="bi bi-cash-stack"></i>
+                       Billing
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link"
+                       data-view="reports">
+                       <i class="bi bi-bar-chart-line"></i>
+                       Reports
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link"
+                       data-view="notifications">
+                       <i class="bi bi-bell"></i>
+                       Notifications
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link"
+                       data-view="settings">
+                       <i class="bi bi-gear"></i>
+                       Settings
+                    </a>
+                </li>
+
+            </ul>
+
+            <hr>
+
+            <button id="btn-logout"
+            class="btn btn-outline-danger w-100">
+
+            <i class="bi bi-box-arrow-left"></i>
+            Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <div id="main-wrapper">
+
+        <!-- TOPBAR -->
+
+        <nav class="navbar bg-white border-bottom px-4">
+
+            <button id="sidebar-toggle"
+            class="btn">
+
+            <i class="bi bi-list fs-4"></i>
+
+            </button>
+
+            <div>
+                <h5 class="m-0 fw-bold">
+                    Admin Portal
+                </h5>
+            </div>
+
+        </nav>
+
+        <main class="p-4">
+
+            <!-- DASHBOARD -->
+
+            <section id="view-dashboard" class="app-view">
+
+                <div class="welcome-banner p-4 mb-4">
+
+                    <h2>
+                        Welcome Admin 👋
+                    </h2>
+
+                    <p>
+                        Manage doctors, patients,
+                        appointments and hospital operations.
+                    </p>
+
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <h6>Total Doctors</h6>
+                                <h2 id="doctorCount">0</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <h6>Total Patients</h6>
+                                <h2 id="patientCount">0</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card stat-card">
+                            <div class="card-body">
+                                <h6>Total Staff</h6>
+                                <h2 id="staffCount">0</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- DOCTORS -->
+
+            <section id="view-doctors"
+            class="app-view d-none">
+
+                <div class="d-flex justify-content-between mb-3">
+
+                    <h3>Doctors</h3>
+
+                    <button class="btn btn-primary"
+                    onclick="openDoctorModal()">
+
+                    Add Doctor
+
+                    </button>
+
+                </div>
+
+                <input
+                type="text"
+                id="doctorSearch"
+                class="form-control mb-3"
+                placeholder="Search Doctor">
+
+                <div class="table-responsive">
+
+                    <table class="table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Specialization</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody id="doctorTableBody">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- PATIENTS -->
+
+            <section id="view-patients"
+            class="app-view d-none">
+
+                <h3>Patients</h3>
+
+                <div class="table-responsive">
+
+                    <table class="table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Actions</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody id="patientTableBody">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <section id="view-appointments" class="app-view d-none">
+
+    <h3>Appointments</h3>
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="appointmentTableBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+            <!-- STAFF -->
+
+            <section id="view-staff"
+            class="app-view d-none">
+
+                <h3>Staff Management</h3>
+
+                <div id="staffContainer">
+
+                </div>
+
+            </section>
+
+            <!-- BILLING -->
+
+            <section id="view-billing"
+            class="app-view d-none">
+
+                <h3>Billing</h3>
+
+                <div id="billingContainer">
+
+                </div>
+
+            </section>
+
+            <!-- REPORTS -->
+
+            <section id="view-reports"
+            class="app-view d-none">
+
+                <h3>Reports</h3>
+
+                <canvas id="reportChart"></canvas>
+
+            </section>
+
+            <!-- NOTIFICATIONS -->
+
+            <section id="view-notifications"
+            class="app-view d-none">
+
+                <h3>Notifications</h3>
+
+                <div id="notificationList">
+
+                </div>
+
+            </section>
+
+            <!-- SETTINGS -->
+
+            <section id="view-settings"
+            class="app-view d-none">
+
+                <h3>Settings</h3>
+
+                <div class="card p-4">
+
+                    <label>Hospital Name</label>
+
+                    <input
+                    type="text"
+                    id="hospitalName"
+                    class="form-control mb-3">
+
+                    <button
+                    class="btn btn-primary"
+                    onclick="saveSettings()">
+
+                    Save Settings
+
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>
