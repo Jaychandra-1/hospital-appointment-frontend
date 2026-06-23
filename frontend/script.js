@@ -834,3 +834,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+function renderDoctorAppointments(){
+
+    let appointments =
+    JSON.parse(localStorage.getItem("appointments")) || [];
+
+    let tbody =
+    document.getElementById("appointmentTableBody");
+
+    if(!tbody) return;
+
+    tbody.innerHTML = "";
+
+    appointments.forEach(app=>{
+
+        tbody.innerHTML += `
+        <tr>
+
+            <td>${app.patientName}</td>
+            <td>${app.date}</td>
+            <td>${app.time}</td>
+            <td>${app.status}</td>
+
+        </tr>
+        `;
+    });
+}
+
+renderDoctorAppointments();
