@@ -686,3 +686,40 @@ function cancelAppointment(id){
         renderAppointments();
     }
 }
+function showAddDoctorForm(){
+
+    document.getElementById(
+    "doctorForm"
+    ).style.display="block";
+    
+    }
+    function addDoctor(){
+
+        let doctor = {
+        
+        name:
+        document.getElementById("docName").value,
+        
+        email:
+        document.getElementById("docEmail").value,
+        
+        password:
+        document.getElementById("docPassword").value,
+        
+        specialization:
+        document.getElementById(
+        "docSpecialization"
+        ).value,
+        
+        role:"Doctor"
+        
+        };
+        
+        localStorage.setItem(
+        doctor.email,
+        JSON.stringify(doctor)
+        );
+        
+        alert("Doctor Added Successfully");
+        
+        }

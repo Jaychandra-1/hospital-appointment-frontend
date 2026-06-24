@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MediCare Hospital Appointment System</title>
+<title>          MediConnect  Hospital</title>
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -359,9 +359,26 @@ margin-bottom:15px;
 grid-template-columns:1fr;
 }
 }
+.logo-container{
+    position:absolute;
+    top:20px;
+    left:20px;
+    z-index:1000;
+}
+
+.logo{
+    width:120px;
+    height:auto;
+}
+.logo{
+    width:120px;
+    height:auto;
+    border-radius:9990px;
+}
 </style>
 </head>
 <body>
+    <!-- floating icons -->
 
 <!-- floating icons -->
 <div class="floating i1"><i class="fas fa-heartbeat"></i></div>
@@ -373,10 +390,12 @@ grid-template-columns:1fr;
 
 <!-- LANDING -->
 <section id="landing">
-
+  <div class="logo-container">
+    <img src="logo.jpeg" alt="" class="logo">
+</div>
 <div class="hero">
 
-<h1> Smart Hospital</h1>
+<h1> Medi Connect Smart Hospital</h1>
 
 <p>
 Your Health,
@@ -435,18 +454,12 @@ Get Started
 <section id="portal">
   <div class="heading">
     <h1>Secure Login Portal</h1>
-    <p>Select your role and login</p>
-  </div>
-
-  <div class="roles">
-    <div class="role active" onclick="selectRole(this,'Patient')"><i class="fas fa-user fa-3x"></i><h3>Patient</h3></div>
-    <div class="role" onclick="selectRole(this,'Doctor')"><i class="fas fa-user-doctor fa-3x"></i><h3>Doctor</h3></div>
-    <div class="role" onclick="selectRole(this,'Admin')"><i class="fas fa-user-shield fa-3x"></i><h3>Admin</h3></div>
+<p>Login with your Email and Password</p>
   </div>
 
   <!-- LOGIN -->
   <div class="form-box" id="loginBox">
-    <h2 id="roleTitle">Patient Login</h2>
+    <h2>Login</h2>
     <input type="email" id="loginEmail" placeholder="Email Address">
     <input type="password" id="loginPassword" placeholder="Password">
     <button class="submit" onclick="login()">LOGIN</button>
@@ -473,10 +486,7 @@ Get Started
       <input type="email" id="regEmail" placeholder="Email">
       <input type="tel" id="regPhone" placeholder="Phone">
       <input type="text" id="regBlood" placeholder="Blood Group">
-      <select id="regRole">
-        <option>Patient</option>
-        <option>Doctor</option>
-      </select>
+      <input type="hidden" id="regRole" value="Patient">
     </div>
     <input type="text" id="regAddress" placeholder="Address">
     <input type="password" id="regPassword" placeholder="Password">
@@ -496,8 +506,6 @@ Get Started
 </section>
 
 <script>
-  // Track currently selected role
-  let selectedRole = 'Patient';
 
   // ----- open portal -----
   function openPortal() {
@@ -506,14 +514,6 @@ Get Started
   }
 
   // ----- role selection -----
-  function selectRole(element, role) {
-    document.querySelectorAll('.role').forEach(r => r.classList.remove('active'));
-    element.classList.add('active');
-    selectedRole = role;
-    document.getElementById('roleTitle').innerText = role + ' Login';
-    // Hide any previous error messages
-    document.getElementById('loginError').style.display = 'none';
-  }
 
   // ----- toggle forms -----
   function showRegister() {
@@ -559,13 +559,6 @@ Get Started
       return;
     }
     
-    // *** ROLE VALIDATION FIX: Check if selected role matches user's role ***
-    if (user.role !== selectedRole) {
-      errorDiv.textContent = '❌ This email is registered as a ' + user.role + '. Please select the correct role.';
-      errorDiv.style.display = 'block';
-      return;
-    }
-    
     // Role matches, redirect
     errorDiv.style.display = 'none';
     if (user.role === 'Patient') {
@@ -583,7 +576,7 @@ Get Started
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value.trim();
     const confirm = document.getElementById('confirmPassword').value.trim();
-    const role = document.getElementById('regRole').value;
+    const role = "Patient";
     const errorDiv = document.getElementById('registerError');
 
     // Validation
