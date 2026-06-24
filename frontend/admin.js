@@ -686,3 +686,84 @@ function cancelAppointment(id){
         renderAppointments();
     }
 }
+
+function changeAdminPassword(){
+
+    let currentPassword =
+    document.getElementById(
+    "currentPassword"
+    ).value;
+
+    let newPassword =
+    document.getElementById(
+    "newPassword"
+    ).value;
+
+    let confirmPassword =
+    document.getElementById(
+    "confirmPassword"
+    ).value;
+
+    let adminAccount =
+    JSON.parse(
+    localStorage.getItem(
+    "adminAccount"
+    ));
+
+    if(
+    currentPassword !==
+    adminAccount.password
+    ){
+
+        alert(
+        "Current password is incorrect"
+        );
+
+        return;
+    }
+
+    if(
+    newPassword !==
+    confirmPassword
+    ){
+
+        alert(
+        "Passwords do not match"
+        );
+
+        return;
+    }
+
+    if(newPassword.length < 4){
+
+        alert(
+        "Password must be at least 4 characters"
+        );
+
+        return;
+    }
+
+    adminAccount.password =
+    newPassword;
+
+    localStorage.setItem(
+    "adminAccount",
+    JSON.stringify(adminAccount)
+    );
+
+    alert(
+    "Password changed successfully"
+    );
+
+    document.getElementById(
+    "currentPassword"
+    ).value = "";
+
+    document.getElementById(
+    "newPassword"
+    ).value = "";
+
+    document.getElementById(
+    "confirmPassword"
+    ).value = "";
+}

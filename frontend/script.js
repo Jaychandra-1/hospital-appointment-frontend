@@ -862,3 +862,15 @@ function renderDoctorAppointments(){
 }
 
 renderDoctorAppointments();
+if (!localStorage.getItem("admin")) {
+
+    localStorage.setItem(
+        "admin",
+        JSON.stringify({
+            email: "admin@hospital.com",
+            password: "admin123",
+            role: "Admin"
+        })
+    );
+
+}
