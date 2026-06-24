@@ -398,6 +398,26 @@
       return;
     }
     
+   let adminAccount =
+JSON.parse(localStorage.getItem("adminAccount"));
+
+if(selectedRole === "Admin"){
+
+    if(
+        adminAccount &&
+        email === adminAccount.email &&
+        password === adminAccount.password
+    ){
+        window.location.href = "admin.html";
+    }else{
+        errorDiv.textContent =
+        "❌ Invalid Admin Credentials";
+        errorDiv.style.display = "block";
+    }
+
+    return;
+}
+
     const user = JSON.parse(localStorage.getItem(email));
     if (!user) {
       errorDiv.textContent = '❌ User not found. Please register first.';
@@ -534,20 +554,18 @@
       localStorage.setItem('doctor@demo.com', JSON.stringify(doctor));
     }
     // Admin demo
-    if (!localStorage.getItem('admin@demo.com')) {
-      const admin = {
-        name: 'Admin User',
-        email: 'admin@demo.com',
-        password: 'admin123',
-        role: 'Admin',
-        age: '40',
-        gender: 'Other',
-        phone: '9876543212',
-        blood: 'B+',
-        address: '789 Admin Lane'
-      };
-      localStorage.setItem('admin@demo.com', JSON.stringify(admin));
-    }
+    // Permanent Admin Account
+if (!localStorage.getItem('adminAccount')) {
+
+    localStorage.setItem(
+        'adminAccount',
+        JSON.stringify({
+            email: 'admin@hospital.com',
+            password: 'admin123'
+        })
+    );
+
+}
   })();
 </script>
 </body>
