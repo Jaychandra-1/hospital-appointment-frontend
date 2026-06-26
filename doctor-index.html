@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediConnect - Professional Doctor Module</title>
+  
+  <!-- CSS Frameworks & Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- SEO & Meta -->
+  <meta name="description" content="Hospital Appointment Management System - Secure Doctor Workspace Portal">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       LOGIN PORTAL VIEW
+       ========================================================================== -->
+  <div id="login-view" class="login-bg min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="container login-container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+          <div class="card login-card glass-panel p-4 p-md-5 border-0">
+            <!-- Loading Indicator Overlay -->
+            <div id="login-loading" class="loading-overlay">
+              <div class="text-center">
+                <div class="spinner-border text-teal mb-3" style="width: 3rem; height: 3rem;" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <h6 class="fw-bold text-ink">Verifying Credentials...</h6>
+                <p class="text-muted small mb-0">Establishing secure clinical session</p>
+              </div>
+            </div>
+
+            <div class="text-center mb-5">
+              <div class="d-inline-flex p-4 rounded-circle bg-primary text-white mb-4 shadow">
+                <i class="bi bi-hospital fs-1"></i>
+              </div>
+              <h3 class="fw-bold text-ink mb-1">MediConnect Clinical Portal</h3>
+              <p class="text-muted small">Doctor Module Authentication Workspace</p>
+            </div>
+
+            <!-- Validation Error Alert -->
+            <div id="login-error-alert" class="alert alert-danger d-none" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i> Invalid Doctor Email or Password.
+            </div>
+
+            <form id="login-form" novalidate>
+              <div class="mb-4">
+                <label for="login-email" class="form-label small fw-semibold text-muted mb-2">Email Address</label>
+                <div class="input-icon-wrapper">
+                  <i class="bi bi-envelope-fill"></i>
+                  <input type="email" id="login-email" class="form-control form-control-custom text-dark" placeholder="doctor@mediconnect.com" required autocomplete="username">
+                  <div class="invalid-feedback">Please enter a valid email address.</div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label for="login-password" class="form-label small fw-semibold text-muted mb-2">Password</label>
+                <div class="input-icon-wrapper">
+                  <i class="bi bi-lock-fill"></i>
+                  <input type="password" id="login-password" class="form-control form-control-custom text-dark" placeholder="••••••••" required autocomplete="current-password">
+                  <button type="button" class="password-toggle-btn" id="password-toggle" aria-label="Toggle password visibility">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                  <div class="invalid-feedback">Please enter your password.</div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mb-5">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input cursor-pointer" id="remember-me">
+                  <label class="form-check-label small text-muted cursor-pointer" for="remember-me">Remember me</label>
+                </div>
+                <a href="#" id="forgot-password" class="small text-decoration-none text-teal fw-semibold">Forgot Password?</a>
+              </div>
+
+              <button type="submit" class="btn btn-gradient-primary w-100 py-3 fw-bold fs-5 shadow-sm">
+                Access Portal <i class="bi bi-arrow-right-short ms-1 fs-4 align-middle"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MAIN CLINICAL WORKSPACE VIEWPORT
+       ========================================================================== -->
+  <div id="app-container" class="d-none">
+    
+    <!-- LEFT SIDEBAR PANEL -->
+    <aside id="sidebar">
+      <div class="sidebar-header d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-heart-pulse-fill text-teal fs-4"></i>
+          <span class="sidebar-logo">MediConnect</span>
+        </div>
+        <button class="btn btn-link text-white d-lg-none p-0" id="sidebar-close" aria-label="Close Sidebar">
+          <i class="bi bi-x-lg fs-5"></i>
+        </button>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <a href="#" class="sidebar-link active" data-target="dashboard">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-target="appointments">
+            <i class="bi bi-calendar-check-fill"></i>
+            <span>Appointments</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-target="schedule">
+            <i class="bi bi-clock-fill"></i>
+            <span>Manage Schedule</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-target="reviews">
+            <i class="bi bi-chat-left-heart-fill"></i>
+            <span>Reviews</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-target="analytics">
+            <i class="bi bi-graph-up-arrow"></i>
+            <span>Analytics</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-target="profile">
+            <i class="bi bi-person-badge-fill"></i>
+            <span>Profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-target="salary">
+            <i class="bi bi-wallet2"></i>
+            <span>Salary Statements</span>
+          </a>
+        </li>
+        <li class="mt-4 pt-3 border-top border-secondary border-opacity-25">
+          <button id="btn-logout" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold rounded-pill">
+            <i class="bi bi-box-arrow-left"></i> Logout
+          </button>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- RIGHT CONTAINER WRAPPER -->
+    <div id="main-wrapper">
+      
+      <!-- MAIN NAVBAR HEADER -->
+      <nav class="navbar main-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <button class="menu-toggle-btn" id="sidebar-toggle" aria-label="Toggle Sidebar">
+            <i class="bi bi-list"></i>
+          </button>
+          <h4 class="fw-bold text-ink mb-0" id="header-view-title">Dashboard Overview</h4>
+        </div>
+
+        <div class="position-relative">
+          <div class="d-flex align-items-center gap-2 nav-doc-profile" id="nav-profile-trigger">
+            <div class="doc-avatar-wrapper">
+              <img id="nav-doc-photo" src="" alt="Doctor Avatar" class="doc-avatar">
+              <span class="status-dot" id="nav-availability-dot"></span>
+            </div>
+            <div class="text-end d-none d-sm-block">
+              <h6 class="m-0 text-ink fw-bold text-sm" id="nav-doc-name">Dr. Loading</h6>
+              <small class="text-muted" id="nav-doc-department">Department</small>
+            </div>
+            <i class="bi bi-chevron-down text-muted small ms-1"></i>
+          </div>
+
+          <!-- NAVBAR PROFILE DROPDOWN PANEL -->
+          <div class="doc-dropdown-panel py-3 shadow-lg" id="profile-dropdown-card">
+            <div class="text-center px-4 pb-3 border-bottom border-light">
+              <div class="doc-avatar-wrapper mx-auto mb-2" style="width: 60px; height: 60px;">
+                <img id="drop-doc-photo" src="" alt="Doctor Photo" class="doc-avatar">
+              </div>
+              <h6 class="fw-bold text-ink mb-0" id="drop-doc-name">Dr. Loading</h6>
+              <small class="text-teal fw-semibold d-block mb-2" id="drop-doc-dept">Cardiology</small>
+              <span class="badge bg-success-subtle text-success border border-success border-opacity-25 rounded-pill px-3 py-1" id="drop-availability-badge">Available Today</span>
+            </div>
+            <div class="px-4 py-3 space-y-2">
+              <div class="d-flex justify-content-between small text-muted">
+                <span>Experience:</span>
+                <strong class="text-ink" id="drop-doc-exp">--</strong>
+              </div>
+              <div class="d-flex justify-content-between small text-muted">
+                <span>Email:</span>
+                <strong class="text-ink text-truncate ms-2" style="max-width: 170px;" id="drop-doc-email">--</strong>
+              </div>
+              <div class="d-flex justify-content-between small text-muted">
+                <span>Phone:</span>
+                <strong class="text-ink" id="drop-doc-phone">--</strong>
+              </div>
+            </div>
+            <div class="px-3 pt-2 d-flex gap-2 border-top border-light">
+              <button class="btn btn-sm btn-gradient-secondary w-50" onclick="navigateToView('profile', false)">View Profile</button>
+              <button class="btn btn-sm btn-gradient-primary w-50 text-white" onclick="navigateToView('profile', true)">Edit Profile</button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- MAIN WORKSPACE WORK WINDOW -->
+      <main class="p-4">
+
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="view-dashboard" class="app-view">
+          <!-- Welcome Greeting Header Banner -->
+          <div class="bg-gradient-header p-4 mb-4 shadow-sm text-white">
+            <div class="row align-items-center">
+              <div class="col-12 col-md-8 text-center text-md-start">
+                <h2 class="fw-extrabold text-white mb-2" id="dash-greeting-text">Good Morning, Doctor</h2>
+                <p class="mb-3 text-cyan fw-medium" id="dash-department-text">Cardiology Department Workspace</p>
+                <div class="p-3 bg-white bg-opacity-10 border border-white border-opacity-10 rounded-3 d-inline-block text-start">
+                  <i class="bi bi-quote fs-5 text-teal me-1 align-top"></i>
+                  <span class="fst-italic text-frost text-sm" id="dash-motivational-quote">Every heartbeat you protect brings hope to another family.</span>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 text-center mt-3 mt-md-0 d-flex flex-column align-items-center align-items-md-end justify-content-center">
+                <h5 class="fw-bold mb-1 text-teal text-uppercase tracking-wider small">Today's Date</h5>
+                <h6 class="text-white mb-0" id="dash-date-text">Wednesday, June 24, 2026</h6>
+                <div class="mt-3 p-2 rounded-pill bg-teal bg-opacity-25 border border-teal border-opacity-25 px-3 d-flex align-items-center gap-2">
+                  <span class="spinner-grow spinner-grow-sm text-teal" role="status"></span>
+                  <small class="fw-bold text-white" id="dash-dept-banner-icon-text">Cardiology</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Counters (Clickable) -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-md-4">
+              <div class="card glass-card p-3 border-0 h-100 dashboard-stat-card active-filter" id="stat-today" onclick="setDashboardFilter('today')">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <small class="text-muted text-uppercase fw-bold text-xs tracking-wider">Today's Appointments</small>
+                    <h3 class="fw-extrabold mt-1 mb-0 text-ink" id="stats-today-count">0</h3>
+                  </div>
+                  <div class="stat-card-badge bg-primary bg-opacity-10 text-primary">
+                    <i class="bi bi-calendar-day-fill"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card glass-card p-3 border-0 h-100 dashboard-stat-card" id="stat-pending" onclick="setDashboardFilter('Pending')">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <small class="text-muted text-uppercase fw-bold text-xs tracking-wider">Pending Appointments</small>
+                    <h3 class="fw-extrabold mt-1 mb-0 text-ink" id="stats-pending-count">0</h3>
+                  </div>
+                  <div class="stat-card-badge bg-warning bg-opacity-10 text-warning">
+                    <i class="bi bi-hourglass-split"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card glass-card p-3 border-0 h-100 dashboard-stat-card" id="stat-completed" onclick="setDashboardFilter('Completed')">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <small class="text-muted text-uppercase fw-bold text-xs tracking-wider">Completed Appointments</small>
+                    <h3 class="fw-extrabold mt-1 mb-0 text-ink" id="stats-completed-count">0</h3>
+                  </div>
+                  <div class="stat-card-badge bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Secondary Overview Cards -->
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+              <div class="card glass-card border-0 text-center summary-card py-3">
+                <i class="bi bi-people-fill mb-2"></i>
+                <h5 class="fw-bold mb-0 text-ink" id="overview-patients-count">0</h5>
+                <small class="text-muted text-xs">Total Patients</small>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="card glass-card border-0 text-center summary-card py-3">
+                <i class="bi bi-star-fill text-warning mb-2"></i>
+                <h5 class="fw-bold mb-0 text-ink" id="overview-rating-val">0.0</h5>
+                <small class="text-muted text-xs">Average Rating</small>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="card glass-card border-0 text-center summary-card py-3">
+                <i class="bi bi-wallet2 mb-2 text-success"></i>
+                <h5 class="fw-bold mb-0 text-ink" id="overview-revenue-val">₹0</h5>
+                <small class="text-muted text-xs">Monthly Revenue</small>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="card glass-card border-0 text-center summary-card py-3">
+                <i class="bi bi-award-fill mb-2 text-primary"></i>
+                <h5 class="fw-bold mb-0 text-ink" id="overview-completed-val">0</h5>
+                <small class="text-muted text-xs">Completed Consultations</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard Main Content Grid -->
+          <div class="row g-4">
+            <!-- Left: Filtered Appointments List -->
+            <div class="col-12 col-xl-8">
+              <div class="card glass-card border-0 p-4 h-100">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 gap-2">
+                  <div>
+                    <h5 class="fw-bold text-ink mb-1" id="dashboard-table-header-title">Recent Patient Appointments</h5>
+                    <p class="text-muted text-xs mb-0">List of patient appointments registry</p>
+                  </div>
+                  <div class="position-relative w-100" style="max-width: 250px;">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    <input type="text" id="dashboard-search-input" class="form-control form-control-custom form-control-sm ps-5 text-dark" placeholder="Search patient name...">
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-custom align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>Patient Name</th>
+                        <th>Appointment Date</th>
+                        <th>Appointment Time</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboard-appointments-tbody">
+                      <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No appointments found matching this state.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Quick Actions Panel -->
+            <div class="col-12 col-xl-4">
+              <div class="card glass-card border-0 p-4 h-100">
+                <h5 class="fw-bold text-ink mb-3">Quick Actions</h5>
+                <div class="d-flex flex-column gap-2">
+                  <div class="quick-action-card py-2 px-3" onclick="navigateToView('appointments')">
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary" style="width: 36px; height: 36px; font-size: 1.1rem;">
+                      <i class="bi bi-calendar-check-fill"></i>
+                    </div>
+                    <div>
+                      <strong class="text-ink text-sm d-block">View Appointments</strong>
+                    </div>
+                  </div>
+                  <div class="quick-action-card py-2 px-3" onclick="navigateToView('schedule')">
+                    <div class="icon-box bg-success bg-opacity-10 text-success" style="width: 36px; height: 36px; font-size: 1.1rem;">
+                      <i class="bi bi-clock-fill"></i>
+                    </div>
+                    <div>
+                      <strong class="text-ink text-sm d-block">Manage Schedule</strong>
+                    </div>
+                  </div>
+                  <div class="quick-action-card py-2 px-3" onclick="navigateToView('reviews')">
+                    <div class="icon-box bg-warning bg-opacity-10 text-warning" style="width: 36px; height: 36px; font-size: 1.1rem;">
+                      <i class="bi bi-chat-left-heart-fill"></i>
+                    </div>
+                    <div>
+                      <strong class="text-ink text-sm d-block">Reviews</strong>
+                    </div>
+                  </div>
+                  <div class="quick-action-card py-2 px-3" onclick="navigateToView('analytics')">
+                    <div class="icon-box bg-info bg-opacity-10 text-info" style="width: 36px; height: 36px; font-size: 1.1rem;">
+                      <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <div>
+                      <strong class="text-ink text-sm d-block">Analytics</strong>
+                    </div>
+                  </div>
+                  <div class="quick-action-card py-2 px-3" onclick="navigateToView('profile')">
+                    <div class="icon-box bg-secondary bg-opacity-10 text-secondary" style="width: 36px; height: 36px; font-size: 1.1rem;">
+                      <i class="bi bi-person-badge-fill"></i>
+                    </div>
+                    <div>
+                      <strong class="text-ink text-sm d-block">Profile</strong>
+                    </div>
+                  </div>
+                  <div class="quick-action-card py-2 px-3" onclick="navigateToView('salary')">
+                    <div class="icon-box bg-danger bg-opacity-10 text-danger" style="width: 36px; height: 36px; font-size: 1.1rem;">
+                      <i class="bi bi-wallet2"></i>
+                    </div>
+                    <div>
+                      <strong class="text-ink text-sm d-block">Salary Statements</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. APPOINTMENTS MODULE VIEW -->
+        <section id="view-appointments" class="app-view d-none">
+          <!-- Back to Dashboard Button -->
+          <div class="d-flex mb-3">
+            <button class="btn btn-gradient-secondary rounded-pill px-4 py-2 shadow-sm" onclick="navigateToView('dashboard')">
+              <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+            </button>
+          </div>
+
+          <div class="card glass-card border-0 p-4 mb-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+              <div>
+                <h5 class="fw-bold text-ink mb-1">Appointments Registry</h5>
+                <p class="text-muted text-xs mb-0">Search, filter, and modify patient queues</p>
+              </div>
+              <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
+                <div class="position-relative flex-grow-1" style="max-width: 250px;">
+                  <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                  <input type="text" id="registry-search-input" class="form-control form-control-custom ps-5 text-dark" placeholder="Search patient name...">
+                </div>
+                <select id="registry-filter-status" class="form-select form-control-custom w-auto text-dark">
+                  <option value="all">All Statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+                <select id="registry-filter-priority" class="form-select form-control-custom w-auto text-dark d-none">
+                  <option value="all">All Priorities</option>
+                  <option value="Urgent">Urgent</option>
+                  <option value="Follow-up">Follow-up</option>
+                  <option value="Routine">Routine</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="card glass-card border-0 p-4">
+            <div class="table-responsive">
+              <table class="table table-custom align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Patient Name</th>
+                    <th>Appointment Date</th>
+                    <th>Appointment Time</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="registry-appointments-tbody">
+                  <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">Loading appointments...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. PATIENT DETAILS (EHR) VIEW -->
+        <section id="view-patient-details" class="app-view d-none">
+          <div class="d-flex mb-3">
+            <button class="btn btn-gradient-secondary rounded-pill px-4" onclick="navigateToView('appointments')">
+              <i class="bi bi-arrow-left me-2"></i> Back to Appointments Registry
+            </button>
+          </div>
+
+          <div class="row g-4">
+            <!-- Left Info Panel -->
+            <div class="col-12 col-lg-4">
+              <div class="card glass-card border-0 p-4 text-center">
+                <div class="avatar-placeholder mx-auto rounded-circle mb-3 bg-gradient-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 80px; height: 80px; font-size: 2rem;" id="ehr-pt-initials">
+                  PT
+                </div>
+                <h5 class="fw-bold text-ink mb-1" id="ehr-pt-name">Patient Name</h5>
+                <span class="badge bg-light text-muted border mb-3" id="ehr-pt-id">Patient ID: #APT-000</span>
+                
+                <hr class="my-3 text-muted">
+                
+                <div class="text-start space-y-3">
+                  <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                    <span class="text-muted small"><i class="bi bi-person me-2"></i>Age / Gender:</span>
+                    <strong class="text-ink text-sm" id="ehr-pt-agesex">-- / --</strong>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                    <span class="text-muted small"><i class="bi bi-droplet me-2 text-danger"></i>Blood Group:</span>
+                    <strong class="text-ink text-sm" id="ehr-pt-blood">--</strong>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                    <span class="text-muted small"><i class="bi bi-telephone me-2 text-success"></i>Contact Number:</span>
+                    <strong class="text-ink text-sm" id="ehr-pt-phone">--</strong>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center pb-1">
+                    <span class="text-muted small"><i class="bi bi-person-check-fill me-2 text-blue"></i>Assigned Doctor:</span>
+                    <strong class="text-ink text-sm" id="ehr-pt-doc">Dr. --</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right History Details -->
+            <div class="col-12 col-lg-8">
+              <div class="card glass-card border-0 p-4 mb-4">
+                <h5 class="fw-bold text-ink border-bottom pb-2 mb-3"><i class="bi bi-exclamation-circle text-danger me-2"></i>Current Chief Complaint</h5>
+                <p class="text-dark bg-light p-3 rounded-3 mb-0" id="ehr-pt-complaint">No active complaint recorded.</p>
+                
+                <h5 class="fw-bold text-ink border-bottom pb-2 mb-3 mt-4"><i class="bi bi-clock-history text-primary me-2"></i>Medical History Details</h5>
+                <div id="ehr-pt-history" class="p-3 bg-light rounded-3 text-dark mb-0">No past medical history details documented.</div>
+
+                <h5 class="fw-bold text-ink border-bottom pb-2 mb-3 mt-4"><i class="bi bi-journal-medical text-teal me-2"></i>Previous Clinical Visits Log</h5>
+                <div class="table-responsive">
+                  <table class="table table-sm text-dark align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th class="border-0 text-xs">Date</th>
+                        <th class="border-0 text-xs">Diagnosis</th>
+                        <th class="border-0 text-xs">Prescription Details</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ehr-previous-visits-tbody">
+                      <tr>
+                        <td colspan="3" class="text-center py-3 text-muted text-sm">No previous visit records found.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="text-end">
+                <button class="btn btn-gradient-primary px-5 py-3 fw-bold rounded-pill text-white shadow-sm" onclick="transitionToConsultationDesk()">
+                  Proceed to Consultation Desk <i class="bi bi-chevron-right ms-2 align-middle"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. CONSULTATION NOTES VIEW -->
+        <section id="view-consultation-notes" class="app-view d-none">
+          <div class="d-flex mb-3">
+            <button class="btn btn-gradient-secondary rounded-pill px-4" id="consultation-back-btn" onclick="navigateToView('patient-details')">
+              <i class="bi bi-arrow-left me-2"></i> Return to EHR File
+            </button>
+          </div>
+
+          <div class="card glass-card border-0 p-4 mb-4">
+            <div class="bg-light p-3 rounded-3 border mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <h6 class="fw-bold text-ink mb-1">Active Consultation For: <span class="text-teal" id="consult-pt-name">Patient Name</span></h6>
+                <small class="text-muted" id="consult-pt-meta">ID: #APT-000 | Age: -- | Gender: --</small>
+              </div>
+              <span class="badge bg-primary text-white rounded-pill px-3 py-2 fw-semibold" id="consult-pt-priority">Routine Appointment</span>
+            </div>
+
+            <h5 class="fw-bold text-ink mb-4"><i class="bi bi-journal-plus text-teal me-2"></i>Clinical Prescription Intake Sheet</h5>
+
+            <form id="consultation-notes-form" novalidate>
+              <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6">
+                  <label for="consult-symptoms" class="form-label small fw-bold text-muted">Objective Symptoms Observed</label>
+                  <textarea id="consult-symptoms" rows="4" class="form-control form-control-custom text-dark" placeholder="Describe physical symptoms noticed or reported..." required></textarea>
+                  <div class="invalid-feedback">Please enter symptoms.</div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="consult-diagnosis" class="form-label small fw-bold text-muted">Clinical Diagnosis / Impression</label>
+                  <textarea id="consult-diagnosis" rows="4" class="form-control form-control-custom text-dark" placeholder="Specify diagnostic findings or clinical assessment..." required></textarea>
+                  <div class="invalid-feedback">Please enter diagnostic parameters.</div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="consult-prescription" class="form-label small fw-bold text-muted">Rx Medication Prescription Order</label>
+                  <textarea id="consult-prescription" rows="5" class="form-control form-control-custom text-dark font-monospace" placeholder="e.g.&#10;Tab. Paracetamol 500mg — TDS x 5 Days&#10;Tab. Amoxicillin 500mg — BD x 7 Days" required></textarea>
+                  <div class="invalid-feedback">Please prescribe medication orders.</div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="mb-3">
+                    <label for="consult-followup" class="form-label small fw-bold text-muted">Follow-Up Directions</label>
+                    <input type="text" id="consult-followup" class="form-control form-control-custom text-dark" placeholder="e.g. Return in 2 weeks for blood pressure checks" required>
+                    <div class="invalid-feedback">Please specify follow-up window.</div>
+                  </div>
+                  <div>
+                    <label for="consult-treatment" class="form-label small fw-bold text-muted">Long-term Treatment Plan Advice</label>
+                    <textarea id="consult-treatment" rows="2" class="form-control form-control-custom text-dark" placeholder="Dietary restrictions, exercise, or therapy programs..."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pt-3 border-top border-light">
+                <button type="button" class="btn btn-gradient-secondary rounded-pill px-4 py-2" onclick="triggerPrintPrescription()">
+                  <i class="bi bi-printer me-2"></i> Preview & Print Prescription Slip
+                </button>
+                <button type="submit" class="btn btn-gradient-primary rounded-pill px-5 py-2 text-white fw-bold">
+                  <i class="bi bi-cloud-check me-2"></i> Save Consultation & Complete
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- 5. MANAGE SCHEDULE VIEW -->
+        <section id="view-schedule" class="app-view d-none">
+          <!-- Back to Dashboard Button -->
+          <div class="d-flex mb-4">
+            <button class="btn btn-gradient-secondary rounded-pill px-4 py-2 shadow-sm" onclick="navigateToView('dashboard')">
+              <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+            </button>
+          </div>
+
+          <div class="card glass-card border-0 p-4 mb-4 shadow-sm">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+              <div>
+                <h5 class="fw-bold text-ink mb-1">Operational Scheduler Panel</h5>
+                <p class="text-muted text-xs mb-0">Set practitioner operational availability toggles & leaves</p>
+              </div>
+              <div class="form-check form-switch fs-5">
+                <input class="form-check-input cursor-pointer" type="checkbox" role="switch" id="availability-toggle" checked>
+                <label class="form-check-label fw-bold text-success text-sm cursor-pointer" id="availability-toggle-label" for="availability-toggle">🟢 Available Today</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROW 1 -->
+          <div class="row g-4 mb-4">
+            <!-- Left Card: Add Clinic Weekly Shift -->
+            <div class="col-12 col-md-6">
+              <div class="card glass-card border-0 p-4 h-100 shadow-sm">
+                <h5 class="fw-bold text-ink border-bottom pb-2 mb-3"><i class="bi bi-calendar-plus text-blue me-2"></i>Add Clinic Weekly Shift</h5>
+                <form id="add-schedule-form" novalidate>
+                  <div class="mb-3">
+                    <label for="schedule-day" class="form-label small fw-bold text-muted mb-2">Select Day</label>
+                    <select id="schedule-day" class="form-select form-control-custom text-dark" required>
+                      <option value="">Select Day...</option>
+                      <option value="Monday">Monday</option>
+                      <option value="Tuesday">Tuesday</option>
+                      <option value="Wednesday">Wednesday</option>
+                      <option value="Thursday">Thursday</option>
+                      <option value="Friday">Friday</option>
+                      <option value="Saturday">Saturday</option>
+                      <option value="Sunday">Sunday</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a workday day.</div>
+                  </div>
+                  <div class="mb-4">
+                    <label for="schedule-time" class="form-label small fw-bold text-muted mb-2">Select Shift Slot</label>
+                    <select id="schedule-time" class="form-select form-control-custom text-dark" required>
+                      <option value="">Select Shift Slot...</option>
+                      <option value="Morning Shift (09:00 AM - 12:00 PM)">Morning Shift (09:00 AM - 12:00 PM)</option>
+                      <option value="Afternoon Shift (12:00 PM - 03:00 PM)">Afternoon Shift (12:00 PM - 03:00 PM)</option>
+                      <option value="Evening Shift (03:00 PM - 06:00 PM)">Evening Shift (03:00 PM - 06:00 PM)</option>
+                      <option value="Night Shift (06:00 PM - 09:00 PM)">Night Shift (06:00 PM - 09:00 PM)</option>
+                    </select>
+                    <div class="invalid-feedback">Please choose a shift slot.</div>
+                  </div>
+                  <button type="submit" class="btn btn-gradient-primary w-100 py-3 text-white fw-bold">Add Weekly Shift</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right Card: Weekly Active Shifts -->
+            <div class="col-12 col-md-6">
+              <div class="card glass-card border-0 p-4 h-100 shadow-sm">
+                <h5 class="fw-bold text-ink border-bottom pb-2 mb-3"><i class="bi bi-clock-history text-teal me-2"></i>Weekly Active Shifts</h5>
+                <div id="schedule-slots-container" class="space-y-3" style="max-height: 260px; overflow-y: auto;">
+                  <!-- Dynamic cards instead of table rows -->
+                  <div class="text-center py-4 text-muted">No active shift slots.</div>
+                </div>
+                <!-- Hidden table body to prevent JS element reference errors -->
+                <table class="d-none">
+                  <tbody id="schedule-slots-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROW 2 -->
+          <div class="row g-4">
+            <!-- Left Card: Leave Request Form -->
+            <div class="col-12 col-md-5">
+              <div class="card glass-card border-0 p-4 h-100 shadow-sm">
+                <h5 class="fw-bold text-ink border-bottom pb-2 mb-3"><i class="bi bi-calendar-x text-danger me-2"></i>Leave Request Form</h5>
+                <form id="leave-form" novalidate>
+                  <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted d-block mb-2">Duration Format</label>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="leaveFormat" id="leave-format-single" value="single" checked onchange="toggleLeaveFormatInputs()">
+                      <label class="form-check-label small" for="leave-format-single">Single Day</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="leaveFormat" id="leave-format-multiple" value="multiple" onchange="toggleLeaveFormatInputs()">
+                      <label class="form-check-label small" for="leave-format-multiple">Multiple Days</label>
+                    </div>
+                  </div>
+
+                  <div class="row g-2 mb-3">
+                    <div class="col-12" id="leave-single-date-wrapper">
+                      <label for="leave-single-date" class="form-label small fw-bold text-muted mb-2">Select Date</label>
+                      <input type="date" id="leave-single-date" class="form-control form-control-custom text-dark" required>
+                    </div>
+                    <div class="col-6 d-none" id="leave-start-date-wrapper">
+                      <label for="leave-start-date" class="form-label small fw-bold text-muted mb-2">Start Date</label>
+                      <input type="date" id="leave-start-date" class="form-control form-control-custom text-dark">
+                    </div>
+                    <div class="col-6 d-none" id="leave-end-date-wrapper">
+                      <label for="leave-end-date" class="form-label small fw-bold text-muted mb-2">End Date</label>
+                      <input type="date" id="leave-end-date" class="form-control form-control-custom text-dark">
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="leave-type" class="form-label small fw-bold text-muted mb-2">Leave Type</label>
+                    <select id="leave-type" class="form-select form-control-custom text-dark" required>
+                      <option value="Medical Leave">Medical Leave</option>
+                      <option value="Vacation Leave">Vacation Leave</option>
+                      <option value="Personal Leave">Personal Leave</option>
+                      <option value="Conference / Seminar">Conference / Seminar</option>
+                      <option value="Family Emergency">Family Emergency</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="leave-reason" class="form-label small fw-bold text-muted mb-2">Reason</label>
+                    <textarea id="leave-reason" rows="2" class="form-control form-control-custom text-dark" placeholder="Specify leave details or notes..." required></textarea>
+                    <div class="invalid-feedback">Please state a reason.</div>
+                  </div>
+
+                  <div class="form-check form-switch mb-3 p-3 bg-light rounded border border-light d-none">
+                    <input class="form-check-input ms-0 me-2 cursor-pointer" type="checkbox" id="leave-emergency-toggle">
+                    <label class="form-check-label small fw-bold text-danger cursor-pointer" for="leave-emergency-toggle">Flag as Emergency Leave</label>
+                  </div>
+
+                  <button type="submit" class="btn btn-gradient-primary w-100 py-3 fw-bold text-white">Apply Leave</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right Card: Monthly Calendar -->
+            <div class="col-12 col-md-7">
+              <div class="card glass-card border-0 p-4 h-100 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <h5 class="fw-bold text-ink mb-1">Monthly Calendar</h5>
+                    <p class="text-muted text-xs mb-0">Click leave dates to view details</p>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-gradient-secondary rounded-circle" onclick="adjustCalendarMonth(-1)" aria-label="Previous Month"><i class="bi bi-chevron-left"></i></button>
+                    <strong id="calendar-header-title" class="text-ink px-2 text-md">June 2026</strong>
+                    <button class="btn btn-sm btn-gradient-secondary rounded-circle" onclick="adjustCalendarMonth(1)" aria-label="Next Month"><i class="bi bi-chevron-right"></i></button>
+                  </div>
+                </div>
+
+                <div class="calendar-container border p-2">
+                  <div class="calendar-grid">
+                    <!-- Dynamic rendering in JS -->
+                  </div>
+                </div>
+
+                <!-- Calendar Legend -->
+                <div class="d-flex flex-wrap gap-3 mt-3 justify-content-center text-xs text-muted">
+                  <span class="d-flex align-items-center gap-2">
+                    <span class="d-inline-block rounded-circle bg-white border border-secondary" style="width: 12px; height: 12px;"></span> Working Days
+                  </span>
+                  <span class="d-flex align-items-center gap-2">
+                    <span class="d-inline-block rounded-circle bg-blue bg-opacity-25 border border-blue" style="width: 12px; height: 12px;"></span> Today's Date
+                  </span>
+                  <span class="d-flex align-items-center gap-2">
+                    <span class="d-inline-block rounded-circle" style="width: 12px; height: 12px; background-color: var(--warning)"></span> Leave Dates
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. PATIENT REVIEWS VIEW -->
+        <section id="view-reviews" class="app-view d-none">
+          <!-- Back to Dashboard Button -->
+          <div class="d-flex mb-3">
+            <button class="btn btn-gradient-secondary rounded-pill px-4 py-2 shadow-sm" onclick="navigateToView('dashboard')">
+              <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+            </button>
+          </div>
+
+          <!-- Summary Cards -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-md-6">
+              <div class="card glass-card border-0 p-4 h-100 text-center justify-content-center shadow-sm bg-white">
+                <span class="text-muted small text-uppercase fw-bold mb-2 d-block">Total Reviews</span>
+                <h1 class="fw-extrabold text-ink mb-1" id="reviews-total-text">0</h1>
+                <small class="text-muted">Total patient feedbacks submitted</small>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="card glass-card border-0 p-4 h-100 text-center justify-content-center shadow-sm bg-white">
+                <span class="text-muted small text-uppercase fw-bold mb-2 d-block">Average Rating</span>
+                <h1 class="fw-extrabold text-ink mb-1" id="reviews-avg-value">0.0</h1>
+                <div class="star-rating mb-1" id="reviews-avg-stars">
+                  <i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                </div>
+                <small class="text-muted">Out of 5.0 rating index</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reviews Table -->
+          <div class="card glass-card border-0 p-4 shadow-sm bg-white">
+            <h5 class="fw-bold text-ink mb-4">Reviews Board</h5>
+            <div class="table-responsive">
+              <table class="table table-custom align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Patient Name</th>
+                    <th>Rating</th>
+                    <th>Review Comment</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="reviews-tbody">
+                  <!-- Dynamic reviews populated in JS -->
+                  <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">No reviews found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Hidden elements to avoid JS Errors if referencing legacy dist bars -->
+          <div class="d-none">
+            <span id="reviews-dist-5-count"></span>
+            <span id="reviews-dist-5-bar"></span>
+            <span id="reviews-dist-4-count"></span>
+            <span id="reviews-dist-4-bar"></span>
+            <span id="reviews-dist-3-count"></span>
+            <span id="reviews-dist-3-bar"></span>
+            <div id="reviews-list-container"></div>
+          </div>
+        </section>
+
+        <!-- 7. ANALYTICS VIEW -->
+        <section id="view-analytics" class="app-view d-none">
+          <!-- Back to Dashboard Button -->
+          <div class="d-flex mb-3">
+            <button class="btn btn-gradient-secondary rounded-pill px-4 py-2 shadow-sm" onclick="navigateToView('dashboard')">
+              <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+            </button>
+          </div>
+
+          <!-- TOP ROW: Summary Cards -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-md-4">
+              <div class="card glass-card border-0 p-3 text-center shadow-sm bg-white">
+                <span class="text-muted text-xs fw-bold text-uppercase d-block mb-1">Total Patients</span>
+                <h4 class="fw-extrabold text-ink mb-0" id="analytics-pts-count">0</h4>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card glass-card border-0 p-3 text-center shadow-sm bg-white">
+                <span class="text-muted text-xs fw-bold text-uppercase d-block mb-1">Total Appointments</span>
+                <h4 class="fw-extrabold text-ink mb-0" id="analytics-apts-count">0</h4>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card glass-card border-0 p-3 text-center shadow-sm bg-white">
+                <span class="text-muted text-xs fw-bold text-uppercase d-block mb-1">Total Reviews</span>
+                <h4 class="fw-extrabold text-ink mb-0" id="analytics-reviews-count">0</h4>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN SECTION: Large Pie Chart -->
+          <div class="row g-4 mb-4">
+            <div class="col-12">
+              <div class="card glass-card border-0 p-4 shadow-sm bg-white">
+                <h5 class="fw-bold text-ink mb-3 text-center">Appointment Status Breakdown</h5>
+                <div style="position: relative; height: 350px; width: 100%;">
+                  <canvas id="chart-appointment-status"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BELOW PIE CHART: Quick Statistics Cards -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-md-4">
+              <div class="card glass-card border-0 p-3 text-center border-start border-success border-4 shadow-sm bg-white">
+                <span class="text-muted text-xs fw-bold text-uppercase d-block mb-1">Completed Appointments</span>
+                <h4 class="fw-extrabold text-success mb-0" id="stats-completed-val">0</h4>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card glass-card border-0 p-3 text-center border-start border-warning border-4 shadow-sm bg-white">
+                <span class="text-muted text-xs fw-bold text-uppercase d-block mb-1">Pending Appointments</span>
+                <h4 class="fw-extrabold text-warning mb-0" id="stats-pending-val">0</h4>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card glass-card border-0 p-3 text-center border-start border-danger border-4 shadow-sm bg-white">
+                <span class="text-muted text-xs fw-bold text-uppercase d-block mb-1">Cancelled Appointments</span>
+                <h4 class="fw-extrabold text-danger mb-0" id="stats-cancelled-val">0</h4>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden elements to avoid JS Errors from referencing legacy count elements -->
+          <div class="d-none">
+            <span id="analytics-completed-count"></span>
+            <span id="analytics-revenue-val"></span>
+            <span id="analytics-satisfaction-val"></span>
+            <canvas id="chart-satisfaction-breakdown"></canvas>
+            <canvas id="chart-appointments-volume"></canvas>
+            <canvas id="chart-revenue-trend"></canvas>
+            <canvas id="chart-doc-performance"></canvas>
+            <canvas id="chart-dept-performance"></canvas>
+          </div>
+        </section>
+
+        <!-- 8. PROFILE MODULE VIEW -->
+        <section id="view-profile" class="app-view d-none">
+          <!-- Back to Dashboard Button -->
+          <div class="d-flex mb-3">
+            <button class="btn btn-gradient-secondary rounded-pill px-4 py-2 shadow-sm" onclick="navigateToView('dashboard')">
+              <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+            </button>
+          </div>
+
+          <div class="row g-4">
+            <!-- Left Info Photo Profile -->
+            <div class="col-12 col-lg-4">
+              <div class="card glass-card border-0 p-4 text-center shadow-sm">
+                <div class="profile-photo-container mb-3">
+                  <img id="profile-photo-preview" src="" alt="Doctor Profile" class="profile-photo-preview">
+                  <label for="photo-file-input" class="photo-upload-overlay">
+                    <i class="bi bi-camera-fill fs-4 mb-1"></i>
+                    <span>Upload Photo</span>
+                  </label>
+                  <input type="file" id="photo-file-input" accept="image/*" class="d-none">
+                </div>
+                <h5 class="fw-bold text-ink mb-1" id="profile-doc-name">Dr. Loading</h5>
+                <span class="text-teal fw-semibold small d-block mb-3" id="profile-doc-specialization">Specialization</span>
+                
+                <hr class="my-3 text-muted">
+                
+                <div class="text-start space-y-2">
+                  <div class="p-2 border rounded bg-light mb-2 text-start px-3 text-sm">
+                    <i class="bi bi-envelope-fill me-2 text-primary"></i><span id="profile-sidebar-email">--</span>
+                  </div>
+                  <div class="p-2 border rounded bg-light mb-2 text-start px-3 text-sm">
+                    <i class="bi bi-telephone-fill me-2 text-success"></i><span id="profile-sidebar-phone">--</span>
+                  </div>
+                  <span class="badge bg-light text-muted border w-100 py-2 mb-2 text-start px-3"><i class="bi bi-award me-2 text-primary"></i>Experience: <strong class="text-ink" id="profile-sidebar-exp">--</strong></span>
+                  <span class="badge bg-light text-muted border w-100 py-2 mb-2 text-start px-3"><i class="bi bi-wallet2 me-2 text-success"></i>Fee Rate: <strong class="text-ink" id="profile-sidebar-fee">--</strong></span>
+                  <span class="badge bg-light text-muted border w-100 py-2 mb-0 text-start px-3"><i class="bi bi-house me-2 text-blue"></i>Hospital Address Room</span>
+                </div>
+                <p class="text-muted text-xs text-start mt-2 bg-light p-3 rounded border border-light mb-0" id="profile-sidebar-address">--</p>
+              </div>
+            </div>
+
+            <!-- Right Detail Form -->
+            <div class="col-12 col-lg-8">
+              <div class="card glass-card border-0 p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                  <h5 class="fw-bold text-ink mb-0"><i class="bi bi-person-lines-fill text-teal me-2"></i>Practitioner Information Details</h5>
+                  <button class="btn btn-sm btn-gradient-primary rounded-pill px-4" id="profile-edit-toggle-btn" onclick="toggleProfileEditMode()">Edit Profile</button>
+                </div>
+
+                <form id="profile-form" novalidate>
+                  <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-6">
+                      <label for="profile-name" class="form-label small fw-bold text-muted">Practitioner Name</label>
+                      <input type="text" id="profile-name" class="form-control form-control-custom text-dark" disabled required>
+                      <div class="invalid-feedback">Name cannot be blank.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="profile-email" class="form-label small fw-bold text-muted">Registered Email Address</label>
+                      <input type="email" id="profile-email" class="form-control form-control-custom text-dark" disabled required>
+                      <div class="invalid-feedback">Enter a valid email address.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="profile-phone" class="form-label small fw-bold text-muted">Contact Phone Number</label>
+                      <input type="text" id="profile-phone" class="form-control form-control-custom text-dark" disabled required>
+                      <div class="invalid-feedback">Phone number cannot be blank.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="profile-department" class="form-label small fw-bold text-muted">Practitioner Department</label>
+                      <input type="text" id="profile-department" class="form-control form-control-custom text-dark" disabled required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="profile-exp" class="form-label small fw-bold text-muted">Years Experience</label>
+                      <input type="text" id="profile-exp" class="form-control form-control-custom text-dark" disabled required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="profile-qualification" class="form-label small fw-bold text-muted">Credentials / Qualifications</label>
+                      <input type="text" id="profile-qualification" class="form-control form-control-custom text-dark" disabled required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="profile-fee" class="form-label small fw-bold text-muted">Consultation Fee (₹)</label>
+                      <input type="number" id="profile-fee" class="form-control form-control-custom text-dark" disabled required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="profile-specialization" class="form-label small fw-bold text-muted">Specialization Focus</label>
+                      <input type="text" id="profile-specialization" class="form-control form-control-custom text-dark" disabled required>
+                    </div>
+                    <div class="col-12">
+                      <label for="profile-address" class="form-label small fw-bold text-muted">Clinical Office Address</label>
+                      <textarea id="profile-address" rows="3" class="form-control form-control-custom text-dark" disabled required></textarea>
+                    </div>
+                  </div>
+
+                  <div class="d-none text-end gap-2 border-top pt-3" id="profile-edit-actions">
+                    <button type="button" class="btn btn-gradient-secondary rounded-pill px-4" onclick="cancelProfileEdit()">Cancel Updates</button>
+                    <button type="submit" class="btn btn-gradient-primary rounded-pill px-5 text-white fw-bold">Commit Save Changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. SALARY STATEMENTS VIEW -->
+        <section id="view-salary" class="app-view d-none">
+          <!-- Back to Dashboard Button -->
+          <div class="d-flex mb-3">
+            <button class="btn btn-gradient-secondary rounded-pill px-4 py-2 shadow-sm" onclick="navigateToView('dashboard')">
+              <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+            </button>
+          </div>
+
+          <!-- Top summary row -->
+          <div class="row g-4 mb-4">
+            <div class="col-12 col-md-6">
+              <div class="card glass-card border-0 p-4 text-center shadow-sm bg-white">
+                <span class="text-muted text-xs fw-bold text-uppercase d-block mb-1">Current Month Salary</span>
+                <h3 class="fw-extrabold text-ink mb-0" id="salary-net-val">₹0</h3>
+                <small class="text-muted">June 2026 Payroll Statement</small>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="card glass-card border-0 p-4 text-center shadow-sm bg-white">
+                <span class="text-muted text-xs fw-bold text-uppercase d-block mb-1">Total Paid Salary</span>
+                <h3 class="fw-extrabold text-success mb-0" id="salary-total-paid-val">₹0</h3>
+                <small class="text-muted">Accumulated transfers paid in full</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="card glass-card border-0 p-4 shadow-sm bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+              <h5 class="fw-bold text-ink mb-0">Salary History Statements</h5>
+              <button class="btn btn-gradient-primary rounded-pill px-4 text-white" id="btn-download-slip" onclick="downloadCurrentSalarySlip()"><i class="bi bi-download me-2"></i> Download Latest Salary Slip</button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-custom align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="salary-history-tbody">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Hidden legacy components to prevent script reference exceptions -->
+          <div class="d-none">
+            <span id="salary-base-val"></span>
+            <span id="salary-bonuses-val"></span>
+            <span id="salary-deductions-val"></span>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       SYSTEM MODALS & POP-UPS
+       ========================================================================== -->
+  <!-- 1. Leave details calendar click modal -->
+  <div class="modal fade" id="leaveDetailsModal" tabindex="-1" aria-labelledby="leaveDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-panel border-0 rounded-4">
+        <div class="modal-header border-bottom border-light">
+          <h5 class="modal-title fw-bold text-ink" id="leaveDetailsModalLabel"><i class="bi bi-info-circle-fill text-teal me-2"></i>Practitioner Leave File</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body space-y-3">
+          <div class="bg-light p-3 rounded-3 border">
+            <div class="row g-2">
+              <div class="col-6">
+                <small class="text-muted text-xs d-block mb-1">Leave Classification</small>
+                <strong class="text-ink" id="modal-leave-type">Medical Leave</strong>
+              </div>
+              <div class="col-6">
+                <small class="text-muted text-xs d-block mb-1">Total Duration</small>
+                <strong class="text-teal" id="modal-leave-duration">1 Day</strong>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-light p-3 rounded-3 border">
+            <small class="text-muted text-xs d-block mb-1">Date Range Window</small>
+            <strong class="text-ink" id="modal-leave-date">2026-06-25</strong>
+          </div>
+
+          <div class="bg-light p-3 rounded-3 border">
+            <small class="text-muted text-xs d-block mb-1">Emergency Context Status</small>
+            <strong id="modal-leave-emergency">Normal Approved</strong>
+          </div>
+
+          <div class="bg-light p-3 rounded-3 border">
+            <small class="text-muted text-xs d-block mb-1">Leave Reason Notes</small>
+            <p class="text-dark m-0 small mt-1" id="modal-leave-notes">--</p>
+          </div>
+        </div>
+        <div class="modal-footer border-top border-light">
+          <button type="button" class="btn btn-gradient-secondary rounded-pill px-4" data-bs-dismiss="modal">Close File</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Status modifier popup modal -->
+  <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-panel border-0 rounded-4">
+        <div class="modal-header border-bottom border-light">
+          <h5 class="modal-title fw-bold text-ink" id="statusModalLabel"><i class="bi bi-sliders text-teal me-2"></i>Modify Status State</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <h6 class="fw-bold text-muted text-uppercase text-xs tracking-wider mb-2">Selected Patient File</h6>
+          <h4 class="fw-bold text-ink mb-1" id="status-modal-pt-name">Jane Doe</h4>
+          <p class="text-muted small mb-4" id="status-modal-pt-details">Appt: -- | Scheduled: --</p>
+          
+          <div class="row g-2 justify-content-center">
+            <div class="col-6">
+              <button class="btn btn-gradient-secondary w-100 py-3 text-warning border-warning" onclick="commitStatusChange('Pending')">
+                <i class="bi bi-hourglass-split d-block fs-3 mb-1"></i>
+                <span class="fw-bold text-sm">Mark Pending</span>
+              </button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-gradient-secondary w-100 py-3 text-primary border-primary" onclick="commitStatusChange('Confirmed')">
+                <i class="bi bi-calendar-check d-block fs-3 mb-1"></i>
+                <span class="fw-bold text-sm">Confirm Slot</span>
+              </button>
+            </div>
+            <div class="col-6 mt-2">
+              <button class="btn btn-gradient-secondary w-100 py-3 text-success border-success" onclick="commitStatusChange('Completed')">
+                <i class="bi bi-check-circle d-block fs-3 mb-1"></i>
+                <span class="fw-bold text-sm">Mark Completed</span>
+              </button>
+            </div>
+            <div class="col-6 mt-2">
+              <button class="btn btn-gradient-secondary w-100 py-3 text-danger border-danger" onclick="commitStatusChange('Cancelled')">
+                <i class="bi bi-x-circle d-block fs-3 mb-1"></i>
+                <span class="fw-bold text-sm">Cancel Slot</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOASTS CONTAINER FOR SYSTEM NOTIFICATIONS -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000;">
+    <div id="app-toast" class="toast toast-custom border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex align-items-center">
+        <div class="toast-body fw-bold py-3 text-white">
+          <i class="bi bi-info-circle-fill text-teal me-2"></i>
+          <span id="toast-message-text">System Notification.</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Prescription Print Layout Template (Hidden by default, visible during printing) -->
+  <div id="prescription-print-layout" class="d-none prescription-print-container">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-4 mb-4">
+      <div>
+        <h2 class="fw-bold mb-1" style="color: #2366A4;">MEDICONNECT CLINICAL HOSPITAL</h2>
+        <p class="m-0 text-muted small">Specialized Practitioner Healthcare Systems</p>
+      </div>
+      <div class="text-end">
+        <h4 class="fw-bold mb-0" id="print-doc-name">Dr. Aruna</h4>
+        <small class="text-teal d-block" id="print-doc-dept">Cardiology Practitioner</small>
+        <small class="text-muted" id="print-doc-email">aruna@mediconnect.com</small>
+      </div>
+    </div>
+    
+    <div class="bg-light p-3 border mb-4 rounded">
+      <div class="row">
+        <div class="col-6">
+          <p class="mb-1 text-xs text-muted">PATIENT FILE</p>
+          <h5 class="fw-bold m-0" id="print-pt-name">Jane Doe</h5>
+          <small class="text-muted" id="print-pt-agesex">Age: 45 | Gender: Female</small>
+        </div>
+        <div class="col-6 text-end">
+          <p class="mb-1 text-xs text-muted">VISIT DETAILS</p>
+          <strong id="print-pt-date">Date: 2026-06-24</strong><br>
+          <small class="text-muted" id="print-pt-id">Ref ID: #APT-101</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h6 class="fw-bold border-bottom pb-2" style="color: #2366A4;"><i class="bi bi-activity me-2"></i>SYMPTOMS & COMPLAINT</h6>
+      <p id="print-pt-symptoms" style="white-space: pre-line;">Objective symptoms noted here...</p>
+    </div>
+
+    <div class="mb-4">
+      <h6 class="fw-bold border-bottom pb-2" style="color: #2366A4;"><i class="bi bi-bookmark-fill me-2"></i>CLINICAL DIAGNOSIS</h6>
+      <strong id="print-pt-diagnosis" style="white-space: pre-line;">Clinical impression parameters...</strong>
+    </div>
+
+    <div class="mb-4 bg-light p-3 border rounded">
+      <h5 class="fw-bold border-bottom pb-2 text-danger" style="font-family: monospace;"><i class="bi bi-capsule me-2"></i>Rx MEDICATION ORDERS</h5>
+      <p class="font-monospace m-0 text-dark" id="print-pt-prescription" style="white-space: pre-line; line-height: 1.6; font-size: 1.1rem;">Prescription entries details...</p>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-6">
+        <h6 class="fw-bold border-bottom pb-2" style="color: #2366A4;"><i class="bi bi-calendar-event me-2"></i>FOLLOW-UP DIRECTIONS</h6>
+        <p class="m-0 text-muted" id="print-pt-followup">Follow up instructions...</p>
+      </div>
+      <div class="col-6">
+        <h6 class="fw-bold border-bottom pb-2" style="color: #2366A4;"><i class="bi bi-card-text me-2"></i>TREATMENT ADVICE</h6>
+        <p class="m-0 text-muted" id="print-pt-treatment">Treatment instructions...</p>
+      </div>
+    </div>
+
+    <div class="row mt-5 pt-5">
+      <div class="col-12 text-end">
+        <div class="d-inline-block border-top text-center pt-2" style="width: 200px;">
+          <p class="m-0 fw-bold" id="print-signature-name">Dr. Aruna</p>
+          <small class="text-muted">Digital Signature Registered</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Javascript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script-doctor.js"></script>
+
+</body>
+</html>
