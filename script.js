@@ -59,11 +59,162 @@ function togglePasswordVisibility(inputId) {
 }
 
 // ============================================
-// SECTION 3: DEMO LOGIN (No Local Storage)
+// SECTION 3: EMAIL VALIDATION FUNCTION (GMAIL ONLY)
+// ============================================
+function validateEmailFormat(email) {
+    // Trim the email
+    email = email.trim();
+    
+    // Check for empty
+    if (email.length === 0) {
+        return { valid: false, message: 'Email is required' };
+    }
+    
+    // Check for spaces
+    if (/\s/.test(email)) {
+        return { valid: false, message: 'Email must not contain spaces' };
+    }
+    
+    // Check for @ symbol (must have exactly one @)
+    const atCount = (email.match(/@/g) || []).length;
+    if (atCount !== 1) {
+        return { valid: false, message: 'Email must contain exactly one @ symbol' };
+    }
+    
+    // Split into local and domain parts
+    const parts = email.split('@');
+    const local = parts[0];
+    const domain = parts[1];
+    
+    // Check local part (must have at least 1 character)
+    if (local.length === 0) {
+        return { valid: false, message: 'Email missing local part (before @)' };
+    }
+    if (local.length < 2) {
+        return { valid: false, message: 'Local part must be at least 2 characters' };
+    }
+    if (local.startsWith('.') || local.endsWith('.')) {
+        return { valid: false, message: 'Local part cannot start or end with a dot' };
+    }
+    
+    // Check domain
+    if (domain.length === 0) {
+        return { valid: false, message: 'Email missing domain (after @)' };
+    }
+    
+    // ============================================
+    // GMAIL ONLY VALIDATION
+    // ============================================
+    // Must be exactly "gmail.com"
+    if (domain.toLowerCase() !== 'gmail.com') {
+        return { valid: false, message: 'Only @gmail.com email addresses are allowed' };
+    }
+    
+    return { valid: true, message: '' };
+}
+
+// ============================================
+// SECTION 4: LOGIN EMAIL VALIDATION
+// ============================================
+function validateLoginEmail() {
+    const emailInput = document.getElementById('loginEmail');
+    const email = emailInput.value;
+    const errorEl = document.getElementById('loginEmailFormatError');
+    const submitBtn = document.getElementById('loginSubmitBtn');
+    
+    emailInput.classList.remove('error', 'success');
+    errorEl.style.display = 'none';
+    
+    if (email.length === 0) {
+        submitBtn.disabled = true;
+        return false;
+    }
+    
+    const result = validateEmailFormat(email);
+    
+    if (!result.valid) {
+        emailInput.classList.add('error');
+        errorEl.textContent = result.message;
+        errorEl.style.display = 'block';
+        submitBtn.disabled = true;
+        return false;
+    } else {
+        emailInput.classList.add('success');
+        submitBtn.disabled = false;
+        return true;
+    }
+}
+
+// ============================================
+// SECTION 5: REGISTER EMAIL VALIDATION
+// ============================================
+function validateRegisterEmail() {
+    const emailInput = document.getElementById('regEmail');
+    const email = emailInput.value;
+    const errorEl = document.getElementById('regEmailFormatError');
+    const submitBtn = document.getElementById('registerSubmitBtn');
+    
+    emailInput.classList.remove('error', 'success');
+    errorEl.style.display = 'none';
+    
+    if (email.length === 0) {
+        submitBtn.disabled = true;
+        return false;
+    }
+    
+    const result = validateEmailFormat(email);
+    
+    if (!result.valid) {
+        emailInput.classList.add('error');
+        errorEl.textContent = result.message;
+        errorEl.style.display = 'block';
+        submitBtn.disabled = true;
+        return false;
+    } else {
+        emailInput.classList.add('success');
+        submitBtn.disabled = false;
+        return true;
+    }
+}
+
+// ============================================
+// SECTION 6: FORGOT PASSWORD EMAIL VALIDATION
+// ============================================
+function validateForgotEmail() {
+    const emailInput = document.getElementById('forgotEmail');
+    const email = emailInput.value;
+    const errorEl = document.getElementById('forgotEmailFormatError');
+    const submitBtn = document.getElementById('forgotSubmitBtn');
+    
+    emailInput.classList.remove('error', 'success');
+    errorEl.style.display = 'none';
+    
+    if (email.length === 0) {
+        submitBtn.disabled = true;
+        return false;
+    }
+    
+    const result = validateEmailFormat(email);
+    
+    if (!result.valid) {
+        emailInput.classList.add('error');
+        errorEl.textContent = result.message;
+        errorEl.style.display = 'block';
+        submitBtn.disabled = true;
+        return false;
+    } else {
+        emailInput.classList.add('success');
+        submitBtn.disabled = false;
+        return true;
+    }
+}
+
+// ============================================
+// SECTION 7: DEMO LOGIN
 // ============================================
 const DEMO_USERS = [
     { 
-        email: 'demo@mediconnect.com', 
+        email: 'demo@gmail.com', 
         password: 'demo123', 
         name: 'Demo Patient', 
         age: 35, 
@@ -83,6 +234,17 @@ function handleLogin(event) {
     
     document.getElementById('loginEmailError').classList.remove('show');
     document.getElementById('loginPasswordError').classList.remove('show');
+    document.getElementById('loginEmailFormatError').style.display = 'none';
+    
+    // Validate email format first
+    const validationResult = validateEmailFormat(email);
+    if (!validationResult.valid) {
+        document.getElementById('loginEmailFormatError').textContent = validationResult.message;
+        document.getElementById('loginEmailFormatError').style.display = 'block';
+        document.getElementById('loginEmail').classList.add('error');
+        showToast(validationResult.message, 'error');
+        return;
+    }
     
     if (!email) {
         document.getElementById('loginEmailError').classList.add('show');
@@ -101,8 +263,8 @@ function handleLogin(event) {
     
     if (!user) {
         document.getElementById('loginEmailError').classList.add('show');
-        document.getElementById('loginEmailError').textContent = 'Invalid credentials. Use demo@mediconnect.com / demo123';
-        showToast('Invalid credentials. Use demo@mediconnect.com / demo123', 'error');
+        document.getElementById('loginEmailError').textContent = 'Invalid credentials. Use demo@gmail.com / demo123';
+        showToast('Invalid credentials. Use demo@gmail.com / demo123', 'error');
         return;
     }
     
@@ -118,7 +280,85 @@ function handleLogin(event) {
 
 function handleRegister(event) {
     event.preventDefault();
-    showToast('Demo mode: Please use demo@mediconnect.com / demo123 to login', 'info');
+    
+    const email = document.getElementById('regEmail').value.trim();
+    
+    // Validate email format
+    const validationResult = validateEmailFormat(email);
+    if (!validationResult.valid) {
+        document.getElementById('regEmailFormatError').textContent = validationResult.message;
+        document.getElementById('regEmailFormatError').style.display = 'block';
+        document.getElementById('regEmail').classList.add('error');
+        showToast(validationResult.message, 'error');
+        return;
+    }
+    
+    // Additional validation checks
+    const fullName = document.getElementById('regFullName').value.trim();
+    const age = document.getElementById('regAge').value;
+    const dob = document.getElementById('regDob').value;
+    const gender = document.getElementById('regGender').value;
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regConfirmPassword').value;
+    const terms = document.getElementById('regTermsCheck').checked;
+    
+    // Reset all error messages
+    document.querySelectorAll('#registerForm .error-text').forEach(el => el.classList.remove('show'));
+    
+    if (!fullName || fullName.length < 2) {
+        document.getElementById('regNameError').classList.add('show');
+        showToast('Please enter your full name (min 2 characters)', 'error');
+        return;
+    }
+    
+    if (!age || age < 1 || age > 120) {
+        document.getElementById('regAgeError').classList.add('show');
+        showToast('Please enter a valid age (1-120)', 'error');
+        return;
+    }
+    
+    if (!dob) {
+        document.getElementById('regDobError').classList.add('show');
+        showToast('Please select your date of birth', 'error');
+        return;
+    }
+    
+    // Check if DOB is in future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDate = new Date(dob);
+    selectedDate.setHours(0, 0, 0, 0);
+    if (selectedDate > today) {
+        document.getElementById('regDobError').classList.add('show');
+        showToast('Date of birth cannot be in the future', 'error');
+        return;
+    }
+    
+    if (!gender) {
+        document.getElementById('regGenderError').classList.add('show');
+        showToast('Please select your gender', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        document.getElementById('regPasswordError').classList.add('show');
+        showToast('Password must be at least 6 characters', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        document.getElementById('regConfirmError').classList.add('show');
+        showToast('Passwords do not match', 'error');
+        return;
+    }
+    
+    if (!terms) {
+        document.getElementById('regTermsError').classList.add('show');
+        showToast('You must agree to the terms and conditions', 'error');
+        return;
+    }
+    
+    showToast('✅ Registration successful! Please login.', 'success');
     closeRegisterModal();
     setTimeout(() => {
         openLoginModal();
@@ -139,11 +379,12 @@ function logoutUser() {
 }
 
 // ============================================
-// SECTION 4: AUTHENTICATION - MODAL CONTROLS
+// SECTION 8: AUTHENTICATION - MODAL CONTROLS
 // ============================================
 function openLoginModal() {
     document.getElementById('loginModal').classList.add('active');
     document.body.style.overflow = 'hidden';
+    setTimeout(validateLoginEmail, 100);
 }
 
 function closeLoginModal() {
@@ -151,12 +392,16 @@ function closeLoginModal() {
     document.body.style.overflow = 'auto';
     document.getElementById('loginForm').reset();
     document.querySelectorAll('#loginForm .error-text').forEach(el => el.classList.remove('show'));
+    document.getElementById('loginEmailFormatError').style.display = 'none';
+    document.getElementById('loginEmail').classList.remove('error', 'success');
+    document.getElementById('loginSubmitBtn').disabled = true;
 }
 
 function openRegisterModal() {
     closeLoginModal();
     document.getElementById('registerModal').classList.add('active');
     document.body.style.overflow = 'hidden';
+    setTimeout(validateRegisterEmail, 100);
 }
 
 function closeRegisterModal() {
@@ -164,6 +409,9 @@ function closeRegisterModal() {
     document.body.style.overflow = 'auto';
     document.getElementById('registerForm').reset();
     document.querySelectorAll('#registerForm .error-text').forEach(el => el.classList.remove('show'));
+    document.getElementById('regEmailFormatError').style.display = 'none';
+    document.getElementById('regEmail').classList.remove('error', 'success');
+    document.getElementById('registerSubmitBtn').disabled = true;
 }
 
 function openForgotModal() {
@@ -175,6 +423,10 @@ function openForgotModal() {
     document.getElementById('forgotStepPassword').classList.remove('active');
     document.getElementById('forgotEmailForm').reset();
     document.getElementById('forgotEmailError').classList.remove('show');
+    document.getElementById('forgotEmailFormatError').style.display = 'none';
+    document.getElementById('forgotEmail').classList.remove('error', 'success');
+    document.getElementById('forgotSubmitBtn').disabled = true;
+    setTimeout(validateForgotEmail, 100);
 }
 
 function closeForgotModal() {
@@ -184,13 +436,15 @@ function closeForgotModal() {
     document.getElementById('forgotOtpForm').reset();
     document.getElementById('forgotResetForm').reset();
     document.querySelectorAll('#forgotModal .error-text').forEach(el => el.classList.remove('show'));
+    document.getElementById('forgotEmailFormatError').style.display = 'none';
+    document.getElementById('forgotEmail').classList.remove('error', 'success');
     document.getElementById('forgotStepEmail').classList.add('active');
     document.getElementById('forgotStepOTP').classList.remove('active');
     document.getElementById('forgotStepPassword').classList.remove('active');
 }
 
 // ============================================
-// SECTION 5: FORGOT PASSWORD (Demo)
+// SECTION 9: FORGOT PASSWORD
 // ============================================
 let currentResetEmail = '';
 let generatedOTP = '';
@@ -202,6 +456,17 @@ function sendOTP(event) {
     const email = document.getElementById('forgotEmail').value.trim();
     
     document.getElementById('forgotEmailError').classList.remove('show');
+    document.getElementById('forgotEmailFormatError').style.display = 'none';
+    
+    // Validate email format
+    const validationResult = validateEmailFormat(email);
+    if (!validationResult.valid) {
+        document.getElementById('forgotEmailFormatError').textContent = validationResult.message;
+        document.getElementById('forgotEmailFormatError').style.display = 'block';
+        document.getElementById('forgotEmail').classList.add('error');
+        showToast(validationResult.message, 'error');
+        return;
+    }
     
     if (!email) {
         document.getElementById('forgotEmailError').classList.add('show');
@@ -297,7 +562,7 @@ function resetPassword(event) {
 }
 
 // ============================================
-// SECTION 6: UPDATE USER PROFILE IN UI
+// SECTION 10: UPDATE USER PROFILE
 // ============================================
 function updateUserProfile(user) {
     if (!user) return;
@@ -342,7 +607,7 @@ function updateUserProfile(user) {
 }
 
 // ============================================
-// SECTION 7: PAGE NAVIGATION
+// SECTION 11: PAGE NAVIGATION
 // ============================================
 function switchPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -357,7 +622,7 @@ function switchPage(pageId) {
 }
 
 // ============================================
-// SECTION 8: LOGOUT
+// SECTION 12: LOGOUT
 // ============================================
 document.getElementById('logoutBtn').addEventListener('click', function() {
     if (confirm('Are you sure you want to logout from MediConnect?')) {
@@ -371,7 +636,7 @@ document.getElementById('logoutBtn').addEventListener('click', function() {
 });
 
 // ============================================
-// SECTION 9: PROFILE FUNCTIONS
+// SECTION 13: PROFILE FUNCTIONS
 // ============================================
 let isEditingProfile = false;
 
@@ -486,7 +751,7 @@ function saveProfile() {
 }
 
 // ============================================
-// SECTION 10: DOCTOR DATA
+// SECTION 14: DOCTOR DATA
 // ============================================
 const doctorsData = [
     { 
@@ -547,7 +812,7 @@ const doctorsData = [
 ];
 
 // ============================================
-// SECTION 11: BOOK APPOINTMENT CALENDAR
+// SECTION 15: BOOK APPOINTMENT CALENDAR
 // ============================================
 let selectedSlot = null;
 let selectedDate = null;
@@ -812,7 +1077,7 @@ function selectTimeSlot(slot) {
 }
 
 // ============================================
-// SECTION 12: PAYMENT FUNCTIONS
+// SECTION 16: PAYMENT FUNCTIONS
 // ============================================
 let selectedPaymentMethod = 'card';
 
@@ -1025,7 +1290,7 @@ function processPayment() {
 }
 
 // ============================================
-// SECTION 13: DOWNLOAD APPOINTMENT
+// SECTION 17: DOWNLOAD APPOINTMENT
 // ============================================
 let currentDownloadData = null;
 
@@ -1058,7 +1323,7 @@ function downloadAppointmentPDF() {
 }
 
 // ============================================
-// SECTION 14: VIEW APPOINTMENT DETAILS
+// SECTION 18: VIEW APPOINTMENT DETAILS
 // ============================================
 function viewAppointmentDetails(appointmentId) {
     const card = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
@@ -1087,7 +1352,7 @@ For real appointments, full details would be shown here.
 }
 
 // ============================================
-// SECTION 15: CANCEL APPOINTMENT
+// SECTION 19: CANCEL APPOINTMENT
 // ============================================
 function openCancelModal() {
     const doctor = document.getElementById('trackingDoctor')?.textContent || 'Dr. Priya Sharma';
@@ -1163,7 +1428,7 @@ document.getElementById('cancelModal')?.addEventListener('click', function(e) {
 });
 
 // ============================================
-// SECTION 16: RATING FUNCTIONALITY (Only from Reviews Section)
+// SECTION 20: RATING FUNCTIONALITY
 // ============================================
 let selectedRating = 0;
 let currentRatingDoctor = '';
@@ -1340,7 +1605,7 @@ function submitRating() {
 }
 
 // ============================================
-// SECTION 17: ADD APPOINTMENT TO DASHBOARD
+// SECTION 21: ADD APPOINTMENT TO DASHBOARD
 // ============================================
 function addAppointmentToDashboard(appointmentData) {
     const appCount = document.getElementById('dashAppointments');
@@ -1430,7 +1695,7 @@ document.getElementById('paymentModal')?.addEventListener('click', function(e) {
 });
 
 // ============================================
-// SECTION 18: UPDATE TRACKING PAGE
+// SECTION 22: UPDATE TRACKING PAGE
 // ============================================
 function updateTrackingPage(appointmentData) {
     document.getElementById('trackingDoctor').textContent = appointmentData.doctor;
@@ -1460,7 +1725,7 @@ function updateTrackingPage(appointmentData) {
 }
 
 // ============================================
-// SECTION 19: VIEW REPORT
+// SECTION 23: VIEW REPORT
 // ============================================
 function viewReport(reportName, doctor, date) {
     const details = `
@@ -1486,7 +1751,7 @@ function downloadReport(filename) {
 }
 
 // ============================================
-// SECTION 20: CHANGE PASSWORD
+// SECTION 24: CHANGE PASSWORD
 // ============================================
 function openPasswordModal() {
     document.getElementById('passwordModal').classList.add('active');
@@ -1530,7 +1795,7 @@ document.getElementById('passwordModal')?.addEventListener('click', function(e) 
 });
 
 // ============================================
-// SECTION 21: SUPPORT MODAL
+// SECTION 25: SUPPORT MODAL
 // ============================================
 function openSupportModal() {
     document.getElementById('supportModal').classList.add('active');
@@ -1569,7 +1834,7 @@ document.getElementById('supportModal')?.addEventListener('click', function(e) {
 });
 
 // ============================================
-// SECTION 22: FAQ MODAL
+// SECTION 26: FAQ MODAL
 // ============================================
 function openFaqModal() {
     document.getElementById('faqModal').classList.add('active');
@@ -1592,7 +1857,7 @@ document.getElementById('faqModal')?.addEventListener('click', function(e) {
 });
 
 // ============================================
-// SECTION 23: REPORT ISSUE MODAL
+// SECTION 27: REPORT ISSUE MODAL
 // ============================================
 let selectedIssueType = null;
 
@@ -1650,7 +1915,7 @@ document.getElementById('reportModal')?.addEventListener('click', function(e) {
 });
 
 // ============================================
-// SECTION 24: ACCESSIBILITY MODAL
+// SECTION 28: ACCESSIBILITY MODAL
 // ============================================
 function openAccessibilityModal() {
     document.getElementById('accessibilityModal').classList.add('active');
@@ -1690,7 +1955,7 @@ document.getElementById('accessibilityModal')?.addEventListener('click', functio
 });
 
 // ============================================
-// SECTION 25: SETTINGS FUNCTIONS
+// SECTION 29: SETTINGS FUNCTIONS
 // ============================================
 function toggleContrast(event) {
     event.stopPropagation();
@@ -1742,7 +2007,7 @@ function managePrivacy() {
 }
 
 // ============================================
-// SECTION 26: MEDICAL RECORDS
+// SECTION 30: MEDICAL RECORDS
 // ============================================
 function filterRecords() {
     const search = document.getElementById('recordSearch')?.value.toLowerCase() || '';
@@ -1761,7 +2026,7 @@ function filterRecords() {
 }
 
 // ============================================
-// SECTION 27: NOTIFICATIONS
+// SECTION 31: NOTIFICATIONS
 // ============================================
 function markAsRead(element) {
     const item = element.closest('.notif-item');
@@ -1792,7 +2057,7 @@ function filterNotifications() {
 }
 
 // ============================================
-// SECTION 28: APPOINTMENT HISTORY
+// SECTION 32: APPOINTMENT HISTORY
 // ============================================
 function filterHistory() {
     const search = document.getElementById('historySearch')?.value.toLowerCase() || '';
@@ -1811,7 +2076,7 @@ function filterHistory() {
 }
 
 // ============================================
-// SECTION 29: KEYBOARD SHORTCUTS
+// SECTION 33: KEYBOARD SHORTCUTS
 // ============================================
 document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.key >= '1' && e.key <= '9') {
@@ -1838,20 +2103,54 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================
-// SECTION 30: INITIALIZATION
+// SECTION 34: INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ MediConnect Patient Dashboard initialized successfully');
     console.log('📌 Keyboard shortcuts: Ctrl+1-8 for navigation, Escape to close modals');
-    console.log('📌 Demo Login: demo@mediconnect.com / demo123');
+    console.log('📌 Demo Login: demo@gmail.com / demo123');
+    console.log('📌 Email Validation Rules:');
+    console.log('   • ONLY @gmail.com addresses are allowed');
+    console.log('   • No spaces allowed');
+    console.log('   • Must contain exactly one @');
+    console.log('   • Local part: min 2 chars, no leading/trailing dots');
     
     document.getElementById('mainDashboard').style.display = 'none';
     
+    // Set up email validation event listeners for ALL forms
+    const loginEmail = document.getElementById('loginEmail');
+    if (loginEmail) {
+        loginEmail.addEventListener('input', validateLoginEmail);
+        loginEmail.addEventListener('blur', validateLoginEmail);
+        loginEmail.addEventListener('paste', function() {
+            setTimeout(validateLoginEmail, 10);
+        });
+    }
+    
+    const registerEmail = document.getElementById('regEmail');
+    if (registerEmail) {
+        registerEmail.addEventListener('input', validateRegisterEmail);
+        registerEmail.addEventListener('blur', validateRegisterEmail);
+        registerEmail.addEventListener('paste', function() {
+            setTimeout(validateRegisterEmail, 10);
+        });
+    }
+    
+    const forgotEmail = document.getElementById('forgotEmail');
+    if (forgotEmail) {
+        forgotEmail.addEventListener('input', validateForgotEmail);
+        forgotEmail.addEventListener('blur', validateForgotEmail);
+        forgotEmail.addEventListener('paste', function() {
+            setTimeout(validateForgotEmail, 10);
+        });
+    }
+    
     setTimeout(() => {
         openLoginModal();
-        document.getElementById('loginEmail').value = 'demo@mediconnect.com';
+        document.getElementById('loginEmail').value = 'demo@gmail.com';
         document.getElementById('loginPassword').value = 'demo123';
-        showToast('Use demo@mediconnect.com / demo123 to login', 'info');
+        validateLoginEmail();
+        showToast('Use demo@gmail.com / demo123 to login', 'info');
     }, 500);
     
     const today = new Date();
