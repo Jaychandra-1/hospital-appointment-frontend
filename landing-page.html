@@ -266,7 +266,9 @@
     <span class="pill"><span class="dot"></span> MEDI-CONNECT</span>
     <h1>Book, Track, and Manage Your Healthcare Journey in One Place</h1>
     <p class="lead">Unifying providers and patients on a secure, . Experience healthcare as it should be: seamless, fast, and human-centric.</p>
-    <button class="btn btn-primary">Book Appointment </button>
+    <button class="btn btn-primary" onclick="openPatientPortal()">
+      Book Appointment
+  </button>
   </div>
   <div class="hero-visual" id="heroVisual">
     <div class="orbit o1"></div>
@@ -452,5 +454,10 @@
     window.location.href = "login.html";
 }
 </script>
+<script>
+  function openPatientPortal() {
+      window.location.href = "patient.html";
+  }
+  </script>
 </body>
 </html>
