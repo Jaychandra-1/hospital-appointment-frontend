@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     actionCards.forEach(card => {
         card.addEventListener('click', function() {
             const actionText = this.querySelector('span').innerText;
-            alert(`Triggered Workflow: "${actionText}" functionality.`);
+           // alert(`Triggered Workflow: "${actionText}" functionality.`);
         });
     });
 });
@@ -244,7 +244,14 @@ row.innerHTML = `
 `;
 
 doctorTableBody.appendChild(row);
+
 doctorModal.style.display = "none";
+
+document.getElementById("doctorName").value = "";
+document.getElementById("doctorSpecialization").value = "";
+document.getElementById("doctorExperience").value = "";
+document.getElementById("doctorPhone").value = "";
+document.getElementById("doctorEmail").value = "";
 
 });
 
@@ -276,6 +283,298 @@ window.addEventListener("click", function(e){
 
 });
 
+/* ==========================
+   Sidebar Toggle
+========================== */
+
+const menuToggle = document.querySelector(".menu-toggle");
+
+const sidebar = document.querySelector(".sidebar");
 
 
 
+menuToggle.addEventListener("click", function(){
+
+    sidebar.classList.toggle("close");
+
+    
+
+});
+
+/* ==========================
+   Notification Toggle
+========================== */
+
+const notificationBtn =
+document.getElementById("notificationBtn");
+
+const notificationDropdown =
+document.getElementById("notificationDropdown");
+
+notificationBtn.addEventListener("click", function(){
+
+    profileDropdown.style.display = "none";
+
+    if(notificationDropdown.style.display === "block"){
+
+        notificationDropdown.style.display = "none";
+
+    }else{
+
+        notificationDropdown.style.display = "block";
+
+    }
+
+});
+
+/* ==========================
+   Close Notification
+========================== */
+
+document.addEventListener("click", function(e){
+
+    if(
+        !notificationBtn.contains(e.target) &&
+        !notificationDropdown.contains(e.target)
+    ){
+
+        notificationDropdown.style.display = "none";
+
+    }
+
+});
+
+/* ==========================
+   Profile Dropdown
+========================== */
+
+const profileBtn =
+document.getElementById("profileBtn");
+
+const profileDropdown =
+document.getElementById("profileDropdown");
+
+profileBtn.addEventListener("click", function(e){
+
+    e.stopPropagation();
+
+    if(profileDropdown.style.display === "block"){
+
+        profileDropdown.style.display = "none";
+
+    }else{
+
+        profileDropdown.style.display = "block";
+
+        // Close notification if open
+        notificationDropdown.style.display = "none";
+
+    }
+
+});
+
+document.addEventListener("click", function(e){
+
+    if(
+        !profileBtn.contains(e.target) &&
+        !profileDropdown.contains(e.target)
+    ){
+
+        profileDropdown.style.display = "none";
+
+    }
+
+});
+
+
+/* ==========================
+   Profile Menu Navigation
+========================== */
+
+const myProfileBtn =
+document.getElementById("myProfileBtn");
+
+const changePasswordBtn =
+document.getElementById("changePasswordBtn");
+
+const settingsProfileBtn =
+document.getElementById("settingsProfileBtn");
+
+myProfileBtn.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    showPage("settings");
+
+    profileDropdown.style.display = "none";
+
+    setActive(settingsBtn);
+
+});
+
+settingsProfileBtn.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    showPage("settings");
+
+    profileDropdown.style.display = "none";
+
+    setActive(settingsBtn);
+
+});
+
+changePasswordBtn.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    showPage("settings");
+
+    profileDropdown.style.display = "none";
+
+    setActive(settingsBtn);
+
+    alert("Later this will automatically open the Change Password section.");
+
+});
+
+/* ==========================
+   Global Search
+========================== */
+
+const globalSearch =
+document.getElementById("globalSearch");
+
+globalSearch.addEventListener("keyup", function(){
+
+    const value =
+    this.value.toLowerCase();
+
+    // Doctors Page
+    if(pages.doctors.style.display === "block"){
+
+        const rows =
+        document.querySelectorAll("#doctorTableBody tr");
+
+        rows.forEach(row=>{
+
+            const text =
+            row.innerText.toLowerCase();
+
+            row.style.display =
+            text.includes(value)
+            ? ""
+            : "none";
+
+        });
+
+    }
+
+});
+
+/* ==========================
+   View All Appointments
+========================== */
+
+const viewAllAppointmentsBtn =
+document.getElementById("viewAllAppointmentsBtn");
+
+if(viewAllAppointmentsBtn){
+
+    viewAllAppointmentsBtn.addEventListener("click", function(){
+
+        appointmentsBtn.click();
+
+    });
+
+}
+
+/* ==========================
+   Quick Actions
+========================== */
+
+document.getElementById("quickAddDoctor")
+.addEventListener("click", function(){
+
+    addDoctorBtn.click();
+
+});
+
+document.getElementById("quickAppointments")
+.addEventListener("click", function(){
+
+    appointmentsBtn.click();
+
+});
+
+document.getElementById("quickReports")
+.addEventListener("click", function(){
+
+    reportsBtn.click();
+
+});
+
+document.getElementById("quickSettings")
+.addEventListener("click", function(){
+
+    settingsBtn.click();
+
+});
+
+/* ==========================
+   Footer Navigation
+========================== */
+
+document.getElementById("footerDashboard")
+.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    dashboardBtn.click();
+
+});
+
+document.getElementById("footerDoctors")
+.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    doctorsBtn.click();
+
+});
+
+document.getElementById("footerPatients")
+.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    patientsBtn.click();
+
+});
+
+document.getElementById("footerAppointments")
+.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    appointmentsBtn.click();
+
+});
+
+document.getElementById("footerReports")
+.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    reportsBtn.click();
+
+});
+
+document.getElementById("footerSettings")
+.addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    settingsBtn.click();
+
+});
