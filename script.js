@@ -894,6 +894,22 @@ setInterval(() => {
 // ==========================================================================
 function initFormProcessors() {
     const loginForm = document.getElementById("login-form");
+    const roleSelect = document.getElementById("login-role");
+
+if (roleSelect) {
+
+    roleSelect.addEventListener("change", function () {
+
+        if(this.value === "admin"){
+
+            window.location.href = "admin-dashboard/admin.html";
+
+        }
+
+    });
+
+}
+    
     if (loginForm) {
         loginForm.addEventListener("submit", (e) => {
             e.preventDefault(); 
@@ -904,6 +920,25 @@ function initFormProcessors() {
             } else {
                 const email = document.getElementById("login-id").value;
                 const password = document.getElementById("login-password").value;
+                const role = document.getElementById("login-role").value;
+
+                /* =====================
+   Admin Login
+===================== */
+
+// if(role === "admin"){
+
+//     window.location.href = "admin-dashboard/admin.html";
+
+//     return;
+
+// }
+
+/* ==========================
+   Role Redirect
+========================== */
+
+
 
                 const doctor = DOCTORS.find(
                     d => d.email.toLowerCase() === email.toLowerCase() &&
