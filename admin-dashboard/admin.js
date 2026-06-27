@@ -434,7 +434,7 @@ changePasswordBtn.addEventListener("click", function(e){
 
     setActive(settingsBtn);
 
-    alert("Later this will automatically open the Change Password section.");
+    
 
 });
 
