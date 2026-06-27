@@ -253,7 +253,10 @@
       <a href="#how-it-works">How it works</a>
       <a href="#contact">Contact Us</a>
     </div>
-    <div class="nav-cta"><button class="btn btn-primary">Sign in</button></div>
+    <div class="nav-cta">
+      <button class="btn btn-primary" onclick="goToLogin()">
+          Sign in
+      </button>
   </div>
 </nav>
 
@@ -445,6 +448,9 @@
     const hv = document.getElementById('heroVisual');
     if(hv) hv.style.transform = `translate(${x}px, ${y}px)`;
   });
+  function goToLogin() {
+    window.location.href = "login.html";
+}
 </script>
 </body>
 </html>
