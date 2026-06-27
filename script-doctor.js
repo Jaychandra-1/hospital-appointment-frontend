@@ -1,1686 +1,1539 @@
 // ==========================================================================
-// CORE DATA ISOLATION SCHEMAS & UTILITIES
+// CORE APP STATE MEMORY INTERFACES & PREDEFINED DATASETS
 // ==========================================================================
+function getRelativeDate(daysOffset) {
+  const date = new Date();
+  date.setDate(date.getDate() + daysOffset);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
 
-const SAMPLE_DOCTORS = [
-    {
-      id: "DOC101",
-      email: "aruna@mediconnect.com",
-      password: "1234",
-      name: "Dr. Aruna",
-      department: "Cardiology",
-      specialization: "Interventional Cardiology",
-      qualification: "MBBS, MD, DM (Cardiology)",
-      experience: "12 Years",
-      fee: 1000,
-      phone: "+91 98765 43210",
-      address: "Block A, Room 302, Mediconnect Hospital, Cityville",
-      photo: "https://images.unsplash.com/photo-1594824813573-246434de83fb?auto=format&fit=crop&q=80&w=240"
-    },
-    {
-      id: "DOC102",
-      email: "bharath@mediconnect.com",
-      password: "1234",
-      name: "Dr. Bharath",
-      department: "Neurology",
-      specialization: "Neurodegenerative Disorders",
-      qualification: "MBBS, MD, MCh (Neurology)",
-      experience: "10 Years",
-      fee: 1200,
-      phone: "+91 98765 43211",
-      address: "Block B, Room 405, Mediconnect Hospital, Cityville",
-      photo: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=240"
-    },
-    {
-      id: "DOC103",
-      email: "kavya@mediconnect.com",
-      password: "1234",
-      name: "Dr. Kavya",
-      department: "Orthopedics",
-      specialization: "Sports Medicine & Joint Replacements",
-      qualification: "MBBS, MS (Orthopedics)",
-      experience: "8 Years",
-      fee: 800,
-      phone: "+91 98765 43212",
-      address: "Block C, Room 101, Mediconnect Hospital, Cityville",
-      photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=240"
-    }
-  ];
+const DOCTORS = [
+  { name: "Dr. Aruna", email: "aruna@mediconnect.com", password: "aruna123", department: "Cardiology", experience: "15 Years", fee: 800, phone: "+91 9876543210" },
+  { name: "Dr. Saniya", email: "saniya@mediconnect.com", password: "saniya123", department: "Neurology", experience: "12 Years", fee: 900, phone: "+91 9876543211" },
+  { name: "Dr. Bharath", email: "bharath@mediconnect.com", password: "bharath123", department: "Orthopedics", experience: "18 Years", fee: 1000, phone: "+91 9876543212" },
+  { name: "Dr. Jayachandhra", email: "jayachandhra@mediconnect.com", password: "jaya123", department: "Ophthalmology", experience: "14 Years", fee: 700, phone: "+91 9876543213" },
+  { name: "Dr. Sruthi", email: "sruthi@mediconnect.com", password: "sruthi123", department: "Pediatrics", experience: "10 Years", fee: 600, phone: "+91 9876543214" },
+  { name: "Dr. Sreedhar", email: "sreedhar@mediconnect.com", password: "sreedhar123", department: "Dentistry", experience: "16 Years", fee: 850, phone: "+91 9876543215" }
+];
+
+let CURRENT_DOCTOR = DOCTORS[0]; // Set default loaded doctor
+
+let APPOINTMENTS_DATA = [
+  // Cardiology (Dr. Aruna)
+  { id: "APT-201", patientName: "Jane Doe", age: 29, gender: "Female", date: getRelativeDate(0), time: "09:00 AM", department: "Cardiology", status: "Pending", priority: "Urgent", complaint: "Acute chest palpitations accompanied by localized shortness of breath." },
+  { id: "APT-202", patientName: "John Smith", age: 45, gender: "Male", date: getRelativeDate(0), time: "10:30 AM", department: "Cardiology", status: "Confirmed", priority: "Follow-up", complaint: "Routine follow-up regarding post-op healing tracking metrics." },
+  { id: "APT-205", patientName: "Sarah Wilson", age: 28, gender: "Female", date: getRelativeDate(0), time: "02:30 PM", department: "Cardiology", status: "Confirmed", priority: "Routine", complaint: "General cardiac health screening profile." },
+  { id: "APT-208", patientName: "James Taylor", age: 39, gender: "Male", date: getRelativeDate(1), time: "09:00 AM", department: "Cardiology", status: "Pending", priority: "Follow-up", complaint: "Blood pressure monitor recalibration check." },
+
+  // Neurology (Dr. Saniya)
+  { id: "APT-204", patientName: "Michael Brown", age: 52, gender: "Male", date: getRelativeDate(0), time: "01:00 PM", department: "Neurology", status: "Completed", priority: "Follow-up", complaint: "Migraine medication review and adjustment session." },
+  { id: "APT-209", patientName: "Patricia Anderson", age: 55, gender: "Female", date: getRelativeDate(1), time: "10:00 AM", department: "Neurology", status: "Confirmed", priority: "Urgent", complaint: "Sudden onset localized numbness in the left arm." },
+  { id: "APT-301", patientName: "Alice Miller", age: 62, gender: "Female", date: getRelativeDate(0), time: "09:30 AM", department: "Neurology", status: "Pending", priority: "Urgent", complaint: "Frequent memory lapses and confusion spells." },
+
+  // Orthopedics (Dr. Bharath)
+  { id: "APT-206", patientName: "Robert Johnson", age: 61, gender: "Male", date: getRelativeDate(0), time: "04:00 PM", department: "Orthopedics", status: "Pending", priority: "Urgent", complaint: "Severe acute knee joint inflammation and restricted mobility." },
+  { id: "APT-210", patientName: "David Thomas", age: 41, gender: "Male", date: getRelativeDate(1), time: "11:30 AM", department: "Orthopedics", status: "Pending", priority: "Routine", complaint: "Chronic lower back pain assessment." },
+  { id: "APT-302", patientName: "Kevin Vance", age: 35, gender: "Male", date: getRelativeDate(0), time: "11:00 AM", department: "Orthopedics", status: "Confirmed", priority: "Follow-up", complaint: "Post-fracture plaster removal and physical therapy planning." },
+
+  // Ophthalmology (Dr. Jayachandhra)
+  { id: "APT-303", patientName: "Grace Hopper", age: 70, gender: "Female", date: getRelativeDate(0), time: "10:00 AM", department: "Ophthalmology", status: "Confirmed", priority: "Routine", complaint: "Progressive blurry vision and cataract screening." },
+  { id: "APT-304", patientName: "Alan Turing", age: 42, gender: "Male", date: getRelativeDate(0), time: "01:30 PM", department: "Ophthalmology", status: "Pending", priority: "Urgent", complaint: "Foreign object entry in right eye with severe redness." },
+  { id: "APT-305", patientName: "Ada Lovelace", age: 28, gender: "Female", date: getRelativeDate(1), time: "03:00 PM", department: "Ophthalmology", status: "Completed", priority: "Follow-up", complaint: "Post-LASIK healing evaluation check." },
+
+  // Pediatrics (Dr. Sruthi)
+  { id: "APT-207", patientName: "Laura Martinez", age: 8, gender: "Female", date: getRelativeDate(0), time: "05:15 PM", department: "Pediatrics", status: "Cancelled", priority: "Routine", complaint: "Seasonal viral fever and persistent cough." },
+  { id: "APT-212", patientName: "William White", age: 12, gender: "Male", date: getRelativeDate(2), time: "03:45 PM", department: "Pediatrics", status: "Completed", priority: "Routine", complaint: "Scheduled structural vaccination series." },
+  { id: "APT-306", patientName: "Billy Kid", age: 5, gender: "Male", date: getRelativeDate(0), time: "02:00 PM", department: "Pediatrics", status: "Pending", priority: "Urgent", complaint: "Acute abdominal pain and vomiting." },
+
+  // Dentistry (Dr. Sreedhar)
+  { id: "APT-307", patientName: "Steve Rogers", age: 33, gender: "Male", date: getRelativeDate(0), time: "09:00 AM", department: "Dentistry", status: "Pending", priority: "Urgent", complaint: "Severe wisdom tooth pain and gum swelling." },
+  { id: "APT-308", patientName: "Tony Stark", age: 48, gender: "Male", date: getRelativeDate(0), time: "10:30 AM", department: "Dentistry", status: "Confirmed", priority: "Routine", complaint: "Dental scaling and routine oral hygiene check." },
+  { id: "APT-309", patientName: "Bruce Banner", age: 51, gender: "Male", date: getRelativeDate(1), time: "02:00 PM", department: "Dentistry", status: "Completed", priority: "Follow-up", complaint: "Root canal therapy second sitting." }
+];
+
+let SCHEDULE_DATA = [
+  { id: 1, day: "Mondays", time: "09:00 AM - 12:00 PM" },
+  { id: 2, day: "Wednesdays", time: "01:00 PM - 04:00 PM" },
+  { id: 3, day: "Fridays", time: "05:00 PM - 08:00 PM" }
+];
+
+let LEAVE_DATA = [
+  { id: 101, type: "Medical Leave", start: getRelativeDate(3), end: getRelativeDate(4), format: "multiple", reason: "Minor procedure and recovery.", emergency: false, status: "Approved" },
+  { id: 102, type: "Family Emergency", start: getRelativeDate(12), end: getRelativeDate(12), format: "single", reason: "Family matter requires immediate attention.", emergency: true, status: "Approved" },
+  { id: 103, type: "Conference / Training", start: getRelativeDate(20), end: getRelativeDate(22), format: "multiple", reason: "Attending annual cardiology symposium.", emergency: false, status: "Pending" }
+];
+
+const DOCTOR_REVIEWS = {
+  "aruna@mediconnect.com": {
+      avgRating: "4.9/5",
+      totalCount: "48 reviews",
+      satisfaction: "98%",
+      list: [
+          { name: "Amit S.", rating: 5, date: "June 25, 2026", text: "Dr. Aruna is extremely professional and polite. She listened to all my cardiac concerns patiently and explained the treatment workflow very clearly." },
+          { name: "Priya R.", rating: 5, date: "June 23, 2026", text: "Outstanding doctor! Her diagnosis of my mother's hypertension was highly accurate. Punctuality is great." },
+          { name: "Vikram K.", rating: 4, date: "June 20, 2026", text: "Very knowledgeable cardiologist. The consultation was detail-oriented. Clean clinic environment." },
+          { name: "Sneha D.", rating: 5, date: "June 18, 2026", text: "Excellent experience. She makes you feel very comfortable and explains everything in simple terms. Highly recommended!" }
+      ]
+  },
+  "saniya@mediconnect.com": {
+      avgRating: "4.8/5",
+      totalCount: "36 reviews",
+      satisfaction: "96%",
+      list: [
+          { name: "Rahul M.", rating: 5, date: "June 24, 2026", text: "Dr. Saniya is a wonderful neurologist. She treated my chronic migraine issues with great care. Very detailed explanation." },
+          { name: "Aditi G.", rating: 4, date: "June 22, 2026", text: "Very friendly and analytical. Helped resolve my sleep apnea queries and recommended a highly effective treatment plan." },
+          { name: "Rohan V.", rating: 5, date: "June 19, 2026", text: "Excellent medical knowledge and communication. She answered all my neurological health queries with utmost professionalism." },
+          { name: "Meera J.", rating: 5, date: "June 15, 2026", text: "She is extremely patient-centric. Her calm behavior and thorough diagnosis gave me great confidence during my recovery." }
+      ]
+  },
+  "bharath@mediconnect.com": {
+      avgRating: "4.9/5",
+      totalCount: "52 reviews",
+      satisfaction: "97%",
+      list: [
+          { name: "Suresh P.", rating: 5, date: "June 25, 2026", text: "Dr. Bharath is an exceptional orthopedist. My knee pain has significantly reduced after following his rehabilitation plan." },
+          { name: "Kiran S.", rating: 5, date: "June 21, 2026", text: "Highly professional orthopedic specialist. He explains the root cause of bone fractures and joints issues wonderfully." },
+          { name: "Deepa N.", rating: 4, date: "June 18, 2026", text: "Very good experience. He is punctual, professional, and provides highly practical advice regarding physical therapy." },
+          { name: "Arjun T.", rating: 5, date: "June 14, 2026", text: "Painless joint treatment! Excellent surgical guidance and post-op follow-up care. A truly reliable doctor." }
+      ]
+  },
+  "jayachandhra@mediconnect.com": {
+      avgRating: "4.7/5",
+      totalCount: "29 reviews",
+      satisfaction: "94%",
+      list: [
+          { name: "Gopal C.", rating: 5, date: "June 24, 2026", text: "Dr. Jayachandhra is a brilliant ophthalmologist. My cataract surgery went very smoothly. Exceptional precision and care." },
+          { name: "Lata K.", rating: 4, date: "June 22, 2026", text: "Good eye checkup experience. He prescribed correct spectacles power and gave excellent advice for dry eyes." },
+          { name: "Vijay D.", rating: 5, date: "June 17, 2026", text: "Very thorough examination of retina. He is highly patient, answering all questions about laser treatment clearly." },
+          { name: "Anjali S.", rating: 5, date: "June 14, 2026", text: "Very friendly and expert doctor. The clinic staff is also extremely helpful and well-organized." }
+      ]
+  },
+  "sruthi@mediconnect.com": {
+      avgRating: "4.8/5",
+      totalCount: "42 reviews",
+      satisfaction: "95%",
+      list: [
+          { name: "Ramesh B.", rating: 5, date: "June 25, 2026", text: "Dr. Sruthi is wonderful with children. My daughter felt very comfortable during her vaccination. Very gentle and patient." },
+          { name: "Nisha T.", rating: 5, date: "June 22, 2026", text: "She is highly caring and comforting. Explains baby nutrition and growth parameters in a very detailed manner." },
+          { name: "Karthik P.", rating: 4, date: "June 19, 2026", text: "Excellent pediatrician. Quick diagnosis of viral fever and very responsive to follow-up texts." },
+          { name: "Swati R.", rating: 5, date: "June 15, 2026", text: "Highly recommend Dr. Sruthi for any pediatric needs. Her friendly behavior immediately calms anxious children." }
+      ]
+  },
+  "sreedhar@mediconnect.com": {
+      avgRating: "4.9/5",
+      totalCount: "50 reviews",
+      satisfaction: "98%",
+      list: [
+          { name: "Manish K.", rating: 5, date: "June 24, 2026", text: "Dr. Sreedhar is an excellent dentist. My root canal was completely painless! Very advanced equipment and hygiene." },
+          { name: "Ritu A.", rating: 5, date: "June 21, 2026", text: "Exceptional scaling and cleaning service. He explains tooth care tips very thoroughly. Very punctual." },
+          { name: "Harish G.", rating: 4, date: "June 19, 2026", text: "Highly professional dentistry. Took great care in matching the crown color during my implant restoration." },
+          { name: "Pooja V.", rating: 5, date: "June 16, 2026", text: "Very gentle extraction process. He makes sure the patient is comfortable and explains post-op precautions clearly." }
+      ]
+  }
+};
+
+let SELECTED_APPOINTMENT_ID = null;
+let CURRENT_DASHBOARD_FILTER = 'today';
+let IS_AVAILABLE_TODAY = true;
+
+let currentDateRender = new Date(); 
+
+const departmentQuotes = {
+"Cardiology": "Every heartbeat you protect brings hope to another family.",
+"Neurology": "Your expertise restores clarity and confidence to every patient.",
+"Pediatrics": "Your care shapes healthier futures for the next generation.",
+"Orthopedics": "Every step a patient takes begins with your dedication.",
+"Ophthalmology": "Helping patients see the beauty of the world with clear vision.",
+"Dentistry": "Brightening lives one healthy smile at a time."
+};
+
+const departmentIcons = {
+"Cardiology": "bi-capsule", // Fallback only, Cardiology dynamic banner renders the logo
+"Neurology": "bi-activity",
+"Pediatrics": "bi-emoji-smile-fill",
+"Orthopedics": "bi-person-standing",
+"Ophthalmology": "bi-eye-fill",
+"Dentistry": "bi-tooth"
+};
+
+let statusChartInstance = null;
+let weeklyChartInstance = null;
+let departmentChartInstance = null;
+
+// ==========================================================================
+// PORTAL INITIALIZATION & ROUTING ROUTINES
+// ==========================================================================
+document.addEventListener("DOMContentLoaded", () => {
+  // Render floating background particles on load (using non-heart/non-cross icons)
+  const bgfx = document.getElementById('login-bg-fx');
+  if (bgfx) {
+      bgfx.innerHTML = "";
+      const iconList = ['bi-dna', 'bi-stethoscope', 'bi-capsule', 'bi-virus', 'bi-capsule-pill', 'bi-thermometer-half', 'bi-bandaid', 'bi-prescription2'];
+      for(let i=0; i<30; i++) {
+          const icon = document.createElement('i');
+          const randomIcon = iconList[Math.floor(Math.random() * iconList.length)];
+          icon.className = `float-ic bi ${randomIcon}`;
+          icon.style.left = Math.random() * 100 + '%';
+          icon.style.top = Math.random() * 100 + '%';
+          icon.style.animationDelay = (Math.random() * 8) + 's';
+          icon.style.animationDuration = (8 + Math.random() * 10) + 's';
+          icon.style.fontSize = (14 + Math.random() * 20) + 'px';
+          bgfx.appendChild(icon);
+      }
+  }
+
+  const sidebar = document.getElementById("sidebar");
+  const toggleBtn = document.getElementById("sidebar-toggle");
+  const closeBtn = document.getElementById("sidebar-close");
   
-  // Helper to calculate offset date strings
-  function getOffsetDateString(daysOffset) {
-    const date = new Date();
-    date.setDate(date.getDate() + daysOffset);
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
+  if (toggleBtn && sidebar) {
+      toggleBtn.addEventListener("click", () => sidebar.classList.toggle("open"));
+  }
+  if (closeBtn && sidebar) {
+      closeBtn.addEventListener("click", () => sidebar.classList.remove("open"));
+  }
+
+  const searchInput = document.getElementById("appointmentSearch");
+  if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+          const term = e.target.value.toLowerCase();
+          const filtered = APPOINTMENTS_DATA.filter(apt => apt.patientName.toLowerCase().includes(term));
+          renderAppointmentsTable(filtered);
+      });
+  }
+
+  const dashboardSearchInput = document.getElementById("dashboardAppointmentSearch");
+  if (dashboardSearchInput) {
+      dashboardSearchInput.addEventListener("input", (e) => {
+          renderTodaysAppointments(e.target.value);
+      });
+  }
+
+  const availToggle = document.getElementById("availabilityToggle");
+  if (availToggle) {
+      availToggle.addEventListener("change", (e) => {
+          IS_AVAILABLE_TODAY = e.target.checked;
+          updateAvailabilityToggle();
+      });
+  }
+
+  document.addEventListener('click', (e) => {
+      const panel = document.getElementById('profile-dropdown-panel');
+      const toggle = document.getElementById('nav-profile-toggle');
+      if (panel && !panel.classList.contains('d-none')) {
+          if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+              panel.classList.add('d-none');
+          }
+      }
+  });
+
+  // Check remember me pre-fill
+  const savedEmail = localStorage.getItem("remember_email");
+  const savedPassword = localStorage.getItem("remember_password");
+  if (savedEmail && savedPassword) {
+      const idInput = document.getElementById("login-id");
+      const pwInput = document.getElementById("login-password");
+      const remCheck = document.getElementById("rememberMe");
+      if (idInput) idInput.value = savedEmail;
+      if (pwInput) pwInput.value = savedPassword;
+      if (remCheck) remCheck.checked = true;
+  }
+
+  initNavigationListeners();
+  initFormProcessors();
+  loadProfile(); 
+  
+  renderAppointmentsTable(APPOINTMENTS_DATA);
+  renderScheduleTable();
+  updateDashboardGreeting();
+  updateDashboardStats();
+  renderTodaysAppointments();
+  renderDoctorReviews();
+  
+  renderMonthlyCalendar();
+  
+  // Photo Upload Listener
+  const photoUpload = document.getElementById('profile-photo-upload');
+  if (photoUpload) {
+      photoUpload.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = function(event) {
+                  const dataUrl = event.target.result;
+                  localStorage.setItem('doctorProfilePhoto_' + CURRENT_DOCTOR.email, dataUrl);
+                  updateProfilePhotoUI(dataUrl);
+                  const removePhotoContainer = document.getElementById('remove-photo-container');
+                  if (removePhotoContainer) removePhotoContainer.classList.remove('d-none');
+              };
+              reader.readAsDataURL(file);
+          }
+      });
+  }
+
+  // Remove Photo Listener
+  const btnRemovePhoto = document.getElementById('btn-remove-photo');
+  if (btnRemovePhoto) {
+      btnRemovePhoto.addEventListener('click', function() {
+          localStorage.removeItem('doctorProfilePhoto_' + CURRENT_DOCTOR.email);
+          const photoUpload = document.getElementById('profile-photo-upload');
+          if (photoUpload) photoUpload.value = "";
+          loadProfile();
+          showToast('Profile Photo Removed Successfully');
+      });
+  }
+});
+
+function initNavigationListeners() {
+  document.querySelectorAll("[data-view]").forEach(anchor => {
+      anchor.addEventListener("click", (e) => {
+          e.preventDefault();
+          const targetedViewId = anchor.getAttribute("data-view");
+          switchView(targetedViewId);
+          
+          const sidebar = document.getElementById("sidebar");
+          if (sidebar) sidebar.classList.remove("open"); 
+      });
+  });
+}
+
+function switchView(viewId) {
+  document.querySelectorAll(".app-view").forEach(view => view.classList.add("d-none"));
+  
+  const activeSection = document.getElementById(`view-${viewId}`);
+  if (activeSection) activeSection.classList.remove("d-none");
+
+  document.querySelectorAll("[data-view]").forEach(anchor => {
+      if(anchor.getAttribute("data-view") === viewId) {
+          anchor.classList.add("active");
+      } else {
+          anchor.classList.remove("active");
+      }
+  });
+
+  if (viewId === "dashboard") {
+      updateDashboardGreeting();
+      updateDashboardStats();
+      renderTodaysAppointments();
+      renderDoctorReviews();
   }
   
-  // Default Data Templates per Doctor
-  const DEFAULT_DOC_DATA = {
-    "DOC101": {
-      appointments: [
-        { id: "APT-101", patientName: "Jane Doe", age: 45, gender: "Female", bloodGroup: "O+", contact: "+91 99999 88888", date: getOffsetDateString(0), time: "09:00 AM", priority: "Urgent", status: "Pending", complaint: "Sudden chest tightness and heart palpitations.", history: "Mild hypertension managed with Amlodipine 5mg.", symptoms: "", diagnosis: "", prescription: "", followup: "", treatment: "" },
-        { id: "APT-102", patientName: "John Smith", age: 62, gender: "Male", bloodGroup: "A+", contact: "+91 88888 77777", date: getOffsetDateString(0), time: "10:30 AM", priority: "Routine", status: "Confirmed", complaint: "Regular post-angioplasty recovery evaluation.", history: "Coronary Artery Bypass Graft (CABG) in 2024.", symptoms: "", diagnosis: "", prescription: "", followup: "", treatment: "" },
-        { id: "APT-103", patientName: "Sarah Lee", age: 35, gender: "Female", bloodGroup: "B+", contact: "+91 77777 66666", date: getOffsetDateString(0), time: "11:45 AM", priority: "Follow-up", status: "Completed", complaint: "Review of 24-hour Holter monitoring reports.", history: "No other significant history.", symptoms: "Palpitations during exercise", diagnosis: "Sinus Tachycardia - benign", prescription: "Tab. Propranolol 10mg - BD x 14 Days", followup: "Repeat holter in 3 months", treatment: "Reduce caffeine intake, daily cardio exercises" },
-        { id: "APT-104", patientName: "Robert Chang", age: 58, gender: "Male", bloodGroup: "O-", contact: "+91 66666 55555", date: getOffsetDateString(-1), time: "02:00 PM", priority: "Urgent", status: "Completed", complaint: "Severe dizziness and racing heartbeats.", history: "Type 2 Diabetes Mellitus.", symptoms: "Lightheadedness, irregular heartbeats", diagnosis: "Paroxysmal Atrial Fibrillation", prescription: "Tab. Metoprolol 25mg - Daily\nTab. Apixaban 5mg - BD", followup: "Cardiology review in 2 weeks with ECG reports", treatment: "Low sodium diet, strict glucose regulation" },
-        { id: "APT-105", patientName: "Emily Stone", age: 50, gender: "Female", bloodGroup: "AB+", contact: "+91 55555 44444", date: getOffsetDateString(1), time: "10:00 AM", priority: "Routine", status: "Confirmed", complaint: "Hypertension medication review.", history: "Chronic hypertension x 5 years.", symptoms: "", diagnosis: "", prescription: "", followup: "", treatment: "" }
-      ],
-      schedule: [
-        { id: "S1", day: "Monday", time: "09:00 AM - 12:00 PM" },
-        { id: "S2", day: "Wednesday", time: "01:00 PM - 04:00 PM" },
-        { id: "S3", day: "Friday", time: "05:00 PM - 08:00 PM" }
-      ],
-      leaves: [
-        { id: "L1", type: "Medical Leave", start: getOffsetDateString(2), end: getOffsetDateString(2), format: "single", reason: "Minor dental extraction recovery.", emergency: false, status: "Approved" },
-        { id: "L2", type: "Conference / Seminar", start: getOffsetDateString(10), end: getOffsetDateString(12), format: "multiple", reason: "Attending International Cardiology Summit.", emergency: false, status: "Approved" }
-      ],
-      reviews: [
-        { name: "Jane Doe", rating: 5, review: "Excellent doctor! Dr. Aruna is highly patient, thoroughly explained my ECG metrics, and eased my anxiety.", date: getOffsetDateString(-2), doctor: "Dr. Aruna" },
-        { name: "Sarah Lee", rating: 4, review: "Very skilled practitioner. Clinic scheduling was a bit delayed, but the consultation was highly satisfactory.", date: getOffsetDateString(-5), doctor: "Dr. Aruna" },
-        { name: "Robert Chang", rating: 5, review: "Highly professional. Her immediate treatment of my atrial fibrillation was life-saving.", date: getOffsetDateString(-8), doctor: "Dr. Aruna" }
-      ],
-      salary: [
-        { month: "May 2026", base: 180000, bonuses: 12000, deductions: 5000, status: "Transferred" },
-        { month: "April 2026", base: 180000, bonuses: 15000, deductions: 5000, status: "Transferred" },
-        { month: "March 2026", base: 180000, bonuses: 8000, deductions: 5000, status: "Transferred" }
-      ],
-      availability: true
-    },
-    "DOC102": {
-      appointments: [
-        { id: "APT-201", patientName: "Arthur Dent", age: 42, gender: "Male", bloodGroup: "B-", contact: "+91 99999 11111", date: getOffsetDateString(0), time: "09:30 AM", priority: "Urgent", status: "Confirmed", complaint: "Frequent severe migraines accompanied by visual aura.", history: "History of episodic tension headaches.", symptoms: "", diagnosis: "", prescription: "", followup: "", treatment: "" },
-        { id: "APT-202", patientName: "Clara Oswald", age: 28, gender: "Female", bloodGroup: "A-", contact: "+91 88888 22222", date: getOffsetDateString(0), time: "11:00 AM", priority: "Routine", status: "Pending", complaint: "Persistent tremors in right index finger.", history: "No relevant medical history.", symptoms: "", diagnosis: "", prescription: "", followup: "", treatment: "" },
-        { id: "APT-203", patientName: "Bruce Wayne", age: 38, gender: "Male", bloodGroup: "O+", contact: "+91 77777 33333", date: getOffsetDateString(-1), time: "04:00 PM", priority: "Urgent", status: "Completed", complaint: "Chronic sleep deprivation and recurring post-trauma headaches.", history: "Multiple mild concussions, active physical lifestyle.", symptoms: "Insomnia, memory fog, occipital headaches", diagnosis: "Post-Concussion Syndrome & Chronic Fatigue", prescription: "Tab. Melatonin 5mg - Bedtime\nTab. Amitriptyline 10mg - Nocturnal x 30 Days", followup: "Repeat evaluation in 4 weeks", treatment: "Cognitive rest protocol, avoid screen exposure before sleep" },
-        { id: "APT-204", patientName: "Diana Prince", age: 31, gender: "Female", bloodGroup: "AB-", contact: "+91 66666 44444", date: getOffsetDateString(1), time: "09:00 AM", priority: "Follow-up", status: "Confirmed", complaint: "Post-concussion reflex and cranial nerve check.", history: "Recent fall during training.", symptoms: "", diagnosis: "", prescription: "", followup: "", treatment: "" }
-      ],
-      schedule: [
-        { id: "S4", day: "Tuesday", time: "10:00 AM - 01:00 PM" },
-        { id: "S5", day: "Thursday", time: "02:00 PM - 05:00 PM" }
-      ],
-      leaves: [
-        { id: "L3", type: "Vacation Leave", start: getOffsetDateString(5), end: getOffsetDateString(7), format: "multiple", reason: "Family trip.", emergency: false, status: "Approved" }
-      ],
-      reviews: [
-        { name: "Arthur Dent", rating: 5, review: "Dr. Bharath is brilliant. His migraine treatment plan changed my life completely.", date: getOffsetDateString(-3), doctor: "Dr. Bharath" },
-        { name: "Bruce Wayne", rating: 4, review: "Competent, direct, and provided solid neurological advice. Very professional.", date: getOffsetDateString(-6), doctor: "Dr. Bharath" }
-      ],
-      salary: [
-        { month: "May 2026", base: 190000, bonuses: 9000, deductions: 6000, status: "Transferred" },
-        { month: "April 2026", base: 190000, bonuses: 11000, deductions: 6000, status: "Transferred" }
-      ],
-      availability: true
-    },
-    "DOC103": {
-      appointments: [
-        { id: "APT-301", patientName: "Peter Parker", age: 21, gender: "Male", bloodGroup: "A+", contact: "+91 99999 55555", date: getOffsetDateString(0), time: "10:00 AM", priority: "Urgent", status: "Confirmed", complaint: "Sprained left wrist from physical exertion.", history: "Ligament strain in ankle in 2023.", symptoms: "", diagnosis: "", prescription: "", followup: "", treatment: "" },
-        { id: "APT-302", patientName: "Mary Jane", age: 26, gender: "Female", bloodGroup: "B+", contact: "+91 88888 66666", date: getOffsetDateString(-1), time: "12:00 PM", priority: "Routine", status: "Completed", complaint: "Follow-up on ankle fracture recovery.", history: "Lateral malleolus fracture 8 weeks ago.", symptoms: "Mild localized swelling, post-activity stiffness", diagnosis: "Healing lateral malleolus fibular fracture", prescription: "Tab. Calcium + Vitamin D3 - Daily x 30 Days", followup: "Physiotherapy review in 4 weeks", treatment: "Begin ankle mobilization training, wear support brace" },
-        { id: "APT-303", patientName: "Steve Rogers", age: 99, gender: "Male", bloodGroup: "O+", contact: "+91 77777 77777", date: getOffsetDateString(-2), time: "11:00 AM", priority: "Follow-up", status: "Completed", complaint: "Chronic right shoulder joint stiffness.", history: "Old injury, osteoarthritis changes.", symptoms: "Restricted range of motion, nocturnal pain", diagnosis: "Adhesive Capsulitis (Frozen Shoulder) & Osteoarthritis", prescription: "Inj. Methylprednisolone (intra-articular, administered)\nTab. Etoricoxib 90mg - Daily PRN", followup: "Review in 3 weeks for mobility audit", treatment: "Daily active stretching exercises, physiotherapy" },
-        { id: "APT-304", patientName: "Tony Stark", age: 48, gender: "Male", bloodGroup: "A-", contact: "+91 66666 88888", date: getOffsetDateString(1), time: "02:00 PM", priority: "Urgent", status: "Confirmed", complaint: "Acute left knee pain and joint swelling.", history: "Gouty arthritis, meniscus tear surgery 2022.", symptoms: "", diagnosis: "", prescription: "", followup: "", treatment: "" }
-      ],
-      schedule: [
-        { id: "S6", day: "Tuesday", time: "09:00 AM - 01:00 PM" },
-        { id: "S7", day: "Wednesday", time: "09:00 AM - 01:00 PM" },
-        { id: "S8", day: "Thursday", time: "10:00 AM - 02:00 PM" }
-      ],
-      leaves: [
-        { id: "L4", type: "Family Emergency", start: getOffsetDateString(1), end: getOffsetDateString(1), format: "single", reason: "Family health urgency.", emergency: true, status: "Approved" }
-      ],
-      reviews: [
-        { name: "Peter Parker", rating: 5, review: "Great orthopedician! She wrapped my wrist quickly and explained stretching procedures.", date: getOffsetDateString(-1), doctor: "Dr. Kavya" },
-        { name: "Steve Rogers", rating: 5, review: "Dr. Kavya is highly professional. The joint treatment significantly restored my shoulder movement.", date: getOffsetDateString(-4), doctor: "Dr. Kavya" }
-      ],
-      salary: [
-        { month: "May 2026", base: 170000, bonuses: 14000, deductions: 4000, status: "Transferred" },
-        { month: "April 2026", base: 170000, bonuses: 12000, deductions: 4000, status: "Transferred" }
-      ],
-      availability: true
-    }
+  if (viewId === "schedule") {
+      renderMonthlyCalendar();
+  }
+
+  if (viewId === "analytics") {
+      renderAnalytics();
+  }
+}
+
+// ==========================================================================
+// DYNAMIC EDITABLE PROFILE & DROPDOWN LOGIC
+// ==========================================================================
+function updateGlobalProfileUI() {
+  const nameInput = document.getElementById('prof-name');
+  const deptInput = document.getElementById('prof-domain');
+  const expInput = document.getElementById('prof-exp');
+  const emailInput = document.getElementById('prof-email');
+  const phoneInput = document.getElementById('prof-phone');
+
+  const name = nameInput ? nameInput.value : CURRENT_DOCTOR.name;
+  const dept = deptInput ? deptInput.value : CURRENT_DOCTOR.department;
+  const exp = expInput ? expInput.value : CURRENT_DOCTOR.experience;
+  const email = emailInput ? emailInput.value : CURRENT_DOCTOR.email;
+  const phone = phoneInput ? phoneInput.value : '+91 9876543210';
+
+  const navName = document.getElementById('nav-doc-name');
+  const navDept = document.getElementById('nav-doc-dept');
+  if(navName) navName.innerText = name;
+  if(navDept) navDept.innerText = dept;
+
+  const dropName = document.getElementById('drop-name');
+  const dropDept = document.getElementById('drop-dept');
+  const dropExp = document.getElementById('drop-exp');
+  const dropEmail = document.getElementById('drop-email');
+  const dropPhone = document.getElementById('drop-phone');
+  if(dropName) dropName.innerText = name;
+  if(dropDept) dropDept.innerText = dept;
+  if(dropExp) dropExp.innerText = exp;
+  if(dropEmail) dropEmail.innerText = email;
+  if(dropPhone) dropPhone.innerText = phone;
+
+  const displayName = document.getElementById('display-name');
+  const displayDomain = document.getElementById('display-domain');
+  if(displayName) displayName.innerText = name;
+  
+  if(displayDomain) {
+      if (dept.toLowerCase() === "cardiology") {
+          displayDomain.innerHTML = `<img src="logo.jpeg" alt="MEDI CONNECT" style="height: 16px; width: 16px; object-fit: contain; vertical-align: text-top; margin-right: 4px;"> ${dept}`;
+      } else {
+          let currentDeptIcon = departmentIcons[dept] || "bi-hospital-fill";
+          displayDomain.innerHTML = `<i class="bi ${currentDeptIcon} me-1"></i> ${dept}`;
+      }
+  }
+
+  // Update initials block
+  const initials = name.split(" ").map(n => n[0]).join("");
+  const initialsEl = document.getElementById('nav-doc-initials');
+  if (initialsEl) initialsEl.innerText = initials;
+  const dropInitials = document.getElementById('drop-initials');
+  if (dropInitials) dropInitials.innerText = initials;
+}
+
+function updateProfilePhotoUI(dataUrl) {
+  const profileImg = document.getElementById('profile-page-img');
+  if(profileImg) profileImg.src = dataUrl;
+
+  const navAvatar = document.getElementById('nav-doc-avatar');
+  const navInitials = document.getElementById('nav-doc-initials');
+  
+  if(navAvatar && navInitials) {
+      navAvatar.src = dataUrl;
+      navAvatar.classList.remove('d-none');
+      navAvatar.classList.add('d-md-block');
+      navInitials.classList.add('d-none');
+  }
+
+  const dropInitials = document.getElementById('drop-initials');
+  if(dropInitials) {
+      dropInitials.innerHTML = `<img src="${dataUrl}" class="rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">`;
+  }
+}
+
+function toggleDoctorProfilePanel(e) {
+  e.stopPropagation();
+  const panel = document.getElementById('profile-dropdown-panel');
+  if (panel) panel.classList.toggle('d-none');
+}
+
+// Fixed toggleEditMode to properly render domain badge based on updated input value
+function toggleEditMode(enable) {
+  const inputs = document.querySelectorAll('.profile-input');
+  const editBtn = document.getElementById('btn-edit-profile');
+  const actions = document.getElementById('edit-actions');
+
+  inputs.forEach(input => input.disabled = !enable);
+
+  if (enable) {
+      if(editBtn) editBtn.classList.add('d-none');
+      if(actions) actions.classList.remove('d-none');
+  } else {
+      if(editBtn) editBtn.classList.remove('d-none');
+      if(actions) actions.classList.add('d-none');
+      loadProfile(); 
+  }
+}
+
+function saveProfile() {
+  const data = {
+      name: document.getElementById('prof-name').value,
+      email: document.getElementById('prof-email').value,
+      phone: document.getElementById('prof-phone').value,
+      exp: document.getElementById('prof-exp').value,
+      domain: document.getElementById('prof-domain').value,
+      fee: document.getElementById('prof-fee').value
   };
   
-  // State Variables
-  let currentDoctor = null;
-  let currentView = "dashboard";
-  let currentDashboardFilter = "today"; // "today", "Pending", "Completed", "Cancelled"
-  let activeLeaveMonth = new Date();
-  let selectedAppointment = null;
-  let profileEditMode = false;
-  let satisfactionChartInstance = null;
-  let volumeChartInstance = null;
-  let revenueChartInstance = null;
-  let performanceChartInstance = null;
-  let benchmarkChartInstance = null;
+  localStorage.setItem('doctorProfileMaster_' + CURRENT_DOCTOR.email, JSON.stringify(data));
   
-  // Prefix Storage Utils
-  function saveDocData(key, data) {
-    if (!currentDoctor) return;
-    localStorage.setItem(`${currentDoctor.id}_${key}`, JSON.stringify(data));
+  updateGlobalProfileUI();
+  updateDashboardGreeting();
+  
+  toggleEditMode(false);
+  showToast('Profile Details Updated Successfully');
+}
+
+function loadProfile() {
+  const savedData = JSON.parse(localStorage.getItem('doctorProfileMaster_' + CURRENT_DOCTOR.email));
+  if (savedData) {
+      document.getElementById('prof-name').value = savedData.name;
+      document.getElementById('prof-email').value = savedData.email;
+      document.getElementById('prof-phone').value = savedData.phone;
+      document.getElementById('prof-exp').value = savedData.exp;
+      document.getElementById('prof-domain').value = savedData.domain;
+      document.getElementById('prof-fee').value = savedData.fee;
+  } else {
+      document.getElementById('prof-name').value = CURRENT_DOCTOR.name;
+      document.getElementById('prof-email').value = CURRENT_DOCTOR.email;
+      document.getElementById('prof-phone').value = CURRENT_DOCTOR.phone || "+91 9876543210";
+      document.getElementById('prof-exp').value = CURRENT_DOCTOR.experience || "10 Years";
+      document.getElementById('prof-domain').value = CURRENT_DOCTOR.department;
+      document.getElementById('prof-fee').value = CURRENT_DOCTOR.fee || 500;
   }
   
-  function loadDocData(key) {
-    if (!currentDoctor) return null;
-    const raw = localStorage.getItem(`${currentDoctor.id}_${key}`);
-    return raw ? JSON.parse(raw) : null;
+  const savedPhoto = localStorage.getItem('doctorProfilePhoto_' + CURRENT_DOCTOR.email);
+  const removePhotoContainer = document.getElementById('remove-photo-container');
+  if (savedPhoto) {
+      updateProfilePhotoUI(savedPhoto);
+      if (removePhotoContainer) removePhotoContainer.classList.remove('d-none');
+  } else {
+      const defaultPhotos = {
+          "aruna@mediconnect.com": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=240",
+          "saniya@mediconnect.com": "https://images.unsplash.com/photo-1594824813573-246434de83fb?auto=format&fit=crop&q=80&w=240",
+          "bharath@mediconnect.com": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=240",
+          "jayachandhra@mediconnect.com": "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=240",
+          "sruthi@mediconnect.com": "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?auto=format&fit=crop&q=80&w=240",
+          "sreedhar@mediconnect.com": "https://images.unsplash.com/photo-1622834048635-61ecf7132c6c?auto=format&fit=crop&q=80&w=240"
+      };
+      updateProfilePhotoUI(defaultPhotos[CURRENT_DOCTOR.email] || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=240');
+      if (removePhotoContainer) removePhotoContainer.classList.add('d-none');
   }
-  
-  // Initializing Storage Database
-  function initDoctorStorage(docId) {
-    if (localStorage.getItem(`${docId}_initialized`)) return;
-    
-    const doctor = SAMPLE_DOCTORS.find(d => d.id === docId);
-    const data = DEFAULT_DOC_DATA[docId];
-    
-    localStorage.setItem(`${docId}_profile`, JSON.stringify(doctor));
-    localStorage.setItem(`${docId}_appointments`, JSON.stringify(data.appointments));
-    localStorage.setItem(`${docId}_schedule`, JSON.stringify(data.schedule));
-    localStorage.setItem(`${docId}_leaves`, JSON.stringify(data.leaves));
-    localStorage.setItem(`${docId}_reviews`, JSON.stringify(data.reviews));
-    localStorage.setItem(`${docId}_salary`, JSON.stringify(data.salary));
-    localStorage.setItem(`${docId}_availability`, JSON.stringify(data.availability));
-    localStorage.setItem(`${docId}_initialized`, "true");
+
+  updateGlobalProfileUI();
+}
+
+function showToast(message) {
+  const toastEl = document.getElementById('profileToast');
+  const msgEl = document.getElementById('toastMessage');
+  if (toastEl && msgEl) {
+      msgEl.innerText = message;
+      const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+      toast.show();
   }
+}
+
+// ==========================================================================
+// DYNAMIC GREETING & DASHBOARD STATS LOGIC ENGINE
+// ==========================================================================
+function updateDashboardGreeting() {
+  const greetingEl = document.getElementById("dashboard-greeting");
+  const quoteEl = document.getElementById("dashboard-quote");
+  const summaryEl = document.getElementById("dashboard-summary");
+  const dateEl = document.getElementById("dashboard-date");
+  const iconWrapper = document.getElementById("department-icon-wrapper");
+
+  if (!greetingEl) return;
+
+  const currentHour = new Date().getHours();
+  let timeGreeting = "Good Evening";
+  let emoji = "🌙";
+
+  if (currentHour >= 5 && currentHour < 12) {
+      timeGreeting = "Good Morning";
+      emoji = "👋";
+  } else if (currentHour >= 12 && currentHour < 17) {
+      timeGreeting = "Good Afternoon";
+      emoji = "☀️";
+  } 
+
+  const nameInput = document.getElementById("prof-name");
+  const deptInput = document.getElementById("prof-domain");
+
+  const doctorName = nameInput && nameInput.value.trim() !== "" ? nameInput.value.trim() : CURRENT_DOCTOR.name;
+  const department = deptInput && deptInput.value.trim() !== "" ? deptInput.value.trim() : CURRENT_DOCTOR.department;
+
+  greetingEl.innerHTML = `${timeGreeting}, ${doctorName} ${emoji}`;
   
-  // Run storage population on load
-  SAMPLE_DOCTORS.forEach(d => initDoctorStorage(d.id));
-  
-  // ==========================================================================
-  // AUTHENTICATION LOGIC
-  // ==========================================================================
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    setupPasswordToggle();
-    setupRememberMeCheck();
-    setupSidebarNavigation();
-    setupAuthFormSubmit();
-    setupNavbarProfileDropdown();
-    setupSearchAndFilters();
-    setupScheduleForm();
-    setupLeaveForm();
-    setupProfileFormSubmit();
-    
-    // Check if session exists
-    const sessionDocId = sessionStorage.getItem("current_doctor_id");
-    if (sessionDocId) {
-      loginDoctor(sessionDocId);
-    }
-  });
-  
-  function setupPasswordToggle() {
-    const toggle = document.getElementById("password-toggle");
-    const input = document.getElementById("login-password");
-    if (!toggle || !input) return;
-    
-    toggle.addEventListener("click", () => {
-      const isPassword = input.type === "password";
-      input.type = isPassword ? "text" : "password";
-      toggle.innerHTML = isPassword ? `<i class="bi bi-eye-slash-fill"></i>` : `<i class="bi bi-eye-fill"></i>`;
-    });
+  if (quoteEl) {
+      let matchedKey = Object.keys(departmentQuotes).find(key => department.toLowerCase().includes(key.toLowerCase()));
+      quoteEl.textContent = matchedKey ? departmentQuotes[matchedKey] : "Your expertise and compassion make a difference every day.";
   }
-  
-  function setupRememberMeCheck() {
-    const rememberedEmail = localStorage.getItem("remembered_email");
-    const rememberedPass = localStorage.getItem("remembered_password");
-    const emailInput = document.getElementById("login-email");
-    const passInput = document.getElementById("login-password");
-    const check = document.getElementById("remember-me");
-    
-    if (rememberedEmail && emailInput && passInput && check) {
-      emailInput.value = rememberedEmail;
-      passInput.value = rememberedPass;
-      check.checked = true;
-    }
-    
-    const forgot = document.getElementById("forgot-password");
-    if (forgot) {
-      forgot.addEventListener("click", (e) => {
-        e.preventDefault();
-        showToast("A temporary password reset link has been dispatched to your email address.");
+
+  if (iconWrapper) {
+      updateDepartmentIllustration(department);
+  }
+
+  const today = new Date();
+  if (dateEl) {
+      dateEl.textContent = today.toLocaleDateString("en-US", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
       });
-    }
   }
-  
-  function setupAuthFormSubmit() {
-    const form = document.getElementById("login-form");
-    const loading = document.getElementById("login-loading");
-    const alertError = document.getElementById("login-error-alert");
-    
-    if (!form) return;
-    
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      alertError.classList.add("d-none");
-      
-      if (!form.checkValidity()) {
-        form.classList.add("was-validated");
-        return;
-      }
-      
-      const email = document.getElementById("login-email").value.trim().toLowerCase();
-      const pass = document.getElementById("login-password").value;
-      
-      // Show network spinner
-      loading.classList.add("active");
-      
-      setTimeout(() => {
-        const match = SAMPLE_DOCTORS.find(d => d.email === email && d.password === pass);
-        
-        if (match) {
-          // Save remember me details
-          const rememberMe = document.getElementById("remember-me").checked;
-          if (rememberMe) {
-            localStorage.setItem("remembered_email", email);
-            localStorage.setItem("remembered_password", pass);
-          } else {
-            localStorage.removeItem("remembered_email");
-            localStorage.removeItem("remembered_password");
-          }
-          
-          // Save Session
-          sessionStorage.setItem("current_doctor_id", match.id);
-          loginDoctor(match.id);
-          
-          // Reset Form
-          form.classList.remove("was-validated");
-          form.reset();
-          setupRememberMeCheck();
-        } else {
-          alertError.classList.remove("d-none");
-        }
-        loading.classList.remove("active");
-      }, 1200);
-    });
-    
-    const logout = document.getElementById("btn-logout");
-    if (logout) {
-      logout.addEventListener("click", () => {
-        sessionStorage.removeItem("current_doctor_id");
-        currentDoctor = null;
-        document.getElementById("app-container").classList.add("d-none");
-        document.getElementById("login-view").classList.remove("d-none");
-        showToast("Successfully logged out from MediConnect.");
-      });
-    }
+
+  if (summaryEl) {
+      const todayStr = getRelativeDate(0);
+      const doctorAppointments = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
+      const todaysApts = doctorAppointments.filter(apt => apt.date === todayStr);
+      const totalToday = todaysApts.length;
+      const followUps = todaysApts.filter(apt => apt.priority === "Follow-up").length;
+      summaryEl.textContent = `You have ${totalToday} appointments scheduled today, including ${followUps} follow-up consultations.`;
   }
-  
-  function loginDoctor(docId) {
-    // Load Doctor Details
-    const profileRaw = localStorage.getItem(`${docId}_profile`);
-    currentDoctor = profileRaw ? JSON.parse(profileRaw) : SAMPLE_DOCTORS.find(d => d.id === docId);
-    
-    // Transition Layouts
-    document.getElementById("login-view").classList.add("d-none");
-    document.getElementById("app-container").classList.remove("d-none");
-    
-    // Reset navigation status
-    navigateToView("dashboard");
-    syncNavbarProfileData();
-    showToast(`Welcome back, ${currentDoctor.name}! Access Authorized.`);
-  }
-  
-  // ==========================================================================
-  // NAVBAR & PROFILE SYNC LOGIC
-  // ==========================================================================
-  
-  function syncNavbarProfileData() {
-    if (!currentDoctor) return;
-    
-    // Load live attributes from storage
-    const profile = loadDocData("profile") || currentDoctor;
-    currentDoctor = profile; // keep locally updated
-    
-    const availability = JSON.parse(localStorage.getItem(`${currentDoctor.id}_availability`));
-    
-    // Update Navbar tags
-    document.getElementById("nav-doc-name").innerText = profile.name;
-    document.getElementById("nav-doc-department").innerText = profile.department;
-    document.getElementById("nav-doc-photo").src = profile.photo;
-    
-    const dot = document.getElementById("nav-availability-dot");
-    if (availability) {
-      dot.classList.remove("offline");
-    } else {
-      dot.classList.add("offline");
-    }
-    
-    // Update Dropdown card tags
-    document.getElementById("drop-doc-name").innerText = profile.name;
-    document.getElementById("drop-doc-dept").innerText = profile.department;
-    document.getElementById("drop-doc-photo").src = profile.photo;
-    document.getElementById("drop-doc-exp").innerText = profile.experience;
-    document.getElementById("drop-doc-email").innerText = profile.email;
-    document.getElementById("drop-doc-phone").innerText = profile.phone;
-    
-    const badge = document.getElementById("drop-availability-badge");
-    badge.innerText = availability ? "Available Today" : "Not Available";
-    badge.className = availability 
-      ? "badge bg-success-subtle text-success border border-success border-opacity-25 rounded-pill px-3 py-1"
-      : "badge bg-danger-subtle text-danger border border-danger border-opacity-25 rounded-pill px-3 py-1";
-      
-    // Sync toggle inputs on schedule tab
-    const toggle = document.getElementById("availability-toggle");
-    const label = document.getElementById("availability-toggle-label");
-    if (toggle && label) {
-      toggle.checked = availability;
-      label.innerText = availability ? "🟢 Available Today" : "🔴 Not Available";
-      label.className = availability ? "form-check-label fw-bold text-success text-sm cursor-pointer" : "form-check-label fw-bold text-danger text-sm cursor-pointer";
-    }
-  }
-  
-  function setupNavbarProfileDropdown() {
-    const trigger = document.getElementById("nav-profile-trigger");
-    const dropdown = document.getElementById("profile-dropdown-card");
-    
-    if (!trigger || !dropdown) return;
-    
-    trigger.addEventListener("click", (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle("active");
-    });
-    
-    document.addEventListener("click", () => {
-      dropdown.classList.remove("active");
-    });
-    
-    dropdown.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-  }
-  
-  // ==========================================================================
-  // SPA ROUTER VIEW SWITCHING
-  // ==========================================================================
-  
-  function setupSidebarNavigation() {
-    const links = document.querySelectorAll(".sidebar-link");
-    const toggle = document.getElementById("sidebar-toggle");
-    const close = document.getElementById("sidebar-close");
-    const sidebar = document.getElementById("sidebar");
-    
-    links.forEach(link => {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        const target = link.getAttribute("data-target");
-        navigateToView(target);
-        sidebar.classList.remove("active");
-      });
-    });
-    
-    if (toggle) {
-      toggle.addEventListener("click", () => {
-        sidebar.classList.toggle("active");
-      });
-    }
-    
-    if (close) {
-      close.addEventListener("click", () => {
-        sidebar.classList.remove("active");
-      });
-    }
-  }
-  
-  function navigateToView(viewId, isEditingProfile = false) {
-    currentView = viewId;
-    profileEditMode = isEditingProfile;
-    
-    // Sync sidebar active state CSS
-    document.querySelectorAll(".sidebar-link").forEach(link => {
-      const target = link.getAttribute("data-target");
-      if (target === viewId) {
-        link.classList.add("active");
+}
+
+function updateDashboardStats() {
+  const todayCountEl = document.getElementById("stats-today-count");
+  const pendingCountEl = document.getElementById("stats-pending-count");
+  const completedCountEl = document.getElementById("stats-completed-count");
+  const cancelledCountEl = document.getElementById("stats-cancelled-count");
+
+  const todayStr = getRelativeDate(0);
+  const doctorAppointments = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
+
+  const todayCount = doctorAppointments.filter(apt => apt.date === todayStr).length;
+  const pendingCount = doctorAppointments.filter(apt => apt.status === "Pending").length;
+  const completedCount = doctorAppointments.filter(apt => apt.status === "Completed").length;
+  const cancelledCount = doctorAppointments.filter(apt => apt.status === "Cancelled").length;
+
+  if (todayCountEl) todayCountEl.textContent = todayCount;
+  if (pendingCountEl) pendingCountEl.textContent = pendingCount;
+  if (completedCountEl) completedCountEl.textContent = completedCount;
+  if (cancelledCountEl) cancelledCountEl.textContent = cancelledCount;
+}
+
+function filterAppointments(filterType) {
+  CURRENT_DASHBOARD_FILTER = filterType;
+
+  document.querySelectorAll('.dashboard-stat-card').forEach(card => {
+      if(card.getAttribute('data-filter') === filterType) {
+          card.classList.add('active-stat-card');
       } else {
-        link.classList.remove("active");
+          card.classList.remove('active-stat-card');
       }
-    });
-    
-    // Hide all sections, show target section
-    document.querySelectorAll(".app-view").forEach(sect => {
-      sect.classList.add("d-none");
-    });
-    
-    const targetSect = document.getElementById(`view-${viewId}`);
-    if (targetSect) {
-      targetSect.classList.remove("d-none");
-    }
-    
-    // Update header title
-    const titlesMapping = {
-      "dashboard": "Dashboard Overview",
-      "appointments": "Appointments Registry",
-      "patient-details": "Patient Electronic Health Record",
-      "consultation-notes": "Consultation Desk & Rx Generator",
-      "schedule": "Availability & Calendar Scheduler",
-      "reviews": "Patient Feedback Board",
-      "analytics": "Interactive Performance Analytics",
-      "profile": "Practitioner Profile Settings",
-      "salary": "Monthly Payroll Statements"
-    };
-    
-    document.getElementById("header-view-title").innerText = titlesMapping[viewId] || "Clinical Workspace";
-    
-    // Trigger specific view renders
-    if (viewId === "dashboard") {
-      renderDashboardView();
-    } else if (viewId === "appointments") {
-      renderAppointmentsRegistryView();
-    } else if (viewId === "schedule") {
-      renderScheduleModuleView();
-    } else if (viewId === "reviews") {
-      renderReviewsModuleView();
-    } else if (viewId === "analytics") {
-      renderAnalyticsModuleView();
-    } else if (viewId === "profile") {
-      renderProfileModuleView();
-    } else if (viewId === "salary") {
-      renderSalaryModuleView();
-    }
-    
-    window.scrollTo(0, 0);
-  }
-  
-  // ==========================================================================
-  // VIEW 1: DASHBOARD VIEW LOGIC
-  // ==========================================================================
-  
-  function renderDashboardView() {
-    if (!currentDoctor) return;
-    
-    syncNavbarProfileData();
-    
-    // Time-based Greeting & Banner
-    const hour = new Date().getHours();
-    let timeStr = "Good Evening";
-    if (hour < 12) timeStr = "Good Morning";
-    else if (hour < 17) timeStr = "Good Afternoon";
-    
-    document.getElementById("dash-greeting-text").innerText = `${timeStr}, ${currentDoctor.name}`;
-    document.getElementById("dash-department-text").innerText = `${currentDoctor.department} Department Workspace`;
-    document.getElementById("dash-dept-banner-icon-text").innerText = currentDoctor.department;
-    
-    const quotes = {
-      "Cardiology": "Every heartbeat you protect brings hope to another family.",
-      "Neurology": "Your expertise restores clarity and neural confidence to every patient.",
-      "Orthopedics": "Every mobile step a patient takes starts with your dedication."
-    };
-    document.getElementById("dash-motivational-quote").innerText = quotes[currentDoctor.department] || "Dedicated to medical care and research.";
-    
-    document.getElementById("dash-date-text").innerText = new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric"
-    });
-    
-    // Load datasets
-    const appointments = loadDocData("appointments") || [];
-    const reviews = loadDocData("reviews") || [];
-    
-    // Compute Stats values
-    const todayStr = getOffsetDateString(0);
-    const todayApts = appointments.filter(a => a.date === todayStr);
-    const totalToday = todayApts.length;
-    const pendingCount = appointments.filter(a => a.status === "Pending").length;
-    const completedToday = appointments.filter(a => a.status === "Completed" && a.date === todayStr).length;
-    const cancelledToday = appointments.filter(a => a.status === "Cancelled" && a.date === todayStr).length;
-    
-    if (document.getElementById("stats-today-count")) document.getElementById("stats-today-count").innerText = totalToday;
-    if (document.getElementById("stats-pending-count")) document.getElementById("stats-pending-count").innerText = pendingCount;
-    if (document.getElementById("stats-completed-count")) document.getElementById("stats-completed-count").innerText = completedToday;
-    if (document.getElementById("stats-cancelled-count")) document.getElementById("stats-cancelled-count").innerText = cancelledToday;
-    
-    // Secondary stats
-    const uniquePatients = [...new Set(appointments.map(a => a.patientName))].length;
-    const completedAll = appointments.filter(a => a.status === "Completed").length;
-    const revenue = completedAll * currentDoctor.fee;
-    
-    const avgRating = reviews.length > 0 ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1) : "0.0";
-    
-    document.getElementById("overview-patients-count").innerText = uniquePatients;
-    document.getElementById("overview-rating-val").innerText = avgRating;
-    document.getElementById("overview-revenue-val").innerText = `₹${revenue.toLocaleString()}`;
-    document.getElementById("overview-completed-val").innerText = completedAll;
-    
-    // Render recent table list
-    renderDashboardTable();
-  }
-  
-  function setDashboardFilter(filterType) {
-    currentDashboardFilter = filterType;
-    
-    document.querySelectorAll(".dashboard-stat-card").forEach(card => {
-      card.classList.remove("active-filter");
-    });
-    
-    const targetCard = document.getElementById(`stat-${filterType.toLowerCase()}`);
-    if (targetCard) targetCard.classList.add("active-filter");
-    
-    const headerTitle = document.getElementById("dashboard-table-header-title");
-    const titles = {
-      "today": "Today's Scheduled Appointments",
-      "Pending": "Pending Appointments Queue",
-      "Completed": "Completed Consultations Today",
-      "Cancelled": "Cancelled Appointments Today"
-    };
-    if (headerTitle) headerTitle.innerText = titles[filterType] || "Appointments";
-    
-    renderDashboardTable();
-  }
-  
-  function renderDashboardTable() {
-    const tbody = document.getElementById("dashboard-appointments-tbody");
-    if (!tbody) return;
-    
-    tbody.innerHTML = "";
-    const appointments = loadDocData("appointments") || [];
-    const searchVal = document.getElementById("dashboard-search-input").value.trim().toLowerCase();
-    
-    const todayStr = getOffsetDateString(0);
-    
-    let filtered = appointments;
-    
-    // Filter by stat tab selection
-    if (currentDashboardFilter === "today") {
-      filtered = filtered.filter(a => a.date === todayStr);
-    } else {
-      filtered = filtered.filter(a => a.status === currentDashboardFilter);
-    }
-    
-    // Filter by search matching name
-    if (searchVal !== "") {
-      filtered = filtered.filter(a => a.patientName.toLowerCase().includes(searchVal));
-    }
-    
-    if (filtered.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No appointments found matching constraints.</td></tr>`;
-      return;
-    }
-    
-    // Sort by latest appointments first (date descending, then time descending)
-    filtered.sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
-    
-    filtered.forEach(apt => {
-      const tr = document.createElement("tr");
-      
-      let statusClass = "pending";
-      if (apt.status === "Confirmed") statusClass = "confirmed";
-      else if (apt.status === "Completed") statusClass = "completed";
-      else if (apt.status === "Cancelled") statusClass = "cancelled";
-      
-      tr.innerHTML = `
-        <td><strong class="text-ink">${apt.patientName}</strong></td>
-        <td><i class="bi bi-calendar-event me-1 text-blue"></i> ${apt.date}</td>
-        <td><i class="bi bi-clock me-1 text-teal"></i> ${apt.time}</td>
-        <td><span class="badge-status ${statusClass}">${apt.status}</span></td>
-        <td class="text-end">
-          <div class="d-inline-flex gap-1 flex-wrap justify-content-end">
-            <button class="btn btn-sm btn-gradient-secondary py-1 px-2 border-0 shadow-sm text-xs" onclick="openPatientEHR('${apt.id}')">View</button>
-            <button class="btn btn-sm btn-gradient-secondary py-1 px-2 border-0 shadow-sm text-xs text-primary" onclick="openStatusModifier('${apt.id}')">Update</button>
-            <button class="btn btn-sm btn-gradient-primary py-1 px-2 border-0 shadow-sm text-xs text-white" onclick="completeAppointmentDirect('${apt.id}')">Complete</button>
-            <button class="btn btn-sm btn-gradient-secondary py-1 px-2 border-0 shadow-sm text-xs text-danger" onclick="cancelAppointmentDirect('${apt.id}')">Cancel</button>
-          </div>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-  
-  function setupSearchAndFilters() {
-    const dashSearch = document.getElementById("dashboard-search-input");
-    if (dashSearch) {
-      dashSearch.addEventListener("input", renderDashboardTable);
-    }
-    
-    const regSearch = document.getElementById("registry-search-input");
-    const regStatus = document.getElementById("registry-filter-status");
-    const regPriority = document.getElementById("registry-filter-priority");
-    
-    if (regSearch) regSearch.addEventListener("input", renderAppointmentsRegistryView);
-    if (regStatus) regStatus.addEventListener("change", renderAppointmentsRegistryView);
-    if (regPriority) regPriority.addEventListener("change", renderAppointmentsRegistryView);
-  }
-  
-  // ==========================================================================
-  // VIEW 2: APPOINTMENTS REGISTRY MODULE
-  // ==========================================================================
-  
-  function renderAppointmentsRegistryView() {
-    const tbody = document.getElementById("registry-appointments-tbody");
-    if (!tbody) return;
-    tbody.innerHTML = "";
-    
-    const appointments = loadDocData("appointments") || [];
-    const searchVal = document.getElementById("registry-search-input").value.trim().toLowerCase();
-    const statusVal = document.getElementById("registry-filter-status").value;
-    const priorityVal = document.getElementById("registry-filter-priority").value;
-    
-    let filtered = appointments;
-    
-    // Filters
-    if (searchVal !== "") {
-      filtered = filtered.filter(a => a.patientName.toLowerCase().includes(searchVal));
-    }
-    if (statusVal !== "all") {
-      filtered = filtered.filter(a => a.status === statusVal);
-    }
-    if (priorityVal !== "all") {
-      filtered = filtered.filter(a => a.priority === priorityVal);
-    }
-    
-    if (filtered.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No registry entries match the filters.</td></tr>`;
-      return;
-    }
-    
-    // Sort by date (descending) then time
-    filtered.sort((a, b) => b.date.localeCompare(a.date) || a.time.localeCompare(b.time));
-    
-    filtered.forEach(apt => {
-      const tr = document.createElement("tr");
-      
-      let statusClass = "pending";
-      if (apt.status === "Confirmed") statusClass = "confirmed";
-      else if (apt.status === "Completed") statusClass = "completed";
-      else if (apt.status === "Cancelled") statusClass = "cancelled";
-      
-      tr.innerHTML = `
-        <td><strong class="text-ink">${apt.patientName}</strong></td>
-        <td><i class="bi bi-calendar-event me-1 text-blue"></i> ${apt.date}</td>
-        <td><i class="bi bi-clock me-1 text-teal"></i> ${apt.time}</td>
-        <td><span class="badge-status ${statusClass}">${apt.status}</span></td>
-        <td class="text-end">
-          <div class="d-inline-flex gap-1 flex-wrap justify-content-end">
-            <button class="btn btn-sm btn-gradient-secondary py-1 px-2 border-0 shadow-sm text-xs" onclick="openPatientEHR('${apt.id}')">View</button>
-            <button class="btn btn-sm btn-gradient-secondary py-1 px-2 border-0 shadow-sm text-xs text-primary" onclick="openStatusModifier('${apt.id}')">Update</button>
-            <button class="btn btn-sm btn-gradient-primary py-1 px-2 border-0 shadow-sm text-xs text-white" onclick="completeAppointmentDirect('${apt.id}')">Complete</button>
-            <button class="btn btn-sm btn-gradient-secondary py-1 px-2 border-0 shadow-sm text-xs text-danger" onclick="cancelAppointmentDirect('${apt.id}')">Cancel</button>
-          </div>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-  
-  // Status modifiers popup helpers
-  function openStatusModifier(aptId) {
-    const appointments = loadDocData("appointments") || [];
-    const apt = appointments.find(a => a.id === aptId);
-    if (!apt) return;
-    
-    selectedAppointment = apt;
-    
-    document.getElementById("status-modal-pt-name").innerText = apt.patientName;
-    document.getElementById("status-modal-pt-details").innerText = `Appt: ${apt.id} | Scheduled: ${apt.date} @ ${apt.time}`;
-    
-    const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-    modal.show();
-  }
-  
-  function commitStatusChange(newStatus) {
-    if (!selectedAppointment) return;
-    
-    const appointments = loadDocData("appointments") || [];
-    const index = appointments.findIndex(a => a.id === selectedAppointment.id);
-    
-    if (index !== -1) {
-      appointments[index].status = newStatus;
-      saveDocData("appointments", appointments);
-      showToast(`Appointment status updated to: [${newStatus}].`);
-      
-      // Dismiss modal using bootstrap instance
-      const modalEl = document.getElementById('statusModal');
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      if (modalInstance) modalInstance.hide();
-      
-      // Refresh active views
-      if (currentView === "dashboard") renderDashboardView();
-      else if (currentView === "appointments") renderAppointmentsRegistryView();
-    }
-  }
-  
-  // ==========================================================================
-  // VIEW 3: PATIENT EHR MODULE LOGIC
-  // ==========================================================================
-  
-  function openPatientEHR(aptId) {
-    const appointments = loadDocData("appointments") || [];
-    const apt = appointments.find(a => a.id === aptId);
-    if (!apt) return;
-    
-    selectedAppointment = apt;
-    navigateToView("patient-details");
-  }
-  
-  function renderPatientDetailsView() {
-    if (!selectedAppointment) return;
-    const apt = selectedAppointment;
-    
-    // Render initials
-    const initials = apt.patientName.split(" ").map(n => n[0]).join("");
-    document.getElementById("ehr-pt-initials").innerText = initials;
-    
-    document.getElementById("ehr-pt-name").innerText = apt.patientName;
-    document.getElementById("ehr-pt-id").innerText = `Patient ID: #${apt.id}`;
-    document.getElementById("ehr-pt-agesex").innerText = `${apt.age} Yrs / ${apt.gender}`;
-    document.getElementById("ehr-pt-blood").innerText = apt.bloodGroup || "Not Provided";
-    document.getElementById("ehr-pt-phone").innerText = apt.contact;
-    document.getElementById("ehr-pt-doc").innerText = currentDoctor.name;
-    
-    document.getElementById("ehr-pt-complaint").innerText = apt.complaint;
-    document.getElementById("ehr-pt-history").innerText = apt.history || "No medical history recorded.";
-    
-    // Render previous visits log
-    renderPreviousVisitsTable(apt.patientName);
-  }
-  
-  function renderPreviousVisitsTable(ptName) {
-    const tbody = document.getElementById("ehr-previous-visits-tbody");
-    if (!tbody) return;
-    
-    tbody.innerHTML = "";
-    const appointments = loadDocData("appointments") || [];
-    
-    // Load completed visits for this patient
-    const visits = appointments.filter(a => a.patientName === ptName && a.status === "Completed");
-    
-    if (visits.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="3" class="text-center py-3 text-muted text-sm">No previous visit records found.</td></tr>`;
-      return;
-    }
-    
-    visits.forEach(v => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="text-muted text-xs">${v.date}</td>
-        <td class="fw-bold">${v.diagnosis || "Consultation Completed"}</td>
-        <td class="text-truncate font-monospace small" style="max-width: 250px;" title="${v.prescription}">${v.prescription || "No meds prescribed."}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-  
-  function transitionToConsultationDesk() {
-    navigateToView("consultation-notes");
-  }
-  
-  // Quick action consultation opening helper
-  function openQuickConsultation() {
-    const appointments = loadDocData("appointments") || [];
-    
-    // Find first active/pending appointment for today to prefill, else prompt
-    const todayStr = getOffsetDateString(0);
-    const pendingToday = appointments.find(a => a.date === todayStr && a.status !== "Completed" && a.status !== "Cancelled");
-    
-    if (pendingToday) {
-      selectedAppointment = pendingToday;
-      navigateToView("consultation-notes");
-    } else {
-      // Navigate to registry list to select patient
-      navigateToView("appointments");
-      showToast("Please choose a patient from the registry to begin consultation.");
-    }
-  }
-  
-  // ==========================================================================
-  // VIEW 4: CONSULTATION DESK & RX SLIP
-  // ==========================================================================
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("consultation-notes-form");
-    if (!form) return;
-    
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (!form.checkValidity()) {
-        form.classList.add("was-validated");
-        return;
-      }
-      
-      if (!selectedAppointment) return;
-      
-      const appointments = loadDocData("appointments") || [];
-      const idx = appointments.findIndex(a => a.id === selectedAppointment.id);
-      
-      if (idx !== -1) {
-        appointments[idx].status = "Completed";
-        appointments[idx].symptoms = document.getElementById("consult-symptoms").value.trim();
-        appointments[idx].diagnosis = document.getElementById("consult-diagnosis").value.trim();
-        appointments[idx].prescription = document.getElementById("consult-prescription").value.trim();
-        appointments[idx].followup = document.getElementById("consult-followup").value.trim();
-        appointments[idx].treatment = document.getElementById("consult-treatment").value.trim();
-        
-        saveDocData("appointments", appointments);
-        showToast("Consultation notes logged, signed digitally, and committed to patient record.");
-        
-        form.reset();
-        form.classList.remove("was-validated");
-        navigateToView("appointments");
-      }
-    });
   });
-  
-  function renderConsultationDeskView() {
-    if (!selectedAppointment) return;
-    const apt = selectedAppointment;
-    
-    document.getElementById("consult-pt-name").innerText = apt.patientName;
-    document.getElementById("consult-pt-meta").innerText = `ID: #${apt.id} | Age: ${apt.age} | Gender: ${apt.gender}`;
-    document.getElementById("consult-pt-priority").innerText = `${apt.priority} Queue`;
-    
-    // Fill inputs if resuming or empty
-    document.getElementById("consult-symptoms").value = apt.symptoms || "";
-    document.getElementById("consult-diagnosis").value = apt.diagnosis || "";
-    document.getElementById("consult-prescription").value = apt.prescription || "";
-    document.getElementById("consult-followup").value = apt.followup || "";
-    document.getElementById("consult-treatment").value = apt.treatment || "";
-    
-    // Setup back button
-    const back = document.getElementById("consultation-back-btn");
-    back.setAttribute("onclick", `navigateToView('patient-details')`);
+
+  const titleEl = document.getElementById('dashboard-table-title');
+  if (titleEl) {
+      if(filterType === 'today') titleEl.innerText = "Today's Appointments";
+      else if(filterType === 'Pending') titleEl.innerText = "Pending Appointments";
+      else if(filterType === 'Completed') titleEl.innerText = "Completed Appointments";
+      else if(filterType === 'Cancelled') titleEl.innerText = "Cancelled Appointments";
   }
-  
-  // Generate Printable Prescription in popup window
-  function triggerPrintPrescription() {
-    if (!selectedAppointment) return;
-    
-    // Fetch values from inputs to render dynamic print layout
-    const symptoms = document.getElementById("consult-symptoms").value.trim();
-    const diagnosis = document.getElementById("consult-diagnosis").value.trim();
-    const prescription = document.getElementById("consult-prescription").value.trim();
-    const followup = document.getElementById("consult-followup").value.trim();
-    const treatment = document.getElementById("consult-treatment").value.trim();
-    
-    if (!symptoms || !diagnosis || !prescription || !followup) {
-      alert("Please fill in Symptoms, Diagnosis, Prescription, and Follow-Up to print prescription.");
+
+  renderTodaysAppointments();
+}
+
+function renderTodaysAppointments(searchTerm = '') {
+  const tbody = document.getElementById("dashboardAppointmentTableBody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  const todayStr = getRelativeDate(0);
+  let filtered = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
+
+  if (CURRENT_DASHBOARD_FILTER === 'today') {
+      filtered = filtered.filter(apt => apt.date === todayStr);
+  } else {
+      filtered = filtered.filter(apt => apt.status === CURRENT_DASHBOARD_FILTER);
+  }
+
+  if (searchTerm.trim() !== "") {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(apt => apt.patientName.toLowerCase().includes(term));
+  }
+
+  if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No appointments found matching targeted schedule queries.</td></tr>`;
       return;
-    }
-    
-    // Populate print container HTML
-    document.getElementById("print-doc-name").innerText = currentDoctor.name;
-    document.getElementById("print-doc-dept").innerText = `${currentDoctor.department} Practitioner`;
-    document.getElementById("print-doc-email").innerText = currentDoctor.email;
-    
-    document.getElementById("print-pt-name").innerText = selectedAppointment.patientName;
-    document.getElementById("print-pt-agesex").innerText = `Age: ${selectedAppointment.age} | Gender: ${selectedAppointment.gender}`;
-    document.getElementById("print-pt-date").innerText = `Date: ${new Date().toLocaleDateString()}`;
-    document.getElementById("print-pt-id").innerText = `Ref ID: #${selectedAppointment.id}`;
-    
-    document.getElementById("print-pt-symptoms").innerText = symptoms;
-    document.getElementById("print-pt-diagnosis").innerText = diagnosis;
-    document.getElementById("print-pt-prescription").innerText = prescription;
-    document.getElementById("print-pt-followup").innerText = followup;
-    document.getElementById("print-pt-treatment").innerText = treatment || "No long term advice provided.";
-    
-    document.getElementById("print-signature-name").innerText = currentDoctor.name;
-    
-    // Trigger system print
-    window.print();
   }
-  
-  // ==========================================================================
-  // VIEW 5: SCHEDULER & LEAVE CALENDAR MODULE
-  // ==========================================================================
-  
-  function renderScheduleModuleView() {
-    syncNavbarProfileData();
-    renderScheduleSlotsTable();
-    renderCalendarViewGrid();
-  }
-  
-  // Clinic Availability Toggles
-  document.addEventListener("DOMContentLoaded", () => {
-    const toggle = document.getElementById("availability-toggle");
-    if (!toggle) return;
-    
-    toggle.addEventListener("change", (e) => {
-      const isChecked = e.target.checked;
-      localStorage.setItem(`${currentDoctor.id}_availability`, JSON.stringify(isChecked));
-      syncNavbarProfileData();
-      showToast(`Practitioner clinic status shifted to: ${isChecked ? "ONLINE" : "OFFLINE"}.`);
-    });
+
+  filtered.forEach(apt => {
+      let priorityBadge = "";
+      if(apt.priority === "Urgent") priorityBadge = "🔴 Urgent";
+      else if(apt.priority === "Follow-up") priorityBadge = "🟡 Follow-up";
+      else priorityBadge = "🟢 Routine";
+
+      let statusBadge = "";
+      switch (apt.status) {
+          case "Pending": statusBadge = `<span class="badge bg-warning-subtle text-warning border border-warning border-opacity-25 px-2 py-1 rounded">Pending</span>`; break;
+          case "Confirmed": statusBadge = `<span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-1 rounded">Confirmed</span>`; break;
+          case "Completed": statusBadge = `<span class="badge bg-success-subtle text-success border border-success border-opacity-25 px-2 py-1 rounded">Completed</span>`; break;
+          case "Cancelled": statusBadge = `<span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 px-2 py-1 rounded">Cancelled</span>`; break;
+      }
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+          <td class="fw-bold text-dark border-bottom-0 ps-4">${apt.patientName}</td>
+          <td class="border-bottom-0">${apt.date}</td>
+          <td class="border-bottom-0">${apt.time}</td>
+          <td class="fw-medium border-bottom-0">${priorityBadge}</td>
+          <td class="border-bottom-0">${statusBadge}</td>
+          <td class="text-end border-bottom-0 pe-4">
+              <div class="btn-group gap-1 shadow-sm rounded">
+                  <button class="btn btn-sm btn-outline-primary transition-card" onclick="loadPatientDetails('${apt.id}')"><i class="bi bi-folder2-open"></i> EHR</button>
+                  <button class="btn btn-sm btn-outline-secondary transition-card" onclick="loadStatusUpdater('${apt.id}')"><i class="bi bi-sliders"></i> Status</button>
+              </div>
+          </td>
+      `;
+      tbody.appendChild(tr);
   });
+}
+
+// ==========================================================================
+// DOCTOR REVIEWS RENDERER ENGINE
+// ==========================================================================
+function renderDoctorReviews() {
+  const reviewsContainer = document.getElementById("reviews-list-container");
+  const avgRatingVal = document.getElementById("avg-rating-value");
+  const totalReviewsVal = document.getElementById("total-reviews-value");
+  const satisfactionBar = document.getElementById("satisfaction-bar");
+  const satisfactionPercent = document.getElementById("satisfaction-percent");
+
+  if (!reviewsContainer) return;
+
+  const data = DOCTOR_REVIEWS[CURRENT_DOCTOR.email] || { avgRating: "5.0/5", totalCount: "0 reviews", satisfaction: "100%", list: [] };
   
-  function parseShiftDetails(timeStr) {
-    if (timeStr.includes("Morning") || timeStr.includes("09:00 AM")) {
-      return { name: "Morning Shift", timing: "09:00 AM - 12:00 PM" };
-    } else if (timeStr.includes("Afternoon") || timeStr.includes("12:00 PM") || timeStr.includes("01:00 PM")) {
-      const timing = timeStr.includes("12:00 PM") ? "12:00 PM - 03:00 PM" : "01:00 PM - 04:00 PM";
-      return { name: "Afternoon Shift", timing: timing };
-    } else if (timeStr.includes("Evening") || timeStr.includes("03:00 PM") || timeStr.includes("05:00 PM")) {
-      const timing = timeStr.includes("03:00 PM") ? "03:00 PM - 06:00 PM" : "05:00 PM - 08:00 PM";
-      return { name: "Evening Shift", timing: timing };
-    } else if (timeStr.includes("Night") || timeStr.includes("06:00 PM") || timeStr.includes("08:00 PM")) {
-      const timing = timeStr.includes("06:00 PM") ? "06:00 PM - 09:00 PM" : "08:00 PM - 11:00 PM";
-      return { name: "Night Shift", timing: timing };
-    }
-    return { name: "Weekly Shift", timing: timeStr };
-  }
-  
-  function renderScheduleSlotsTable() {
-    const container = document.getElementById("schedule-slots-container");
-    if (!container) return;
-    
-    container.innerHTML = "";
-    const slots = loadDocData("schedule") || [];
-    
-    if (slots.length === 0) {
-      container.innerHTML = `<div class="text-center py-4 text-muted">No active shift slots.</div>`;
+  if (avgRatingVal) avgRatingVal.innerText = `⭐ ${data.avgRating}`;
+  if (totalReviewsVal) totalReviewsVal.innerText = `(${data.totalCount})`;
+  if (satisfactionBar) satisfactionBar.style.width = data.satisfaction;
+  if (satisfactionPercent) satisfactionPercent.innerText = `${data.satisfaction} Patient Satisfaction`;
+
+  reviewsContainer.innerHTML = "";
+  if (data.list.length === 0) {
+      reviewsContainer.innerHTML = `<div class="col-12 text-center py-3 text-muted">No reviews recorded yet for this provider.</div>`;
       return;
-    }
-    
-    slots.forEach(slot => {
-      const shift = parseShiftDetails(slot.time);
+  }
+
+  data.list.forEach(rev => {
+      let stars = "";
+      for(let i=1; i<=5; i++) {
+          if(i <= rev.rating) stars += '<i class="bi bi-star-fill text-warning me-1" style="font-size: 0.85rem;"></i>';
+          else stars += '<i class="bi bi-star text-muted me-1" style="font-size: 0.85rem;"></i>';
+      }
+
+      const initials = rev.name.split(" ").map(n => n[0]).join("");
+
       const div = document.createElement("div");
-      div.className = "weekly-shift-card p-3 border rounded shadow-sm bg-white mb-2 d-flex justify-content-between align-items-center";
+      div.className = "col-12 col-md-6";
       div.innerHTML = `
-        <div>
-          <h6 class="fw-bold mb-1 text-ink">${slot.day}</h6>
-          <span class="text-teal fw-semibold text-xs d-block mb-1">${shift.name}</span>
-          <small class="text-muted font-monospace text-xs"><i class="bi bi-clock me-1 text-primary"></i>${shift.timing}</small>
-        </div>
-        <button class="btn btn-sm btn-link text-danger p-1" onclick="deleteShiftSlot('${slot.id}')" aria-label="Delete Slot">
-          <i class="bi bi-trash fs-5"></i>
-        </button>
+          <div class="card p-3 rounded-3 review-card border h-100 shadow-xs">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                      <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 34px; height: 34px; font-size: 0.8rem;">
+                          ${initials}
+                      </div>
+                      <div>
+                          <h6 class="m-0 fw-bold text-dark" style="font-size: 0.85rem;">${rev.name}</h6>
+                          <small class="text-muted" style="font-size: 0.7rem;">${rev.date}</small>
+                      </div>
+                  </div>
+                  <div>
+                      ${stars}
+                  </div>
+              </div>
+              <p class="m-0 text-muted small text-dark" style="line-height: 1.45; font-size: 0.8rem;">"${rev.text}"</p>
+          </div>
       `;
-      container.appendChild(div);
-    });
-  }
-  
-  function setupScheduleForm() {
-    const form = document.getElementById("add-schedule-form");
-    if (!form) return;
-    
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (!form.checkValidity()) {
-        form.classList.add("was-validated");
-        return;
+      reviewsContainer.appendChild(div);
+  });
+}
+
+// ==========================================================================
+// PRACTICE PERFORMANCE ANALYTICS ENGINE
+// ==========================================================================
+function renderAnalyticsCharts() {
+  const doctorAppointments = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
+
+  // 1. Status Chart
+  const statusCounts = { Pending: 0, Confirmed: 0, Completed: 0, Cancelled: 0 };
+  doctorAppointments.forEach(apt => {
+      if (statusCounts[apt.status] !== undefined) {
+          statusCounts[apt.status]++;
       }
-      
-      const day = document.getElementById("schedule-day").value;
-      const time = document.getElementById("schedule-time").value;
-      
-      const slots = loadDocData("schedule") || [];
-      
-      // Check duplication
-      const dup = slots.find(s => s.day === day && s.time === time);
-      if (dup) {
-        alert("This shift slot is already registered.");
-        return;
-      }
-      
-      slots.push({
-        id: "SLOT_" + Date.now(),
-        day: day,
-        time: time
-      });
-      
-      saveDocData("schedule", slots);
-      showToast(`Shift slot registered for: ${day} [${time}].`);
-      
-      form.reset();
-      form.classList.remove("was-validated");
-      renderScheduleSlotsTable();
-    });
-  }
-  
-  function deleteShiftSlot(slotId) {
-    let slots = loadDocData("schedule") || [];
-    slots = slots.filter(s => s.id !== slotId);
-    saveDocData("schedule", slots);
-    showToast("Shift slot removed.");
-    renderScheduleSlotsTable();
-  }
-  
-  // Leaves Form Handling
-  function setupLeaveForm() {
-    const form = document.getElementById("leave-form");
-    if (!form) return;
-    
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (!form.checkValidity()) {
-        form.classList.add("was-validated");
-        return;
-      }
-      
-      const formatRadio = document.querySelector('input[name="leaveFormat"]:checked');
-      const format = formatRadio ? formatRadio.value : "single";
-      const type = document.getElementById("leave-type").value;
-      const reason = document.getElementById("leave-reason").value.trim();
-      const isEmergency = document.getElementById("leave-emergency-toggle") ? document.getElementById("leave-emergency-toggle").checked : false;
-      
-      let start = "";
-      let end = "";
-      
-      if (format === "single") {
-        start = document.getElementById("leave-single-date").value;
-        end = start;
-        if (!start) {
-          alert("Please choose a leave date.");
-          return;
-        }
-      } else {
-        start = document.getElementById("leave-start-date").value;
-        end = document.getElementById("leave-end-date").value;
-        if (!start || !end) {
-          alert("Please specify start and end dates.");
-          return;
-        }
-        if (new Date(end) < new Date(start)) {
-          alert("End date cannot precede the start date.");
-          return;
-        }
-      }
-      
-      const leaves = loadDocData("leaves") || [];
-      
-      leaves.push({
-        id: "LEAVE_" + Date.now(),
-        type: type,
-        start: start,
-        end: end,
-        format: format,
-        reason: reason,
-        emergency: isEmergency,
-        status: "Approved"
-      });
-      
-      saveDocData("leaves", leaves);
-      showToast("Leave request filed and approved successfully.");
-      
-      form.reset();
-      form.classList.remove("was-validated");
-      toggleLeaveFormatInputs();
-      renderCalendarViewGrid();
-    });
-  }
-  
-  function toggleLeaveFormatInputs() {
-    const formatRadio = document.querySelector('input[name="leaveFormat"]:checked');
-    const format = formatRadio ? formatRadio.value : "single";
-    const single = document.getElementById("leave-single-date-wrapper");
-    const start = document.getElementById("leave-start-date-wrapper");
-    const end = document.getElementById("leave-end-date-wrapper");
-    
-    const singleInput = document.getElementById("leave-single-date");
-    const startInput = document.getElementById("leave-start-date");
-    const endInput = document.getElementById("leave-end-date");
-    
-    if (!single || !start || !end) return;
-    
-    if (format === "single") {
-      single.classList.remove("d-none");
-      start.classList.add("d-none");
-      end.classList.add("d-none");
-      if (singleInput) singleInput.required = true;
-      if (startInput) startInput.required = false;
-      if (endInput) endInput.required = false;
-    } else {
-      single.classList.add("d-none");
-      start.classList.remove("d-none");
-      end.classList.remove("d-none");
-      if (singleInput) singleInput.required = false;
-      if (startInput) startInput.required = true;
-      if (endInput) endInput.required = true;
-    }
-  }
-  
-  // Leaves Calendar view grid render
-  function adjustCalendarMonth(direction) {
-    activeLeaveMonth.setMonth(activeLeaveMonth.getMonth() + direction);
-    renderCalendarViewGrid();
-  }
-  
-  function getDatesRangeArray(startStr, endStr) {
-    const dates = [];
-    const start = new Date(startStr);
-    const end = new Date(endStr);
-    
-    const current = new Date(start);
-    while (current <= end) {
-      dates.push(new Date(current).toISOString().split('T')[0]);
-      current.setDate(current.getDate() + 1);
-    }
-    return dates;
-  }
-  
-  function renderCalendarViewGrid() {
-    const grid = document.querySelector(".calendar-grid");
-    if (!grid) return;
-    
-    grid.innerHTML = "";
-    
-    const year = activeLeaveMonth.getFullYear();
-    const month = activeLeaveMonth.getMonth();
-    
-    const monthsNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    document.getElementById("calendar-header-title").innerText = `${monthsNames[month]} ${year}`;
-    
-    // Render Day headers
-    const daysHeader = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    daysHeader.forEach(d => {
-      const div = document.createElement("div");
-      div.className = "calendar-cell header-cell";
-      div.innerText = d;
-      grid.appendChild(div);
-    });
-    
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    const totalDays = new Date(year, month + 1, 0).getDate();
-    
-    // Render offsets empty cells
-    for (let i = 0; i < firstDayIndex; i++) {
-      const div = document.createElement("div");
-      div.className = "calendar-cell empty";
-      grid.appendChild(div);
-    }
-    
-    // Load leaves
-    const leaves = loadDocData("leaves") || [];
-    const leaveLookup = {};
-    
-    leaves.forEach(l => {
-      const range = getDatesRangeArray(l.start, l.end);
-      range.forEach(dateStr => {
-        leaveLookup[dateStr] = l;
-      });
-    });
-    
-    const todayStr = getOffsetDateString(0);
-    
-    // Render days
-    for (let day = 1; day <= totalDays; day++) {
-      const div = document.createElement("div");
-      const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      
-      div.className = "calendar-cell";
-      if (formattedDate === todayStr) {
-        div.classList.add("today");
-      }
-      
-      div.innerHTML = `<span class="cell-date">${day}</span>`;
-      
-      const matchingLeave = leaveLookup[formattedDate];
-      if (matchingLeave) {
-        div.classList.add("has-leave");
-        if (matchingLeave.emergency) {
-          div.classList.add("emergency-leave");
-        }
-        div.innerHTML += `<span class="cell-badge">${matchingLeave.type}</span>`;
-        div.setAttribute("onclick", `openLeaveDetailsModal('${matchingLeave.id}')`);
-      }
-      
-      grid.appendChild(div);
-    }
-  }
-  
-  function openLeaveDetailsModal(leaveId) {
-    const leaves = loadDocData("leaves") || [];
-    const leave = leaves.find(l => l.id === leaveId);
-    if (!leave) return;
-    
-    document.getElementById("modal-leave-type").innerText = leave.type;
-    
-    const start = new Date(leave.start);
-    const end = new Date(leave.end);
-    const diffTime = Math.abs(end - start);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    
-    document.getElementById("modal-leave-duration").innerText = `${diffDays} Day(s)`;
-    document.getElementById("modal-leave-date").innerText = leave.format === "single" ? leave.start : `${leave.start} to ${leave.end}`;
-    
-    const emergency = document.getElementById("modal-leave-emergency");
-    emergency.innerText = leave.emergency ? "Emergency Flagged - Approved" : "Normal Leave - Approved";
-    emergency.className = leave.emergency ? "fw-bold text-danger" : "fw-bold text-teal";
-    
-    document.getElementById("modal-leave-notes").innerText = leave.reason;
-    
-    const modal = new bootstrap.Modal(document.getElementById('leaveDetailsModal'));
-    modal.show();
-  }
-  
-  // ==========================================================================
-  // VIEW 6: PATIENT REVIEWS BOARD MODULE
-  // ==========================================================================
-  
-  function renderReviewsModuleView() {
-    const reviews = loadDocData("reviews") || [];
-    
-    // Calculate Averages
-    const total = reviews.length;
-    const avg = total > 0 ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / total).toFixed(1) : "0.0";
-    
-    const reviewsTotal = document.getElementById("reviews-total-text");
-    const reviewsAvg = document.getElementById("reviews-avg-value");
-    const starsContainer = document.getElementById("reviews-avg-stars");
-    const tbody = document.getElementById("reviews-tbody");
-    
-    if (reviewsTotal) reviewsTotal.innerText = total;
-    if (reviewsAvg) reviewsAvg.innerText = avg;
-    
-    // Render stars
-    if (starsContainer) {
-      starsContainer.innerHTML = "";
-      const solidCount = Math.round(parseFloat(avg));
-      for (let i = 1; i <= 5; i++) {
-        starsContainer.innerHTML += i <= solidCount ? `<i class="bi bi-star-fill"></i>` : `<i class="bi bi-star"></i>`;
-      }
-    }
-    
-    // Distribution counts (safe checks for hidden elements)
-    const dist = { 5: 0, 4: 0, 3: 0 };
-    reviews.forEach(r => {
-      if (r.rating >= 5) dist[5]++;
-      else if (r.rating >= 4) dist[4]++;
-      else if (r.rating >= 3) dist[3]++;
-    });
-    
-    [5, 4, 3].forEach(star => {
-      const countEl = document.getElementById(`reviews-dist-${star}-count`);
-      const barEl = document.getElementById(`reviews-dist-${star}-bar`);
-      if (countEl) countEl.innerText = dist[star];
-      if (barEl) {
-        const pct = total > 0 ? (dist[star] / total) * 100 : 0;
-        barEl.style.width = `${pct}%`;
-      }
-    });
-    
-    if (!tbody) return;
-    
-    tbody.innerHTML = "";
-    if (reviews.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">No reviews recorded.</td></tr>`;
-      return;
-    }
-    
-    // Render review table rows
-    reviews.forEach(r => {
-      const tr = document.createElement("tr");
-      
-      let starsStr = "";
-      for (let i = 1; i <= 5; i++) {
-        starsStr += i <= r.rating ? "★" : "☆";
-      }
-      
-      tr.innerHTML = `
-        <td><strong class="text-ink">${r.name}</strong></td>
-        <td><span class="star-rating text-warning font-monospace fw-bold">${starsStr}</span></td>
-        <td class="text-muted small">${r.review}</td>
-        <td class="text-muted text-xs">${r.date}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-  
-  // ==========================================================================
-  // VIEW 7: ANALYTICS MODULE LOGIC (CHART.JS)
-  // ==========================================================================
-  
-  function renderAnalyticsModuleView() {
-    const appointments = loadDocData("appointments") || [];
-    const reviews = loadDocData("reviews") || [];
-    
-    const totalBookings = appointments.length;
-    const completedCount = appointments.filter(a => a.status === "Completed").length;
-    const pendingCount = appointments.filter(a => a.status === "Pending").length;
-    const cancelledCount = appointments.filter(a => a.status === "Cancelled").length;
-    const rescheduledCount = appointments.filter(a => a.status === "Confirmed").length;
-    const uniquePatients = [...new Set(appointments.map(a => a.patientName))].length;
-    
-    const ratingAvg = reviews.length > 0 ? reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length : 0;
-    const satisfactionPct = ratingAvg > 0 ? Math.round((ratingAvg / 5) * 100) : 0;
-    
-    // Set summary values
-    const ptsCountEl = document.getElementById("analytics-pts-count");
-    const aptsCountEl = document.getElementById("analytics-apts-count");
-    const reviewsCountEl = document.getElementById("analytics-reviews-count");
-    
-    if (ptsCountEl) ptsCountEl.innerText = uniquePatients;
-    if (aptsCountEl) aptsCountEl.innerText = totalBookings;
-    if (reviewsCountEl) reviewsCountEl.innerText = reviews.length;
-    
-    // Set sub-chart statistics cards
-    const completedValEl = document.getElementById("stats-completed-val");
-    const pendingValEl = document.getElementById("stats-pending-val");
-    const cancelledValEl = document.getElementById("stats-cancelled-val");
-    
-    if (completedValEl) completedValEl.innerText = completedCount;
-    if (pendingValEl) pendingValEl.innerText = pendingCount;
-    if (cancelledValEl) cancelledValEl.innerText = cancelledCount;
-    
-    // Keep legacy labels updated to avoid errors
-    const completedCountLegacy = document.getElementById("analytics-completed-count");
-    const revenueLegacy = document.getElementById("analytics-revenue-val");
-    const satisfactionLegacy = document.getElementById("analytics-satisfaction-val");
-    if (completedCountLegacy) completedCountLegacy.innerText = completedCount;
-    if (revenueLegacy) revenueLegacy.innerText = `₹${(completedCount * currentDoctor.fee).toLocaleString()}`;
-    if (satisfactionLegacy) satisfactionLegacy.innerText = `${satisfactionPct}%`;
-    
-    // Destroy existing chart to reload
-    if (window.appointmentStatusChart) {
-      window.appointmentStatusChart.destroy();
-    }
-    
-    // Render Appointment Status Pie Chart
-    const pieCanvas = document.getElementById("chart-appointment-status");
-    if (pieCanvas) {
-      const pieCtx = pieCanvas.getContext("2d");
-      window.appointmentStatusChart = new Chart(pieCtx, {
-        type: 'pie',
-        data: {
-          labels: ['Completed', 'Pending', 'Cancelled', 'Rescheduled'],
-          datasets: [{
-            data: [completedCount, pendingCount, cancelledCount, rescheduledCount],
-            backgroundColor: ['#2ec4b6', '#ff9f1c', '#e71d36', '#2366A4'],
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                boxWidth: 15,
-                padding: 20,
-                font: {
-                  family: "'Plus Jakarta Sans', sans-serif",
-                  weight: '600'
-                }
+  });
+
+  const statusCtx = document.getElementById('statusChart');
+  if (statusCtx) {
+      if (statusChartInstance) statusChartInstance.destroy();
+      statusChartInstance = new Chart(statusCtx, {
+          type: 'doughnut',
+          data: {
+              labels: ['Pending', 'Confirmed', 'Completed', 'Cancelled'],
+              datasets: [{
+                  data: [statusCounts.Pending, statusCounts.Confirmed, statusCounts.Completed, statusCounts.Cancelled],
+                  backgroundColor: ['#f59e0b', '#2366A4', '#2CB9B6', '#ef4444'],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                  legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
               }
-            }
           }
-        }
       });
-    }
   }
+
+  // 2. Weekly Chart
+  const weeklyLabels = [];
+  const weeklyData = [];
+  const daysName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   
-  // ==========================================================================
-  // VIEW 8: PRACTITIONER PROFILE EDIT MODULE
-  // ==========================================================================
-  
-  function renderProfileModuleView() {
-    const profile = loadDocData("profile") || currentDoctor;
-    
-    // Prefill Sidebar profile display
-    document.getElementById("profile-doc-name").innerText = profile.name;
-    document.getElementById("profile-doc-specialization").innerText = profile.specialization;
-    const sidebarEmail = document.getElementById("profile-sidebar-email");
-    const sidebarPhone = document.getElementById("profile-sidebar-phone");
-    if (sidebarEmail) sidebarEmail.innerText = profile.email;
-    if (sidebarPhone) sidebarPhone.innerText = profile.phone;
-    document.getElementById("profile-sidebar-exp").innerText = profile.experience;
-    document.getElementById("profile-sidebar-fee").innerText = `₹${profile.fee}`;
-    document.getElementById("profile-sidebar-address").innerText = profile.address;
-    document.getElementById("profile-photo-preview").src = profile.photo;
-    
-    // Prefill Forms inputs
-    document.getElementById("profile-name").value = profile.name;
-    document.getElementById("profile-email").value = profile.email;
-    document.getElementById("profile-phone").value = profile.phone;
-    document.getElementById("profile-department").value = profile.department;
-    document.getElementById("profile-exp").value = profile.experience;
-    document.getElementById("profile-qualification").value = profile.qualification;
-    document.getElementById("profile-fee").value = profile.fee;
-    document.getElementById("profile-specialization").value = profile.specialization;
-    document.getElementById("profile-address").value = profile.address;
-    
-    // Set View / Edit toggles state
-    const inputs = document.querySelectorAll("#profile-form input, #profile-form textarea");
-    inputs.forEach(input => {
-      // Keep email and department locked/disabled permanently as organizational credentials
-      if (input.id !== "profile-email" && input.id !== "profile-department") {
-        input.disabled = !profileEditMode;
-      }
-    });
-    
-    const editActions = document.getElementById("profile-edit-actions");
-    const editToggleBtn = document.getElementById("profile-edit-toggle-btn");
-    
-    if (profileEditMode) {
-      editActions.classList.remove("d-none");
-      editActions.classList.add("d-flex");
-      editToggleBtn.classList.add("d-none");
-    } else {
-      editActions.classList.add("d-none");
-      editActions.classList.remove("d-flex");
-      editToggleBtn.classList.remove("d-none");
-    }
+  for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      const dStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const dayLabel = i === 0 ? "Today" : daysName[d.getDay()];
+      weeklyLabels.push(dayLabel);
+      
+      const count = doctorAppointments.filter(apt => apt.date === dStr).length;
+      weeklyData.push(count);
   }
-  
-  function toggleProfileEditMode() {
-    profileEditMode = true;
-    renderProfileModuleView();
-  }
-  
-  function cancelProfileEdit() {
-    profileEditMode = false;
-    renderProfileModuleView();
-    showToast("Profile edits discarded.");
-  }
-  
-  function setupProfileFormSubmit() {
-    const form = document.getElementById("profile-form");
-    if (!form) return;
-    
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (!form.checkValidity()) {
-        form.classList.add("was-validated");
-        return;
-      }
-      
-      const profile = loadDocData("profile") || currentDoctor;
-      
-      // Save updated form inputs
-      profile.name = document.getElementById("profile-name").value.trim();
-      profile.phone = document.getElementById("profile-phone").value.trim();
-      profile.experience = document.getElementById("profile-exp").value.trim();
-      profile.qualification = document.getElementById("profile-qualification").value.trim();
-      profile.fee = parseInt(document.getElementById("profile-fee").value) || profile.fee;
-      profile.specialization = document.getElementById("profile-specialization").value.trim();
-      profile.address = document.getElementById("profile-address").value.trim();
-      
-      saveDocData("profile", profile);
-      currentDoctor = profile; // update local pointer
-      
-      showToast("Profile configuration settings committed successfully.");
-      
-      profileEditMode = false;
-      form.classList.remove("was-validated");
-      syncNavbarProfileData();
-      renderProfileModuleView();
-    });
-    
-    // Photo upload FileReader Base64 bindings
-    const uploader = document.getElementById("photo-file-input");
-    if (uploader) {
-      uploader.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const base64Url = event.target.result;
-            const profile = loadDocData("profile") || currentDoctor;
-            profile.photo = base64Url;
-            saveDocData("profile", profile);
-            currentDoctor = profile;
-            
-            document.getElementById("profile-photo-preview").src = base64Url;
-            syncNavbarProfileData();
-            showToast("Profile avatar uploaded successfully.");
-          };
-          reader.readAsDataURL(file);
-        }
+
+  const weeklyCtx = document.getElementById('weeklyChart');
+  if (weeklyCtx) {
+      if (weeklyChartInstance) weeklyChartInstance.destroy();
+      weeklyChartInstance = new Chart(weeklyCtx, {
+          type: 'bar',
+          data: {
+              labels: weeklyLabels,
+              datasets: [{
+                  label: 'Appointments',
+                  data: weeklyData,
+                  backgroundColor: 'rgba(35, 102, 164, 0.75)',
+                  borderColor: '#2366A4',
+                  borderWidth: 1,
+                  borderRadius: 6
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                      ticks: { stepSize: 1, color: '#587089' },
+                      grid: { borderDash: [4, 4] }
+                  },
+                  x: {
+                      ticks: { color: '#587089' }
+                  }
+              },
+              plugins: {
+                  legend: { display: false }
+              }
+          }
       });
-    }
+  }
+
+  // 3. Department Chart
+  const deptCounts = { Cardiology: 0, Neurology: 0, Orthopedics: 0, Ophthalmology: 0, Pediatrics: 0, Dentistry: 0 };
+  APPOINTMENTS_DATA.forEach(apt => {
+      if (deptCounts[apt.department] !== undefined) {
+          deptCounts[apt.department]++;
+      }
+  });
+
+  const deptCtx = document.getElementById('departmentChart');
+  if (deptCtx) {
+      if (departmentChartInstance) departmentChartInstance.destroy();
+      departmentChartInstance = new Chart(deptCtx, {
+          type: 'bar',
+          data: {
+              labels: Object.keys(deptCounts),
+              datasets: [{
+                  label: 'Total Active Patient Load',
+                  data: Object.values(deptCounts),
+                  backgroundColor: 'rgba(44, 185, 182, 0.75)',
+                  borderColor: '#2CB9B6',
+                  borderWidth: 1,
+                  borderRadius: 6
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  y: {
+                      beginAtZero: true,
+                      ticks: { stepSize: 1, color: '#587089' },
+                      grid: { borderDash: [4, 4] }
+                  },
+                  x: {
+                      ticks: { color: '#587089' }
+                  }
+              },
+              plugins: {
+                  legend: { display: false }
+              }
+          }
+      });
+  }
+}
+
+function renderAnalytics() {
+  const doctorAppointments = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
+  const todayStr = getRelativeDate(0);
+
+  const todayCount = doctorAppointments.filter(apt => apt.date === todayStr).length;
+  const pendingCount = doctorAppointments.filter(apt => apt.status === "Pending").length;
+  const completedCount = doctorAppointments.filter(apt => apt.status === "Completed").length;
+  const cancelledCount = doctorAppointments.filter(apt => apt.status === "Cancelled").length;
+
+  // Set stats
+  document.getElementById("analytics-today-count").innerText = todayCount;
+  document.getElementById("analytics-pending-count").innerText = pendingCount;
+  document.getElementById("analytics-completed-count").innerText = completedCount;
+  document.getElementById("analytics-cancelled-count").innerText = cancelledCount;
+
+  // Performance Cards
+  const totalTreated = 1240 + doctorAppointments.filter(apt => apt.status === "Completed").length;
+  document.getElementById("analytics-treated-total").innerText = totalTreated.toLocaleString();
+  
+  // Average Consultation Time
+  let avgTime = "15 min";
+  if (CURRENT_DOCTOR.department === "Cardiology") avgTime = "20 min";
+  else if (CURRENT_DOCTOR.department === "Pediatrics") avgTime = "12 min";
+  else if (CURRENT_DOCTOR.department === "Neurology") avgTime = "25 min";
+  document.getElementById("analytics-avg-time").innerText = avgTime;
+
+  // Satisfaction score
+  const reviewsData = DOCTOR_REVIEWS[CURRENT_DOCTOR.email] || { satisfaction: "96%" };
+  document.getElementById("analytics-satisfaction").innerText = reviewsData.satisfaction;
+  
+  // Attendance rates
+  let attendance = "96%";
+  if (CURRENT_DOCTOR.department === "Dentistry") attendance = "98%";
+  else if (CURRENT_DOCTOR.department === "Ophthalmology") attendance = "95%";
+  document.getElementById("analytics-attendance").innerText = attendance;
+
+  renderAnalyticsCharts();
+}
+
+setInterval(() => {
+  updateDashboardGreeting();
+  updateDashboardStats();
+  renderTodaysAppointments();
+}, 60000);
+
+// ==========================================================================
+// USER LOGIC HANDLERS (LOGIN / VALIDATION / FORMS)
+// ==========================================================================
+function initFormProcessors() {
+  const loginForm = document.getElementById("login-form");
+  if (loginForm) {
+      loginForm.addEventListener("submit", (e) => {
+          e.preventDefault(); 
+          
+          if (!loginForm.checkValidity()) {
+              e.stopPropagation();
+              loginForm.classList.add("was-validated");
+          } else {
+              const email = document.getElementById("login-id").value;
+              const password = document.getElementById("login-password").value;
+
+              const doctor = DOCTORS.find(
+                  d => d.email.toLowerCase() === email.toLowerCase() &&
+                       d.password === password
+              );
+
+              if (doctor) {
+                  CURRENT_DOCTOR = doctor;
+
+                  // Check remember me setting
+                  const rememberMeChecked = document.getElementById("rememberMe").checked;
+                  if (rememberMeChecked) {
+                      localStorage.setItem("remember_email", email);
+                      localStorage.setItem("remember_password", password);
+                  } else {
+                      localStorage.removeItem("remember_email");
+                      localStorage.removeItem("remember_password");
+                  }
+
+                  // Pre-fill profile page fields
+                  loadProfile(); 
+
+                  document.getElementById("login-page").classList.add("d-none");
+                  document.getElementById("app-container").classList.remove("d-none");
+
+                  updateDashboardGreeting();
+                  updateDashboardStats();
+                  renderTodaysAppointments();
+                  renderDoctorReviews();
+                  
+                  // Render default tables with logged doctor department
+                  renderAppointmentsTable(APPOINTMENTS_DATA);
+                  renderScheduleTable();
+
+                  switchView("dashboard");
+                  showToast("Welcome " + doctor.name);
+              } else {
+                  alert("Invalid Email Address or Password");
+              }
+          }
+      });
+  }
+
+  // Show/Hide password toggle listener
+  const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+  if (togglePasswordBtn) {
+      const passwordInput = document.getElementById("login-password");
+      const togglePasswordIcon = document.getElementById("togglePasswordIcon");
+      togglePasswordBtn.addEventListener("click", () => {
+          if (passwordInput.type === "password") {
+              passwordInput.type = "text";
+              togglePasswordIcon.className = "bi bi-eye";
+          } else {
+              passwordInput.type = "password";
+              togglePasswordIcon.className = "bi bi-eye-slash";
+          }
+      });
+  }
+
+  // Forgot password form submission
+  const forgotForm = document.getElementById("forgot-password-form");
+  if (forgotForm) {
+      forgotForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (!forgotForm.checkValidity()) {
+              e.stopPropagation();
+              forgotForm.classList.add("was-validated");
+          } else {
+              const email = document.getElementById("reset-email").value;
+              const modalEl = document.getElementById("forgotPasswordModal");
+              const modal = bootstrap.Modal.getInstance(modalEl);
+              if (modal) modal.hide();
+              showToast(`Password reset link successfully sent to ${email}`);
+              forgotForm.reset();
+              forgotForm.classList.remove("was-validated");
+          }
+      });
+  }
+
+  const logoutBtn = document.getElementById("btn-logout");
+  if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+          document.getElementById("app-container").classList.add("d-none");
+          document.getElementById("login-page").classList.remove("d-none");
+          if (loginForm) {
+              loginForm.classList.remove("was-validated");
+              // Don't reset remember values if saved
+              const savedEmail = localStorage.getItem("remember_email");
+              const savedPassword = localStorage.getItem("remember_password");
+              loginForm.reset();
+              if (savedEmail && savedPassword) {
+                  document.getElementById("login-id").value = savedEmail;
+                  document.getElementById("login-password").value = savedPassword;
+                  document.getElementById("rememberMe").checked = true;
+              }
+          }
+      });
+  }
+
+  const scheduleForm = document.getElementById("schedule-form");
+  if (scheduleForm) {
+      scheduleForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (!scheduleForm.checkValidity()) {
+              e.stopPropagation();
+              scheduleForm.classList.add("was-validated");
+          } else {
+              const dayInput = document.getElementById("schedule-day").value;
+              const timeInput = document.getElementById("schedule-time").value;
+              
+              SCHEDULE_DATA.push({
+                  id: Date.now(),
+                  day: dayInput,
+                  time: timeInput
+              });
+              
+              renderScheduleTable();
+              scheduleForm.reset();
+              scheduleForm.classList.remove("was-validated");
+              showToast("New clinical operational hours committed to schedule.");
+          }
+      });
   }
   
-  // ==========================================================================
-  // VIEW 9: SALARY STATEMENTS MODULE
-  // ==========================================================================
-  
-  function renderSalaryModuleView() {
-    const appointments = loadDocData("appointments") || [];
-    const salaryHistory = loadDocData("salary") || [];
-    
-    // Calculate dynamic bonuses and net for current month
-    const completedThisMonth = appointments.filter(a => a.status === "Completed").length; // simplifed mock
-    
-    const baseSalary = 180000;
-    const bonusRate = 500; // ₹500 bonus per completed visit
-    const bonuses = completedThisMonth * bonusRate;
-    const deductions = 5000; // standard tax/PF
-    const netPay = baseSalary + bonuses - deductions;
-    
-    // Calculate total paid across history
-    const totalPaid = salaryHistory.reduce((acc, s) => acc + (s.base + s.bonuses - s.deductions), 0);
-    
-    // Safe element updates
-    const baseEl = document.getElementById("salary-base-val");
-    const bonusesEl = document.getElementById("salary-bonuses-val");
-    const deductionsEl = document.getElementById("salary-deductions-val");
-    const netEl = document.getElementById("salary-net-val");
-    const totalPaidEl = document.getElementById("salary-total-paid-val");
-    
-    if (baseEl) baseEl.innerText = `₹${baseSalary.toLocaleString()}`;
-    if (bonusesEl) bonusesEl.innerText = `₹${bonuses.toLocaleString()}`;
-    if (deductionsEl) deductionsEl.innerText = `₹${deductions.toLocaleString()}`;
-    if (netEl) netEl.innerText = `₹${netPay.toLocaleString()}`;
-    if (totalPaidEl) totalPaidEl.innerText = `₹${totalPaid.toLocaleString()}`;
-    
-    // Render History table
-    const tbody = document.getElementById("salary-history-tbody");
-    if (!tbody) return;
-    
-    tbody.innerHTML = "";
-    
-    // Render current month pending/processing status
-    const currentMonthTr = document.createElement("tr");
-    currentMonthTr.innerHTML = `
-      <td><strong>June 2026 (Current)</strong></td>
-      <td><strong>₹${netPay.toLocaleString()}</strong></td>
-      <td><span class="badge bg-warning-subtle text-warning border border-warning border-opacity-25 rounded px-2 py-1">Processing</span></td>
-      <td class="text-end">
-        <button class="btn btn-sm btn-gradient-secondary border-0 shadow-sm px-3 text-xs" onclick="downloadSlipFor('June 2026', ${baseSalary}, ${bonuses}, ${deductions}, ${netPay}, 'Processing')">
-          <i class="bi bi-download"></i> Slip
-        </button>
-      </td>
-    `;
-    tbody.appendChild(currentMonthTr);
-    
-    // Render past months
-    salaryHistory.forEach(s => {
-      const totalNet = s.base + s.bonuses - s.deductions;
+  const leaveForm = document.getElementById("leave-form");
+  if (leaveForm) {
+      leaveForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if(!leaveForm.checkValidity()) {
+              e.stopPropagation();
+              leaveForm.classList.add("was-validated");
+          } else {
+              processLeaveSubmission();
+          }
+      });
+  }
+}
+
+// ==========================================================================
+// CLINICAL MODULE VIEW ENGINE SUBROUTINES
+// ==========================================================================
+function renderAppointmentsTable(dataset) {
+  const tbody = document.getElementById("appointmentTableBody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  // FILTER dataset for CURRENT_DOCTOR department
+  const filteredDataset = dataset.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
+
+  if(filteredDataset.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No patient matches found matching operational specifications.</td></tr>`;
+      return;
+  }
+
+  filteredDataset.forEach(apt => {
+      let priorityBadge = "";
+      if(apt.priority === "Urgent") priorityBadge = "🔴 Urgent";
+      else if(apt.priority === "Follow-up") priorityBadge = "🟡 Follow-up";
+      else priorityBadge = "🟢 Routine";
+
+      let statusBadge = "";
+      switch (apt.status) {
+          case "Pending": statusBadge = `<span class="badge bg-warning-subtle text-warning border border-warning border-opacity-25 px-2 py-1 rounded">Pending</span>`; break;
+          case "Confirmed": statusBadge = `<span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-1 rounded">Confirmed</span>`; break;
+          case "Completed": statusBadge = `<span class="badge bg-success-subtle text-success border border-success border-opacity-25 px-2 py-1 rounded">Completed</span>`; break;
+          case "Cancelled": statusBadge = `<span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 px-2 py-1 rounded">Cancelled</span>`; break;
+      }
+
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><strong>${s.month}</strong></td>
-        <td><strong>₹${totalNet.toLocaleString()}</strong></td>
-        <td><span class="badge bg-success-subtle text-success border border-success border-opacity-25 rounded px-2 py-1">${s.status}</span></td>
-        <td class="text-end">
-          <button class="btn btn-sm btn-gradient-secondary border-0 shadow-sm px-3 text-xs" onclick="downloadSlipFor('${s.month}', ${s.base}, ${s.bonuses}, ${s.deductions}, ${totalNet}, '${s.status}')">
-            <i class="bi bi-download"></i> Slip
-          </button>
-        </td>
+          <td class="fw-bold text-dark border-bottom-0 ps-4">${apt.patientName}</td>
+          <td class="border-bottom-0">${apt.date}</td>
+          <td class="border-bottom-0">${apt.time}</td>
+          <td class="fw-medium border-bottom-0">${priorityBadge}</td>
+          <td class="border-bottom-0">${statusBadge}</td>
+          <td class="text-end border-bottom-0 pe-4">
+              <div class="btn-group gap-1 shadow-sm rounded">
+                  <button class="btn btn-sm btn-outline-primary transition-card" onclick="loadPatientDetails('${apt.id}')"><i class="bi bi-folder2-open"></i> EHR File</button>
+                  <button class="btn btn-sm btn-outline-secondary transition-card" onclick="loadStatusUpdater('${apt.id}')"><i class="bi bi-sliders"></i> Status</button>
+              </div>
+          </td>
       `;
       tbody.appendChild(tr);
-    });
+  });
+}
+
+// EHR Patient Details Loader
+function loadPatientDetails(aptId) {
+  const apt = APPOINTMENTS_DATA.find(a => a.id === aptId);
+  if(apt) {
+      SELECTED_APPOINTMENT_ID = aptId;
+      document.getElementById("detail-pt-name").innerText = apt.patientName;
+      document.getElementById("detail-pt-id").innerText = `#${apt.id}`;
+      document.getElementById("detail-pt-agesex").innerText = `${apt.age} Yrs / ${apt.gender}`;
+      document.getElementById("detail-pt-complaint").innerText = apt.complaint;
+      switchView("patient-details");
+  }
+}
+
+function loadConsultationNotes() {
+  document.getElementById("note-symptoms").value = "";
+  document.getElementById("note-diagnosis").value = "";
+  document.getElementById("note-prescription").value = "";
+  document.getElementById("note-advice").value = "";
+  switchView("consultation-notes");
+}
+
+function saveConsultationNotes() {
+  showToast("Consultation summary variables compiled, signed digitally, and committed safely onto client record.");
+  switchView("appointments");
+}
+
+function loadStatusUpdater(aptId) {
+  const apt = APPOINTMENTS_DATA.find(a => a.id === aptId);
+  if(apt) {
+      SELECTED_APPOINTMENT_ID = aptId;
+      document.getElementById("status-pt-name").innerText = apt.patientName;
+      document.getElementById("status-pt-meta").innerText = `Target Slot Window: ${apt.date} @ ${apt.time}`;
+      switchView("status");
+  }
+}
+
+function updateStatusState(newStatus) {
+  const apt = APPOINTMENTS_DATA.find(a => a.id === SELECTED_APPOINTMENT_ID);
+  if(apt) {
+      apt.status = newStatus;
+      renderAppointmentsTable(APPOINTMENTS_DATA);
+      
+      updateDashboardStats();
+      renderTodaysAppointments();
+      
+      showToast(`Appointment internal tracking workflow moved to state: [${newStatus}].`);
+      switchView("appointments");
+  }
+}
+
+function renderScheduleTable() {
+  const tbody = document.getElementById("scheduleTableBody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  SCHEDULE_DATA.forEach(item => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+          <td class="fw-semibold ps-4 border-bottom-0">${item.day}</td>
+          <td class="font-monospace text-muted border-bottom-0">${item.time}</td>
+          <td class="text-end pe-4 border-bottom-0">
+              <button class="btn btn-sm btn-outline-danger p-1 px-2 border-0 shadow-sm transition-card bg-light" onclick="deleteScheduleBlock(${item.id})">
+                  <i class="bi bi-trash3-fill"></i>
+              </button>
+          </td>
+      `;
+      tbody.appendChild(tr);
+  });
+}
+
+function deleteScheduleBlock(id) {
+  SCHEDULE_DATA = SCHEDULE_DATA.filter(item => item.id !== id);
+  renderScheduleTable();
+}
+
+// ==========================================================================
+// MANAGE LEAVE CALENDAR MODULE & LEAVE LOGIC ENGINE
+// ==========================================================================
+function updateAvailabilityToggle() {
+  const label = document.getElementById("availabilityLabel");
+  const navLabel = document.getElementById("nav-availability-status");
+  if (IS_AVAILABLE_TODAY) {
+      if(label) { label.innerText = "🟢 Available Today"; label.className = "form-check-label small fw-bold text-success cursor-pointer"; }
+      if(navLabel) { navLabel.innerHTML = `<i class="bi bi-circle-fill me-1" style="font-size: 0.5rem; vertical-align: middle;"></i> Available Today`; navLabel.className = "badge bg-success-subtle text-success border border-success border-opacity-25 rounded-pill px-3 py-2 w-100 fw-medium"; }
+  } else {
+      if(label) { label.innerText = "🔴 Not Available"; label.className = "form-check-label small fw-bold text-danger cursor-pointer"; }
+      if(navLabel) { navLabel.innerHTML = `<i class="bi bi-circle-fill me-1" style="font-size: 0.5rem; vertical-align: middle;"></i> Not Available`; navLabel.className = "badge bg-danger-subtle text-danger border border-danger border-opacity-25 rounded-pill px-3 py-2 w-100 fw-medium"; }
+  }
+}
+
+function executeQuickScheduleAction(action) {
+  if (action === 'applyAll') {
+      const mondaySlots = SCHEDULE_DATA.filter(s => s.day === 'Mondays');
+      if (mondaySlots.length > 0) {
+          ['Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays'].forEach(day => {
+              mondaySlots.forEach(slot => {
+                  const exists = SCHEDULE_DATA.find(s => s.day === day && s.time === slot.time);
+                  if (!exists) {
+                      SCHEDULE_DATA.push({ id: Date.now() + Math.random(), day: day, time: slot.time });
+                  }
+              });
+          });
+          showToast("Monday's schedule successfully applied to all weekdays.");
+      } else {
+          alert("No schedule found for Monday to copy.");
+      }
+  } else if (action === 'emergency') {
+      const tgl = document.getElementById("availabilityToggle");
+      if(tgl) tgl.checked = false;
+      IS_AVAILABLE_TODAY = false;
+      updateAvailabilityToggle();
+      
+      const todayStr = getRelativeDate(0);
+      LEAVE_DATA.push({
+          id: Date.now(),
+          type: "Family Emergency",
+          start: todayStr,
+          end: todayStr,
+          format: "single",
+          reason: "Emergency flagged via quick action.",
+          emergency: true,
+          status: "Approved"
+      });
+      showToast("Emergency leave marked for today. Appointments blocked.");
+  } else if (action === 'reset') {
+      if(confirm("Are you sure you want to clear the entire schedule?")) {
+          SCHEDULE_DATA = [];
+      }
   }
   
-  function downloadSlipFor(month, base, bonuses, deductions, net, status) {
-    const profile = loadDocData("profile") || currentDoctor;
-    
-    const slipText = `
-  ============================================================
-                MEDICONNECT CLINICAL HOSPITAL
-                   OFFICIAL PAYROLL SLIP
-  ============================================================
-  PRACTITIONER NAME  : ${profile.name}
-  DEPARTMENT         : ${profile.department}
-  STATEMENT MONTH    : ${month}
-  PAYMENT STATUS     : ${status}
-  ------------------------------------------------------------
-  EARNINGS BREAKDOWN:
-    1. BASE PRACTITIONER SALARY    : INR ${base.toLocaleString()}.00
-    2. CONSULTATION BONUSES RATE   : INR ${bonuses.toLocaleString()}.00
-    
-  DEDUCTIONS BREAKDOWN:
-    1. PF & PROFESSIONAL TAX       : INR ${deductions.toLocaleString()}.00
-    
-  ------------------------------------------------------------
-  NET AMOUNT TRANSFERRED           : INR ${net.toLocaleString()}.00
-  ============================================================
-  Generated On : ${new Date().toLocaleString()}
-  Secure Digital Ledger Verified.
-  ============================================================
-  `;
-    
-    const blob = new Blob([slipText], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `MediConnect_SalarySlip_${month.replace(' ', '_')}.txt`;
-    
-    document.body.appendChild(a);
-    a.click();
-    
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast(`Salary slip for ${month} downloaded successfully.`);
+  renderScheduleTable();
+  renderMonthlyCalendar();
+}
+
+function toggleLeaveFormat() {
+  const format = document.getElementById("leave-format").value;
+  const singleWrap = document.getElementById("single-date-wrapper");
+  const multiStartWrap = document.getElementById("multi-start-wrapper");
+  const multiEndWrap = document.getElementById("multi-end-wrapper");
+  const singleInput = document.getElementById("leave-single-date");
+  const startInput = document.getElementById("leave-start-date");
+  const endInput = document.getElementById("leave-end-date");
+  
+  if(format === 'single') {
+      singleWrap.classList.remove('d-none');
+      multiStartWrap.classList.add('d-none');
+      multiEndWrap.classList.add('d-none');
+      singleInput.required = true;
+      startInput.required = false;
+      endInput.required = false;
+      calculateLeaveDuration();
+  } else {
+      singleWrap.classList.add('d-none');
+      multiStartWrap.classList.remove('d-none');
+      multiEndWrap.classList.remove('d-none');
+      singleInput.required = false;
+      startInput.required = true;
+      endInput.required = true;
+      calculateLeaveDuration();
+  }
+}
+
+function toggleOtherReason() {
+  const type = document.getElementById("leave-type-drp").value;
+  const otherWrap = document.getElementById("other-reason-wrapper");
+  const otherInput = document.getElementById("leave-other-reason");
+  
+  if(type === 'Other') {
+      otherWrap.classList.remove('d-none');
+      otherInput.required = true;
+  } else {
+      otherWrap.classList.add('d-none');
+      otherInput.required = false;
+  }
+}
+
+function calculateLeaveDuration() {
+  const format = document.getElementById("leave-format").value;
+  const durationDisplay = document.getElementById("duration-display");
+  const durationText = document.getElementById("duration-text");
+  
+  if(format === 'single') {
+      const val = document.getElementById("leave-single-date").value;
+      if(val) {
+          durationDisplay.classList.remove('d-none');
+          durationText.innerText = "Duration: 1 Day";
+      } else {
+          durationDisplay.classList.add('d-none');
+      }
+  } else {
+      const start = document.getElementById("leave-start-date").value;
+      const end = document.getElementById("leave-end-date").value;
+      
+      if(start && end) {
+          const startDate = new Date(start);
+          const endDate = new Date(end);
+          if(endDate >= startDate) {
+              const diffTime = Math.abs(endDate - startDate);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+              durationDisplay.classList.remove('d-none');
+              durationText.innerText = `Duration: ${diffDays} Days`;
+          } else {
+              durationDisplay.classList.remove('d-none');
+              durationText.innerText = "Invalid Date Range";
+          }
+      } else {
+          durationDisplay.classList.add('d-none');
+      }
+  }
+}
+
+function processLeaveSubmission() {
+  const format = document.getElementById("leave-format").value;
+  let start, end;
+  
+  if(format === 'single') {
+      start = document.getElementById("leave-single-date").value;
+      end = start;
+  } else {
+      start = document.getElementById("leave-start-date").value;
+      end = document.getElementById("leave-end-date").value;
+      if(new Date(end) < new Date(start)) {
+          alert("End date cannot be earlier than start date.");
+          return;
+      }
   }
   
-  function downloadCurrentSalarySlip() {
-    const appointments = loadDocData("appointments") || [];
-    const completedThisMonth = appointments.filter(a => a.status === "Completed").length;
-    
-    const baseSalary = 180000;
-    const bonuses = completedThisMonth * 500;
-    const deductions = 5000;
-    const netPay = baseSalary + bonuses - deductions;
-    
-    downloadSlipFor("June 2026", baseSalary, bonuses, deductions, netPay, "Processing");
+  let type = document.getElementById("leave-type-drp").value;
+  if(type === 'Other') {
+      type = document.getElementById("leave-other-reason").value;
   }
   
-  // ==========================================================================
-  // SYSTEM ALERT TOAST UTILITIES
-  // ==========================================================================
+  const reason = document.getElementById("leave-notes").value || type;
+  const emergency = document.getElementById("leave-emergency-toggle").checked;
   
-  function showToast(message) {
-    const toastEl = document.getElementById("app-toast");
-    const textEl = document.getElementById("toast-message-text");
-    if (!toastEl || !textEl) return;
-    
-    textEl.innerText = message;
-    const toastInstance = new bootstrap.Toast(toastEl, { delay: 4000 });
-    toastInstance.show();
+  const newLeave = {
+      id: Date.now(),
+      type: type,
+      start: start,
+      end: end,
+      format: format,
+      reason: reason,
+      emergency: emergency,
+      status: "Pending"
+  };
+  
+  LEAVE_DATA.push(newLeave);
+  
+  const form = document.getElementById("leave-form");
+  form.reset();
+  form.classList.remove('was-validated');
+  toggleLeaveFormat();
+  toggleOtherReason();
+  document.getElementById("duration-display").classList.add('d-none');
+  
+  showToast("Leave request formally submitted. Future appointments blocked.");
+  
+  renderMonthlyCalendar();
+}
+
+function changeCalendarMonth(offset) {
+  currentDateRender.setMonth(currentDateRender.getMonth() + offset);
+  renderMonthlyCalendar();
+}
+
+function getDatesInRange(startDate, endDate) {
+const dates = [];
+let currentDate = new Date(startDate);
+const end = new Date(endDate);
+
+while (currentDate <= end) {
+  dates.push(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`);
+  currentDate.setDate(currentDate.getDate() + 1);
+}
+return dates;
+}
+
+function renderMonthlyCalendar() {
+  const grid = document.getElementById("leave-calendar-grid");
+  const monthHeader = document.getElementById("calendar-month-year");
+  if (!grid || !monthHeader) return;
+  
+  grid.innerHTML = "";
+  
+  const year = currentDateRender.getFullYear();
+  const month = currentDateRender.getMonth();
+  
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  monthHeader.innerText = `${monthNames[month]} ${year}`;
+  
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  daysOfWeek.forEach(day => {
+      grid.innerHTML += `<div class="calendar-header-day">${day}</div>`;
+  });
+  
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+  const today = new Date();
+  const isCurrentMonthYear = today.getMonth() === month && today.getFullYear() === year;
+  
+  const leaveLookup = {};
+  LEAVE_DATA.forEach(leave => {
+      if(leave.status !== 'Cancelled') {
+          const rangeDates = getDatesInRange(leave.start, leave.end);
+          rangeDates.forEach(dStr => {
+              leaveLookup[dStr] = leave; 
+          });
+      }
+  });
+
+  for(let i = 0; i < firstDay; i++) {
+      grid.innerHTML += `<div class="calendar-day-cell empty-cell"></div>`;
   }
   
-  function completeAppointmentDirect(aptId) {
-    const appointments = loadDocData("appointments") || [];
-    const idx = appointments.findIndex(a => a.id === aptId);
-    if (idx !== -1) {
-      appointments[idx].status = "Completed";
-      saveDocData("appointments", appointments);
-      showToast("Appointment marked as Completed.");
-      if (currentView === "dashboard") renderDashboardView();
-      else if (currentView === "appointments") renderAppointmentsRegistryView();
-      else if (currentView === "analytics") renderAnalyticsModuleView();
-    }
+  for(let i = 1; i <= daysInMonth; i++) {
+      const isToday = isCurrentMonthYear && today.getDate() === i;
+      const cellDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      
+      let extraClasses = 'current-month';
+      if(isToday) extraClasses += ' today';
+      
+      let clickAttr = '';
+      const matchingLeave = leaveLookup[cellDateStr];
+      
+      if(matchingLeave) {
+          extraClasses += ' has-leave';
+          if(matchingLeave.emergency) extraClasses += ' emergency-leave';
+          clickAttr = `onclick="openLeaveModal(${matchingLeave.id})" title="Click to view details"`;
+      }
+      
+      grid.innerHTML += `<div class="calendar-day-cell ${extraClasses}" ${clickAttr}>${i}</div>`;
   }
-  
-  function cancelAppointmentDirect(aptId) {
-    const appointments = loadDocData("appointments") || [];
-    const idx = appointments.findIndex(a => a.id === aptId);
-    if (idx !== -1) {
-      appointments[idx].status = "Cancelled";
-      saveDocData("appointments", appointments);
-      showToast("Appointment marked as Cancelled.");
-      if (currentView === "dashboard") renderDashboardView();
-      else if (currentView === "appointments") renderAppointmentsRegistryView();
-      else if (currentView === "analytics") renderAnalyticsModuleView();
-    }
+}
+
+function openLeaveModal(leaveId) {
+  const leave = LEAVE_DATA.find(l => l.id === leaveId);
+  if(leave) {
+      document.getElementById("modal-leave-date").innerText = leave.format === 'single' ? leave.start : `${leave.start} to ${leave.end}`;
+      document.getElementById("modal-leave-type").innerText = leave.type;
+      
+      let durationStr = "1 Day";
+      if(leave.format === 'multiple') {
+          const start = new Date(leave.start);
+          const end = new Date(leave.end);
+          const diffTime = Math.abs(end - start);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+          durationStr = `${diffDays} Days`;
+      }
+      document.getElementById("modal-leave-duration").innerText = durationStr;
+      
+      const statusEl = document.getElementById("modal-leave-status");
+      statusEl.innerText = leave.status;
+      statusEl.className = leave.status === 'Approved' ? 'text-success' : 'text-warning';
+      
+      const emergencyEl = document.getElementById("modal-leave-emergency");
+      emergencyEl.innerText = leave.emergency ? "Yes" : "No";
+      emergencyEl.className = leave.emergency ? "text-danger" : "text-dark";
+      
+      document.getElementById("modal-leave-reason").innerText = leave.reason;
+      
+      const modal = new bootstrap.Modal(document.getElementById('leaveDetailsModal'));
+      modal.show();
   }
+}
+
+// ==========================================================================
+// SALARY DOWNLOAD UTILITIES
+// ==========================================================================
+function downloadReceipt(month, amount, status) {
+  const nameInput = document.getElementById('prof-name');
+  const docName = nameInput ? nameInput.value : CURRENT_DOCTOR.name;
   
+  const receiptContent = `
+=============================================
+       MEDI CONNECT - SALARY RECEIPT            
+=============================================
+
+Doctor Name       : ${docName}
+Statement Month   : ${month}
+Total Net Amount  : ${amount}
+Payment Status    : ${status}
+
+Generated On      : ${new Date().toLocaleDateString()}
+
+---------------------------------------------
+Thank you for your dedicated service.
+=============================================
+`;
+
+  const blob = new Blob([receiptContent], { type: 'text/plain' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  
+  a.href = url;
+  a.download = `MEDI_CONNECT_Salary_Receipt_${month.replace(' ', '_')}.txt`;
+  
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+  
+  showToast(`Salary receipt for ${month} downloaded successfully.`);
+}
+
+function updateDepartmentIllustration(department) {
+  const iconWrapper = document.getElementById("department-icon-wrapper");
+  const labelEl = document.getElementById("department-illustration-label");
+  if (!iconWrapper) return;
+
+  if (labelEl) {
+      labelEl.textContent = department;
+  }
+
+  const deptLower = department.toLowerCase();
+  let svgContent = "";
+
+  if (deptLower.includes("cardiology")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-cardio" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-cardio" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="url(#grad-cardio)" filter="url(#glow-cardio)"/><path d="M3 13h3.5l1.5-4 2 8 2-10 1.5 6 1-2H21" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  } else if (deptLower.includes("dentistry")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-dent" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-dent" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#14B8A6" flood-opacity="0.6"/></filter></defs><path d="M12 2c-3.3 0-5.5 1.7-5.5 5.5 0 2 .8 4 1.3 5.5.5 1.5.7 3 .2 4.5-.3.8-.1 1.5.5 1.5s1.2-.8 1.7-2.3c.5-1.5 1-2.2 1.8-2.2s1.3.7 1.8 2.2c.5 1.5 1.1 2.3 1.7 2.3s.8-.7.5-1.5c-.5-1.5-.3-3 .2-4.5.5-1.5 1.3-3.5 1.3-5.5C17.5 3.7 15.3 2 12 2z" fill="url(#grad-dent)" filter="url(#glow-dent)"/><path d="M17.5 4.5l.3 1 .9.3-.9.3-.3 1-.3-1-.9-.3.9-.3z" fill="#FFFFFF"/></svg>`;
+  } else if (deptLower.includes("neurology")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-neuro" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-neuro" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><path d="M12 3c-3.6 0-6.5 2.7-6.5 6 0 1.2.4 2.3 1 3.2C5.6 13 5 14.2 5 15.5 5 18 7 20 9.5 20c.6 0 1.2-.1 1.7-.4.5.3 1 .4 1.6.4.6 0 1.1-.1 1.6-.4.5.3 1 .4 1.7.4 2.5 0 4.5-2 4.5-4.5 0-1.3-.6-2.5-1.5-3.3.6-.9 1-2 1-3.2 0-3.3-2.9-6-6.5-6z" fill="url(#grad-neuro)" filter="url(#glow-neuro)"/><path d="M9 7.5c.5-1.5 2-2 3-1.5M7.5 10c1-.5 2 .5 2 1.5M8 13.5c1 .5 1.5 1.5 1 2.5M15 7.5c-.5-1.5-2-2-3-1.5M16.5 10c-1-.5-2 .5-2 1.5M16 13.5c-1 .5-1.5 1.5-1 2.5" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round"/></svg>`;
+  } else if (deptLower.includes("orthopedics")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-ortho" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-ortho" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g transform="rotate(-45 12 12)" filter="url(#glow-ortho)"><rect x="5" y="11" width="14" height="2" rx="1" fill="url(#grad-ortho)"/><circle cx="5" cy="10" r="2" fill="url(#grad-ortho)"/><circle cx="5" cy="14" r="2" fill="url(#grad-ortho)"/><circle cx="19" cy="10" r="2" fill="url(#grad-ortho)"/><circle cx="19" cy="14" r="2" fill="url(#grad-ortho)"/></g></svg>`;
+  } else if (deptLower.includes("ent")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-ent" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-ent" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><path d="M9 3a5 5 0 0 0-3 9.2V19a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-1.2A6 6 0 0 0 17 9a5 5 0 0 0-8-6z" fill="url(#grad-ent)" filter="url(#glow-ent)"/><path d="M9 5a3 3 0 0 1 4.8 2.4c0 1.5-.8 2.8-2 3.4a1 1 0 0 0-.6.9v3.6a1 1 0 0 1-2 0V11a1 1 0 0 0-.5-.9C8 9.3 7 8 7 6.4A3 3 0 0 1 9 5z" fill="#FFFFFF"/></svg>`;
+  } else if (deptLower.includes("gynecology")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-gyn" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-gyn" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g filter="url(#glow-gyn)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="url(#grad-gyn)"/><circle cx="10" cy="8" r="1.8" fill="#FFFFFF"/><path d="M7.5 14c0-1.5 1.5-2.2 2.5-2.2s2.5.7 2.5 2.2v1.5h-5V14z" fill="#FFFFFF"/><circle cx="13.5" cy="10.5" r="1.1" fill="#FFFFFF"/><path d="M12.5 13.5c0-.8.8-1.2 1.3-1.2s1.3.4 1.3 1.2v1h-2.6v-1z" fill="#FFFFFF"/></g></svg>`;
+  } else if (deptLower.includes("pulmonology")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-pulm" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-pulm" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g filter="url(#glow-pulm)"><path d="M11 5.5C8 5.5 5.5 8 5.5 12c0 3.5 2 6 5 6.5V5.5z" fill="url(#grad-pulm)"/><path d="M13 5.5C16 5.5 18.5 8 18.5 12c0 3.5-2 6-5 6.5V5.5z" fill="url(#grad-pulm)"/><path d="M12 3.5v5m0 0l-2 2m2-2l2 2" fill="none" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round"/></g></svg>`;
+  } else if (deptLower.includes("general physician")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-gp" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-gp" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g filter="url(#glow-gp)"><path d="M7 4h3M14 4h3M8 4v2c0 3 2 5.5 4 5.5s4-2.5 4-5.5V4" fill="none" stroke="url(#grad-gp)" stroke-width="2" stroke-linecap="round"/><path d="M12 11.5v4.5" fill="none" stroke="url(#grad-gp)" stroke-width="2"/><circle cx="12" cy="18" r="2.5" fill="url(#grad-gp)"/><circle cx="12" cy="18" r="0.8" fill="#FFFFFF"/></g></svg>`;
+  } else if (deptLower.includes("nephrology")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-neph" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-neph" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g filter="url(#glow-neph)"><path d="M9.5 5C7 5 5 7.5 5 11c0 3.5 2 6 4.5 6 .8 0 1-.8 1-2.5V7.5c0-1.7-.2-2.5-1-2.5z" fill="url(#grad-neph)"/><path d="M14.5 5c2.5 0 4.5 2.5 4.5 6 0 3.5-2 6-4.5 6-.8 0-1-.8-1-2.5V7.5c0-1.7.2-2.5 1-2.5z" fill="url(#grad-neph)"/><path d="M10.5 13.5c0 1.5.8 2.5 1.5 4M13.5 13.5c0 1.5-.8 2.5-1.5 4" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round"/></g></svg>`;
+  } else if (deptLower.includes("dermatology")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-derm" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-derm" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g filter="url(#glow-derm)"><path d="M3 8h18M3 13h18M3 18h18" fill="none" stroke="url(#grad-derm)" stroke-width="2" stroke-linecap="round"/><path d="M11.5 3c-1.5 3.5.5 5.5 1.5 7" fill="none" stroke="url(#grad-derm)" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="11.5" r="1.5" fill="#FFFFFF"/></g></svg>`;
+  } else if (deptLower.includes("ophthalmology")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-ophth" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-ophth" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g filter="url(#glow-ophth)"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" fill="none" stroke="url(#grad-ophth)" stroke-width="2"/><circle cx="12" cy="12" r="4.5" fill="url(#grad-ophth)"/><circle cx="12" cy="12" r="1.8" fill="#FFFFFF"/></g></svg>`;
+  } else if (deptLower.includes("pediatrics")) {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-peds" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-peds" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g filter="url(#glow-peds)"><circle cx="7" cy="8" r="2.5" fill="url(#grad-peds)"/><circle cx="17" cy="8" r="2.5" fill="url(#grad-peds)"/><circle cx="7" cy="8" r="1" fill="#FFFFFF"/><circle cx="17" cy="8" r="1" fill="#FFFFFF"/><circle cx="12" cy="13.5" r="5.5" fill="url(#grad-peds)"/><circle cx="10" cy="12.5" r="0.8" fill="#FFFFFF"/><circle cx="14" cy="12.5" r="0.8" fill="#FFFFFF"/><ellipse cx="12" cy="15" rx="1.5" ry="1" fill="#FFFFFF"/><circle cx="12" cy="14.5" r="0.6" fill="url(#grad-peds)"/><path d="M19 1.5h2v2h2v2h-2v2h-2v-2h-2v-2h2z" fill="#FFFFFF"/></g></svg>`;
+  } else {
+      svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48"><defs><linearGradient id="grad-gp" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563EB" /><stop offset="50%" stop-color="#0891B2" /><stop offset="100%" stop-color="#14B8A6" /></linearGradient><filter id="glow-gp" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#0891B2" flood-opacity="0.6"/></filter></defs><g filter="url(#glow-gp)"><path d="M7 4h3M14 4h3M8 4v2c0 3 2 5.5 4 5.5s4-2.5 4-5.5V4" fill="none" stroke="url(#grad-gp)" stroke-width="2" stroke-linecap="round"/><path d="M12 11.5v4.5" fill="none" stroke="url(#grad-gp)" stroke-width="2"/><circle cx="12" cy="18" r="2.5" fill="url(#grad-gp)"/><circle cx="12" cy="18" r="0.8" fill="#FFFFFF"/></g></svg>`;
+  }
+
+  iconWrapper.innerHTML = svgContent;
+}
