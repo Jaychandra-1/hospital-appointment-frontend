@@ -288,13 +288,12 @@ function resetPassword(event) {
         return;
     }
     
-    if (viewId === "schedule") {
-        renderMonthlyCalendar();
-    }
-
-    if (viewId === "analytics") {
-        renderAnalytics();
-    }
+    showToast('✅ Password reset successfully! Please login.', 'success');
+    closeForgotModal();
+    
+    setTimeout(() => {
+        openLoginModal();
+    }, 500);
 }
 
 // ============================================
@@ -394,47 +393,77 @@ function toggleEditProfile() {
         editBtn.style.display = 'none';
         showToast('You can now edit your profile', 'info');
     } else {
-        if(editBtn) editBtn.classList.remove('d-none');
-        if(actions) actions.classList.add('d-none');
-        loadProfile(); 
+        actions.style.display = 'none';
+        editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Profile';
+        editBtn.style.display = 'inline-flex';
+        const user = getCurrentUser();
+        if (user) {
+            updateUserProfile(user);
+        }
+    }
+}
+
+function validateDateOfBirth() {
+    const dobInput = document.getElementById('dob');
+    const dobError = document.getElementById('dobError');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const selectedDate = new Date(dobInput.value);
+    selectedDate.setHours(0, 0, 0, 0);
+    
+    if (selectedDate > today) {
+        if (dobError) dobError.classList.add('show');
+        if (dobInput) dobInput.style.borderColor = '#e74c3c';
+        return false;
+    } else {
+        if (dobError) dobError.classList.remove('show');
+        if (dobInput) dobInput.style.borderColor = '#d6e9f0';
+        return true;
+    }
+}
+
+document.getElementById('dob')?.addEventListener('change', function() {
+    if (isEditingProfile) {
+        validateDateOfBirth();
+        updateAge();
+    }
+});
+
+function updateAge() {
+    const dob = document.getElementById('dob').value;
+    if (dob) {
+        const birthDate = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        document.getElementById('age').value = age;
     }
 }
 
 function saveProfile() {
-    const data = {
-        name: document.getElementById('prof-name').value,
-        email: document.getElementById('prof-email').value,
-        phone: document.getElementById('prof-phone').value,
-        exp: document.getElementById('prof-exp').value,
-        domain: document.getElementById('prof-domain').value,
-        fee: document.getElementById('prof-fee').value
-    };
+    const name = document.getElementById('fullName').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const emergencyContact = document.getElementById('emergencyContact').value.trim();
+    const bloodGroup = document.getElementById('bloodGroup').value.trim();
+    const gender = document.getElementById('gender').value;
     
-    localStorage.setItem('doctorProfileMaster_' + CURRENT_DOCTOR.email, JSON.stringify(data));
+    if (!validateDateOfBirth()) {
+        showToast('Please select a valid date of birth (cannot be in future)', 'error');
+        return;
+    }
     
-    updateGlobalProfileUI();
-    updateDashboardGreeting();
-    
-    toggleEditMode(false);
-    showToast('Profile Details Updated Successfully');
-}
-
-function loadProfile() {
-    const savedData = JSON.parse(localStorage.getItem('doctorProfileMaster_' + CURRENT_DOCTOR.email));
-    if (savedData) {
-        document.getElementById('prof-name').value = savedData.name;
-        document.getElementById('prof-email').value = savedData.email;
-        document.getElementById('prof-phone').value = savedData.phone;
-        document.getElementById('prof-exp').value = savedData.exp;
-        document.getElementById('prof-domain').value = savedData.domain;
-        document.getElementById('prof-fee').value = savedData.fee;
-    } else {
-        document.getElementById('prof-name').value = CURRENT_DOCTOR.name;
-        document.getElementById('prof-email').value = CURRENT_DOCTOR.email;
-        document.getElementById('prof-phone').value = CURRENT_DOCTOR.phone || "+91 9876543210";
-        document.getElementById('prof-exp').value = CURRENT_DOCTOR.experience || "10 Years";
-        document.getElementById('prof-domain').value = CURRENT_DOCTOR.department;
-        document.getElementById('prof-fee').value = CURRENT_DOCTOR.fee || 500;
+    if (!name) {
+        showToast('Please enter your full name', 'error');
+        return;
+    }
+    if (!mobile || mobile.length < 10) {
+        showToast('Please enter a valid mobile number', 'error');
+        return;
     }
     if (!address) {
         showToast('Please enter your address', 'error');
@@ -563,182 +592,223 @@ function changeMonth(delta) {
         currentMonth = 11;
         currentYear--;
     }
-
-    const today = new Date();
-    if (dateEl) {
-        dateEl.textContent = today.toLocaleDateString("en-US", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        });
-    }
-
-    if (summaryEl) {
-        const todayStr = getRelativeDate(0);
-        const doctorAppointments = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
-        const todaysApts = doctorAppointments.filter(apt => apt.date === todayStr);
-        const totalToday = todaysApts.length;
-        const followUps = todaysApts.filter(apt => apt.priority === "Follow-up").length;
-        summaryEl.textContent = `You have ${totalToday} appointments scheduled today, including ${followUps} follow-up consultations.`;
-    }
-}
-
-function updateDashboardStats() {
-    const todayCountEl = document.getElementById("stats-today-count");
-    const pendingCountEl = document.getElementById("stats-pending-count");
-    const completedCountEl = document.getElementById("stats-completed-count");
-    const cancelledCountEl = document.getElementById("stats-cancelled-count");
-
-    const todayStr = getRelativeDate(0);
-    const doctorAppointments = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
-
-    const todayCount = doctorAppointments.filter(apt => apt.date === todayStr).length;
-    const pendingCount = doctorAppointments.filter(apt => apt.status === "Pending").length;
-    const completedCount = doctorAppointments.filter(apt => apt.status === "Completed").length;
-    const cancelledCount = doctorAppointments.filter(apt => apt.status === "Cancelled").length;
-
-    if (todayCountEl) todayCountEl.textContent = todayCount;
-    if (pendingCountEl) pendingCountEl.textContent = pendingCount;
-    if (completedCountEl) completedCountEl.textContent = completedCount;
-    if (cancelledCountEl) cancelledCountEl.textContent = cancelledCount;
-}
-
-function filterAppointments(filterType) {
-    CURRENT_DASHBOARD_FILTER = filterType;
-
-    document.querySelectorAll('.dashboard-stat-card').forEach(card => {
-        if(card.getAttribute('data-filter') === filterType) {
-            card.classList.add('active-stat-card');
-        } else {
-            card.classList.remove('active-stat-card');
-        }
-    });
-
-    const titleEl = document.getElementById('dashboard-table-title');
-    if (titleEl) {
-        if(filterType === 'today') titleEl.innerText = "Today's Appointments";
-        else if(filterType === 'Pending') titleEl.innerText = "Pending Appointments";
-        else if(filterType === 'Completed') titleEl.innerText = "Completed Appointments";
-        else if(filterType === 'Cancelled') titleEl.innerText = "Cancelled Appointments";
-    }
-
-    renderTodaysAppointments();
-}
-
-function renderTodaysAppointments(searchTerm = '') {
-    const tbody = document.getElementById("dashboardAppointmentTableBody");
-    if (!tbody) return;
-    tbody.innerHTML = "";
-
-    const todayStr = getRelativeDate(0);
-    let filtered = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
-
-    if (CURRENT_DASHBOARD_FILTER === 'today') {
-        filtered = filtered.filter(apt => apt.date === todayStr);
-    } else {
-        filtered = filtered.filter(apt => apt.status === CURRENT_DASHBOARD_FILTER);
-    }
-
-    if (searchTerm.trim() !== "") {
-        const term = searchTerm.toLowerCase();
-        filtered = filtered.filter(apt => apt.patientName.toLowerCase().includes(term));
-    }
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No appointments found matching targeted schedule queries.</td></tr>`;
-        return;
-    }
-
-    filtered.forEach(apt => {
-        let priorityBadge = "";
-        if(apt.priority === "Urgent") priorityBadge = "🔴 Urgent";
-        else if(apt.priority === "Follow-up") priorityBadge = "🟡 Follow-up";
-        else priorityBadge = "🟢 Routine";
-
-        let statusBadge = "";
-        switch (apt.status) {
-            case "Pending": statusBadge = `<span class="badge bg-warning-subtle text-warning border border-warning border-opacity-25 px-2 py-1 rounded">Pending</span>`; break;
-            case "Confirmed": statusBadge = `<span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-1 rounded">Confirmed</span>`; break;
-            case "Completed": statusBadge = `<span class="badge bg-success-subtle text-success border border-success border-opacity-25 px-2 py-1 rounded">Completed</span>`; break;
-            case "Cancelled": statusBadge = `<span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 px-2 py-1 rounded">Cancelled</span>`; break;
-        }
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="fw-bold text-dark border-bottom-0 ps-4">${apt.patientName}</td>
-            <td class="border-bottom-0">${apt.date}</td>
-            <td class="border-bottom-0">${apt.time}</td>
-            <td class="fw-medium border-bottom-0">${priorityBadge}</td>
-            <td class="border-bottom-0">${statusBadge}</td>
-            <td class="text-end border-bottom-0 pe-4">
-                <div class="btn-group gap-1 shadow-sm rounded">
-                    <button class="btn btn-sm btn-outline-primary transition-card" onclick="loadPatientDetails('${apt.id}')"><i class="bi bi-folder2-open"></i> EHR</button>
-                    <button class="btn btn-sm btn-outline-secondary transition-card" onclick="loadStatusUpdater('${apt.id}')"><i class="bi bi-sliders"></i> Status</button>
-                </div>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-// ==========================================================================
-// DOCTOR REVIEWS RENDERER ENGINE
-// ==========================================================================
-function renderDoctorReviews() {
-    const reviewsContainer = document.getElementById("reviews-list-container");
-    const avgRatingVal = document.getElementById("avg-rating-value");
-    const totalReviewsVal = document.getElementById("total-reviews-value");
-    const satisfactionBar = document.getElementById("satisfaction-bar");
-    const satisfactionPercent = document.getElementById("satisfaction-percent");
-
-    if (!reviewsContainer) return;
-
-    const data = DOCTOR_REVIEWS[CURRENT_DOCTOR.email] || { avgRating: "5.0/5", totalCount: "0 reviews", satisfaction: "100%", list: [] };
     
-    if (avgRatingVal) avgRatingVal.innerText = `⭐ ${data.avgRating}`;
-    if (totalReviewsVal) totalReviewsVal.innerText = `(${data.totalCount})`;
-    if (satisfactionBar) satisfactionBar.style.width = data.satisfaction;
-    if (satisfactionPercent) satisfactionPercent.innerText = `${data.satisfaction} Patient Satisfaction`;
-
-    reviewsContainer.innerHTML = "";
-    if (data.list.length === 0) {
-        reviewsContainer.innerHTML = `<div class="col-12 text-center py-3 text-muted">No reviews recorded yet for this provider.</div>`;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    maxDate.setHours(0, 0, 0, 0);
+    
+    const firstOfMonth = new Date(currentYear, currentMonth, 1);
+    firstOfMonth.setHours(0, 0, 0, 0);
+    
+    if (firstOfMonth > maxDate) {
+        showToast('Cannot view dates beyond 30 days', 'warning');
+        currentMonth = today.getMonth();
+        currentYear = today.getFullYear();
+        generateCalendar(currentDoctorData.availableDays);
         return;
     }
+    
+    generateCalendar(currentDoctorData.availableDays);
+}
 
-    data.list.forEach(rev => {
-        let stars = "";
-        for(let i=1; i<=5; i++) {
-            if(i <= rev.rating) stars += '<i class="bi bi-star-fill text-warning me-1" style="font-size: 0.85rem;"></i>';
-            else stars += '<i class="bi bi-star text-muted me-1" style="font-size: 0.85rem;"></i>';
-        }
-
-        const initials = rev.name.split(" ").map(n => n[0]).join("");
-
-        const div = document.createElement("div");
-        div.className = "col-12 col-md-6";
-        div.innerHTML = `
-            <div class="card p-3 rounded-3 review-card border h-100 shadow-xs">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 34px; height: 34px; font-size: 0.8rem;">
-                            ${initials}
-                        </div>
-                        <div>
-                            <h6 class="m-0 fw-bold text-dark" style="font-size: 0.85rem;">${rev.name}</h6>
-                            <small class="text-muted" style="font-size: 0.7rem;">${rev.date}</small>
-                        </div>
-                    </div>
-                    <div>
-                        ${stars}
-                    </div>
-                </div>
-                <p class="m-0 text-muted small text-dark" style="line-height: 1.45; font-size: 0.8rem;">"${rev.text}"</p>
-            </div>
-        `;
-        reviewsContainer.appendChild(div);
+function generateCalendar(availableDays) {
+    const calendarEl = document.getElementById('doctorCalendar');
+    if (!calendarEl) return;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    maxDate.setHours(0, 0, 0, 0);
+    
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const startingDay = firstDay.getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    document.getElementById('calendarMonthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    
+    let html = '';
+    
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayNames.forEach(day => {
+        html += `<div style="text-align:center; font-size:11px; font-weight:600; color:#3f7484; padding:4px;">${day}</div>`;
     });
+    
+    for (let i = 0; i < startingDay; i++) {
+        html += `<div style="padding:4px;"></div>`;
+    }
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        date.setHours(0, 0, 0, 0);
+        const dayOfWeek = date.getDay();
+        const isToday = date.getTime() === today.getTime();
+        const isPast = date < today;
+        const isFutureBeyond30 = date > maxDate;
+        const isAvailable = availableDays.includes(dayOfWeek) && !isPast && !isFutureBeyond30;
+        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const dayStr = String(date.getDate()).padStart(2, '0');
+        const dateStr = year + '-' + month + '-' + dayStr;
+        
+        let classes = 'calendar-day';
+        if (isAvailable) {
+            classes += ' available';
+        } else {
+            classes += ' unavailable';
+        }
+        if (isToday) classes += ' today';
+        if (selectedDate === dateStr) classes += ' selected';
+        
+        html += `<div class="${classes}" data-date="${dateStr}" onclick="selectCalendarDate('${dateStr}')">
+            ${day}
+        </div>`;
+    }
+    
+    calendarEl.innerHTML = html;
+    
+    const dateInput = document.getElementById('appointmentDate');
+    const minDate = new Date();
+    minDate.setHours(0, 0, 0, 0);
+    dateInput.min = minDate.toISOString().split('T')[0];
+    dateInput.max = maxDate.toISOString().split('T')[0];
+}
+
+function selectCalendarDate(dateStr) {
+    const selectedElement = document.querySelector(`.calendar-day[data-date="${dateStr}"]`);
+    if (!selectedElement) {
+        showToast('Please select a valid date', 'warning');
+        return;
+    }
+    
+    if (selectedElement.classList.contains('unavailable')) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selectedDateObj = new Date(dateStr + 'T00:00:00');
+        selectedDateObj.setHours(0, 0, 0, 0);
+        const maxDate = new Date();
+        maxDate.setDate(maxDate.getDate() + 30);
+        maxDate.setHours(0, 0, 0, 0);
+        
+        if (selectedDateObj < today) {
+            showToast('Cannot select past dates', 'warning');
+        } else if (selectedDateObj > maxDate) {
+            showToast('Cannot select dates beyond 30 days', 'warning');
+        } else {
+            showToast('Doctor is not available on this date', 'warning');
+        }
+        return;
+    }
+    
+    selectedDate = dateStr;
+    
+    const dateInput = document.getElementById('appointmentDate');
+    if (dateInput) {
+        dateInput.value = dateStr;
+        dateInput.dispatchEvent(new Event('change'));
+    }
+    
+    document.querySelectorAll('.calendar-day').forEach(el => {
+        el.classList.remove('selected');
+        if (el.dataset.date === dateStr) {
+            el.classList.add('selected');
+        }
+    });
+    
+    updateSlotsForSelectedDate();
+    
+    const displayDate = new Date(dateStr + 'T00:00:00');
+    showToast(`Selected: ${displayDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}`, 'success');
+}
+
+function updateSlotsForSelectedDate() {
+    const slotsContainer = document.getElementById('doctorSlotsContainer');
+    const timeSelect = document.getElementById('appointmentTime');
+    
+    if (!selectedDate || !currentDoctorData) {
+        slotsContainer.innerHTML = '<span style="color:#3f7484; font-size:13px;">Please select a date</span>';
+        timeSelect.disabled = true;
+        timeSelect.innerHTML = '<option value="">Please select a date first</option>';
+        return;
+    }
+    
+    const now = new Date();
+    const currentHour = now.getHours();
+    const selectedDateObj = new Date(selectedDate + 'T00:00:00');
+    const isToday = selectedDateObj.toDateString() === now.toDateString();
+    
+    const bookedSlots = ['11:00 AM', '03:00 PM'];
+    
+    let html = '';
+    let selectHtml = '<option value="">Select a time slot</option>';
+    let hasAvailable = false;
+    
+    currentDoctorData.slots.forEach(slot => {
+        const isBooked = bookedSlots.includes(slot);
+        let isAvailable = !isBooked;
+        
+        if (isToday && isAvailable) {
+            const slotHour = parseInt(slot.split(':')[0]);
+            const slotAmPm = slot.split(' ')[1];
+            let slotHour24 = slotHour;
+            if (slotAmPm === 'PM' && slotHour !== 12) slotHour24 = slotHour + 12;
+            if (slotAmPm === 'AM' && slotHour === 12) slotHour24 = 0;
+            
+            if (slotHour24 < currentHour + 1) {
+                isAvailable = false;
+            }
+        }
+        
+        const isSelected = selectedSlot === slot;
+        
+        if (isAvailable) {
+            hasAvailable = true;
+            html += `<button class="time-slot-btn ${isSelected ? 'selected' : ''}" onclick="selectTimeSlot('${slot}')">
+                ${slot}
+            </button>`;
+            selectHtml += `<option value="${slot}" ${isSelected ? 'selected' : ''}>${slot}</option>`;
+        } else if (isBooked) {
+            html += `<button class="time-slot-btn booked" disabled>${slot} (Booked)</button>`;
+        } else {
+            html += `<button class="time-slot-btn unavailable" disabled>${slot} (Unavailable)</button>`;
+        }
+    });
+    
+    if (!hasAvailable) {
+        html = '<span style="color:#e74c3c; font-size:13px;">No slots available on this date</span>';
+    }
+    
+    slotsContainer.innerHTML = html;
+    timeSelect.innerHTML = selectHtml;
+    timeSelect.disabled = false;
+    
+    if (selectedSlot) {
+        document.getElementById('selectedSlotDisplay').textContent = selectedSlot;
+        timeSelect.value = selectedSlot;
+    } else {
+        document.getElementById('selectedSlotDisplay').textContent = 'None';
+    }
+}
+
+function selectTimeSlot(slot) {
+    selectedSlot = slot;
+    document.getElementById('selectedSlotDisplay').textContent = slot;
+    
+    const timeSelect = document.getElementById('appointmentTime');
+    timeSelect.value = slot;
+    
+    document.querySelectorAll('.time-slot-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.textContent.trim() === slot) {
+            btn.classList.add('selected');
+        }
+    });
+    
+    showToast(`Selected time: ${slot}`, 'success');
 }
 
 // ============================================
@@ -1207,32 +1277,53 @@ function submitRating() {
         document.getElementById('ratingText').style.color = '#e74c3c';
         return;
     }
-
-    filteredDataset.forEach(apt => {
-        let priorityBadge = "";
-        if(apt.priority === "Urgent") priorityBadge = "🔴 Urgent";
-        else if(apt.priority === "Follow-up") priorityBadge = "🟡 Follow-up";
-        else priorityBadge = "🟢 Routine";
-
-        let statusBadge = "";
-        switch (apt.status) {
-            case "Pending": statusBadge = `<span class="badge bg-warning-subtle text-warning border border-warning border-opacity-25 px-2 py-1 rounded">Pending</span>`; break;
-            case "Confirmed": statusBadge = `<span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-1 rounded">Confirmed</span>`; break;
-            case "Completed": statusBadge = `<span class="badge bg-success-subtle text-success border border-success border-opacity-25 px-2 py-1 rounded">Completed</span>`; break;
-            case "Cancelled": statusBadge = `<span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 px-2 py-1 rounded">Cancelled</span>`; break;
+    
+    if (!review || review.length < 10) {
+        if (reviewField) {
+            reviewField.style.borderColor = '#e74c3c';
+            reviewField.placeholder = '⚠️ Please write a detailed review (min 10 characters)';
         }
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="fw-bold text-dark border-bottom-0 ps-4">${apt.patientName}</td>
-            <td class="border-bottom-0">${apt.date}</td>
-            <td class="border-bottom-0">${apt.time}</td>
-            <td class="fw-medium border-bottom-0">${priorityBadge}</td>
-            <td class="border-bottom-0">${statusBadge}</td>
-            <td class="text-end border-bottom-0 pe-4">
-                <div class="btn-group gap-1 shadow-sm rounded">
-                    <button class="btn btn-sm btn-outline-primary transition-card" onclick="loadPatientDetails('${apt.id}')"><i class="bi bi-folder2-open"></i> EHR File</button>
-                    <button class="btn btn-sm btn-outline-secondary transition-card" onclick="loadStatusUpdater('${apt.id}')"><i class="bi bi-sliders"></i> Status</button>
+        if (errorEl) {
+            errorEl.style.display = 'block';
+            errorEl.textContent = 'Please write at least 10 characters';
+        }
+        return;
+    }
+    
+    const doctorName = currentRatingDoctor;
+    
+    const pendingItems = document.querySelectorAll('#pendingRatingsList .appointment-card');
+    pendingItems.forEach(item => {
+        if (item.textContent.includes(doctorName)) {
+            item.dataset.rated = 'true';
+            const rateBtn = item.querySelector('.btn-outline');
+            if (rateBtn) {
+                rateBtn.textContent = '✅ Reviewed';
+                rateBtn.style.cssText = 'color:#28a745; border-color:#28a745; cursor:default;';
+                rateBtn.onclick = function() {
+                    showToast('Already reviewed this doctor', 'info');
+                };
+            }
+            const statusBadge = item.querySelector('.status-badge');
+            if (statusBadge) {
+                statusBadge.textContent = 'Reviewed';
+                statusBadge.className = 'status-badge completed';
+            }
+        }
+    });
+    
+    closeRatingModal();
+    showToast(`✅ Thank you for rating ${currentRatingDoctor} ${selectedRating} stars!`, 'success');
+    
+    const ratingsList = document.getElementById('ratingsList');
+    if (ratingsList) {
+        const newRating = document.createElement('div');
+        newRating.style.cssText = 'background:#f8fcfd; padding:16px; border-radius:16px; margin-bottom:12px; border-left:4px solid #f5b342; animation: fadeIn 0.3s ease;';
+        newRating.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <strong>${currentRatingDoctor}</strong>
+                    <span style="font-size:13px; color:#3f7484;">${currentRatingSpecialization}</span>
                 </div>
                 <div style="color:#f5b342; font-size:18px;">
                     ${'<i class="fas fa-star"></i>'.repeat(selectedRating)}${'<i class="fas fa-star" style="color:#d1d5db;"></i>'.repeat(5 - selectedRating)}
@@ -1298,30 +1389,45 @@ function addAppointmentToDashboard(appointmentData) {
     }
 }
 
-function renderScheduleTable() {
-    const tbody = document.getElementById("scheduleTableBody");
-    if (!tbody) return;
-    tbody.innerHTML = "";
-
-    SCHEDULE_DATA.forEach(item => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="fw-semibold ps-4 border-bottom-0">${item.day}</td>
-            <td class="font-monospace text-muted border-bottom-0">${item.time}</td>
-            <td class="text-end pe-4 border-bottom-0">
-                <button class="btn btn-sm btn-outline-danger p-1 px-2 border-0 shadow-sm transition-card bg-light" onclick="deleteScheduleBlock(${item.id})">
-                    <i class="bi bi-trash3-fill"></i>
-                </button>
-            </td>
+function addNotification(doctorName, date, time) {
+    const notifList = document.getElementById('notificationsList');
+    if (notifList) {
+        const newNotif = document.createElement('div');
+        newNotif.className = 'notif-item';
+        newNotif.dataset.category = 'appointment';
+        newNotif.dataset.read = 'false';
+        newNotif.innerHTML = `
+            <div class="notif-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="notif-content">
+                <strong>New Appointment Booked</strong>
+                <span style="color:#2d5f6b;">with ${doctorName} on ${date} at ${time}</span>
+            </div>
+            <span class="notif-time">Just now</span>
+            <span class="badge" style="background:#0b6e7c; color:white; cursor:pointer;" onclick="markAsRead(this)">Unread</span>
         `;
-        tbody.appendChild(tr);
-    });
+        notifList.insertBefore(newNotif, notifList.firstChild);
+    }
 }
 
-function deleteScheduleBlock(id) {
-    SCHEDULE_DATA = SCHEDULE_DATA.filter(item => item.id !== id);
-    renderScheduleTable();
+function updateNotificationCount() {
+    const unreadCount = document.querySelectorAll('.notif-item[data-read="false"]').length;
+    const headerBadge = document.getElementById('headerBadgeCount');
+    const dashBadge = document.getElementById('dashNotifications');
+    
+    if (headerBadge) {
+        headerBadge.textContent = unreadCount;
+        headerBadge.style.display = unreadCount === 0 ? 'none' : 'flex';
+    }
+    if (dashBadge) {
+        dashBadge.textContent = unreadCount;
+    }
 }
+
+document.getElementById('paymentModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePaymentModal();
+    }
+});
 
 // ============================================
 // SECTION 18: UPDATE TRACKING PAGE
@@ -1387,31 +1493,39 @@ function openPasswordModal() {
     document.body.style.overflow = 'hidden';
 }
 
-function toggleLeaveFormat() {
-    const format = document.getElementById("leave-format").value;
-    const singleWrap = document.getElementById("single-date-wrapper");
-    const multiStartWrap = document.getElementById("multi-start-wrapper");
-    const multiEndWrap = document.getElementById("multi-end-wrapper");
-    const singleInput = document.getElementById("leave-single-date");
-    const startInput = document.getElementById("leave-start-date");
-    const endInput = document.getElementById("leave-end-date");
+function closePasswordModal() {
+    document.getElementById('passwordModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPasswordChange').value = '';
+    document.getElementById('confirmPasswordChange').value = '';
+}
+
+function changePassword() {
+    const current = document.getElementById('currentPassword')?.value || '';
+    const newPass = document.getElementById('newPasswordChange')?.value || '';
+    const confirm = document.getElementById('confirmPasswordChange')?.value || '';
     
-    if(format === 'single') {
-        singleWrap.classList.remove('d-none');
-        multiStartWrap.classList.add('d-none');
-        multiEndWrap.classList.add('d-none');
-        singleInput.required = true;
-        startInput.required = false;
-        endInput.required = false;
-        calculateLeaveDuration();
-    } else {
-        singleWrap.classList.add('d-none');
-        multiStartWrap.classList.remove('d-none');
-        multiEndWrap.classList.remove('d-none');
-        singleInput.required = false;
-        startInput.required = true;
-        endInput.required = true;
-        calculateLeaveDuration();
+    if (!current) {
+        showToast('Please enter current password', 'error');
+        return;
+    }
+    if (newPass.length < 6) {
+        showToast('New password must be at least 6 characters', 'error');
+        return;
+    }
+    if (newPass !== confirm) {
+        showToast('New passwords do not match', 'error');
+        return;
+    }
+    
+    showToast('✅ Password changed successfully! (Demo mode)', 'success');
+    closePasswordModal();
+}
+
+document.getElementById('passwordModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePasswordModal();
     }
 });
 
@@ -1543,24 +1657,14 @@ function openAccessibilityModal() {
     document.body.style.overflow = 'hidden';
 }
 
-function getDatesInRange(startDate, endDate) {
-  const dates = [];
-  let currentDate = new Date(startDate);
-  const end = new Date(endDate);
-  
-  while (currentDate <= end) {
-    dates.push(`${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`);
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-  return dates;
+function closeAccessibilityModal() {
+    document.getElementById('accessibilityModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
 }
 
-function renderMonthlyCalendar() {
-    const grid = document.getElementById("leave-calendar-grid");
-    const monthHeader = document.getElementById("calendar-month-year");
-    if (!grid || !monthHeader) return;
-    
-    grid.innerHTML = "";
+function saveAccessibilityPrefs() {
+    const fontSize = document.getElementById('accessibilityFontSize')?.value || 'medium';
+    const colorScheme = document.getElementById('accessibilityColorScheme')?.value || 'default';
     
     const sizeMap = { small: '12px', medium: '14px', large: '16px', xlarge: '18px' };
     document.body.style.fontSize = sizeMap[fontSize] || '14px';

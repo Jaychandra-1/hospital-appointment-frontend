@@ -253,7 +253,10 @@
       <a href="#how-it-works">How it works</a>
       <a href="#contact">Contact Us</a>
     </div>
-    <div class="nav-cta"><button class="btn btn-primary">Sign in</button></div>
+    <div class="nav-cta">
+      <button class="btn btn-primary" onclick="goToLogin()">
+          Sign in
+      </button>
   </div>
 </nav>
 
@@ -263,7 +266,9 @@
     <span class="pill"><span class="dot"></span> MEDI-CONNECT</span>
     <h1>Book, Track, and Manage Your Healthcare Journey in One Place</h1>
     <p class="lead">Unifying providers and patients on a secure, . Experience healthcare as it should be: seamless, fast, and human-centric.</p>
-    <button class="btn btn-primary">Book Appointment </button>
+    <button class="btn btn-primary" onclick="openPatientPortal()">
+      Book Appointment
+  </button>
   </div>
   <div class="hero-visual" id="heroVisual">
     <div class="orbit o1"></div>
@@ -445,6 +450,19 @@
     const hv = document.getElementById('heroVisual');
     if(hv) hv.style.transform = `translate(${x}px, ${y}px)`;
   });
+  function goToLogin() {
+    window.location.href = "login.html";
+}
 </script>
+<script>
+  function openPatientPortal() {
+      window.location.href = "patient.html";
+  }
+  </script>
+  <script>
+    function goToLogin() {
+        window.location.href = "index.html";
+    }
+    </script>
 </body>
 </html>
