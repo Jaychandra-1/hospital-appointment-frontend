@@ -12,32 +12,53 @@
 </head>
 <body>
 
-<!-- ============================================
-     PROFESSIONAL LOGIN MODAL (GMAIL ONLY - NO SOCIAL OPTIONS)
-     ============================================ -->
-<div id="loginModal" class="modal-overlay login-overlay active">
-    <div class="login-container">
-        <div class="login-box">
-            <div class="login-brand">
-                <div class="login-brand-content">
-                    <div class="login-logo">
-                        <i class="fas fa-heart-pulse"></i>
+    <!-- Floating Background Particles -->
+    <div class="bg-fx" id="login-bg-fx"></div>
+
+    <div id="login-page" class="d-flex align-items-center justify-content-center min-vh-100 py-5 position-relative">
+        <div class="card login-card p-4 shadow-lg border-0 w-100 style-card glass-card" style="max-width: 420px; z-index: 2;">
+            <div class="text-center mb-4">
+                <div class="brand-logo mb-2 mx-auto" style="width: 60px; height: 60px;">
+                    <img src="logo.jpeg" alt="MEDI CONNECT Logo">
+                </div>
+                <h4 class="fw-bold mb-1" style="font-family: 'Space Grotesk', sans-serif;">MEDI CONNECT</h4>
+                <p class="text-muted small">Doctor Module Authentication</p>
+            </div>
+            <form id="login-form" novalidate>
+                <div class="mb-3">
+    <label class="form-label small fw-semibold">
+        Login As
+    </label>
+
+    <div class="input-group">
+        <span class="input-group-text bg-transparent text-muted">
+            <i class="bi bi-person-badge"></i>
+        </span>
+
+        <select id="login-role" class="form-select">
+            <option value="doctor">Doctor</option>
+            <option value="admin">Admin</option>
+            
+        </select>
+    </div>
+</div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent text-muted"><i class="bi bi-envelope"></i></span>
+                        <input type="email" id="login-id" class="form-control text-dark" placeholder="doctor@mediconnect.com" required>
+                        <div class="invalid-feedback">Please enter a valid Email Address.</div>
                     </div>
-                    <h1>MediConnect</h1>
-                    <p class="login-tagline">Your Health, Connected.</p>
-                    <div class="login-features">
-                        <div class="login-feature">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Secure &amp; Confidential</span>
-                        </div>
-                        <div class="login-feature">
-                            <i class="fas fa-clock"></i>
-                            <span>24/7 Access</span>
-                        </div>
-                        <div class="login-feature">
-                            <i class="fas fa-user-md"></i>
-                            <span>Top Specialists</span>
-                        </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent text-muted"><i class="bi bi-lock"></i></span>
+                        <input type="password" id="login-password" class="form-control text-dark" placeholder="••••••••" required>
+                        <button class="btn toggle-password-btn" type="button" id="togglePasswordBtn" style="border: 1px solid #dee2e6; border-left: none;">
+                            <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>
+                        </button>
+                        <div class="invalid-feedback">Please enter your password.</div>
                     </div>
                 </div>
             </div>
