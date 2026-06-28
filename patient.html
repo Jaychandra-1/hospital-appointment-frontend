@@ -78,19 +78,6 @@
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </button>
 
-                    <div class="login-divider">
-                        <span>or continue with</span>
-                    </div>
-
-                    <div class="login-social">
-                        <button type="button" class="social-btn google" onclick="showToast('Google login coming soon!', 'info')">
-                            <i class="fab fa-google"></i> Google
-                        </button>
-                        <button type="button" class="social-btn apple" onclick="showToast('Apple login coming soon!', 'info')">
-                            <i class="fab fa-apple"></i> Apple
-                        </button>
-                    </div>
-
                     <div class="login-footer">
                         <p>Don't have an account? <a href="#" onclick="openRegisterModal(); return false;">Register Now</a></p>
                     </div>
@@ -326,7 +313,7 @@
         <p class="subtitle">Complete your payment via Razorpay</p>
         
         <div id="paymentDoctorInfo" style="background:#f8fcfd; padding:12px 16px; border-radius:12px; margin-bottom:16px;">
-            <div><strong>Doctor:</strong> <span id="modalDoctorName">Dr. Priya Sharma</span></div>
+            <div><strong>Doctor:</strong> <span id="modalDoctorName"><Dr class="Aruna"></Dr></span></div>
             <div><strong>Patient:</strong> <span id="modalPatientName">Demo Patient</span></div>
             <div><strong>Date:</strong> <span id="modalAppointmentDate">25 June 2026</span></div>
             <div><strong>Time:</strong> <span id="modalAppointmentTime">10:00 AM</span></div>
@@ -405,7 +392,7 @@
         
         <div style="text-align:center; margin-bottom:20px;">
             <div style="font-size:14px; color:#3f7484; margin-bottom:12px;">
-                <strong id="ratingDoctorName">Dr. Priya Sharma</strong>
+                <strong id="ratingDoctorName">Dr. Aruna</strong>
                 <span style="display:block; font-size:12px; color:#8a9ba5;" id="ratingDoctorSpecialization">Cardiologist</span>
             </div>
             <div style="display:flex; gap:12px; justify-content:center; font-size:40px; margin:16px 0;" id="starContainer">
@@ -464,7 +451,7 @@
                 </div>
                 <div class="download-row">
                     <span class="download-label">Doctor:</span>
-                    <span class="download-value" id="downloadDoctorName">Dr. Priya Sharma</span>
+                    <span class="download-value" id="downloadDoctorName">Dr. Aruna</span>
                 </div>
                 <div class="download-row">
                     <span class="download-label">Specialization:</span>
@@ -790,7 +777,7 @@
         <p class="subtitle">Please provide reason for cancellation</p>
         
         <div style="margin-bottom:16px;">
-            <div><strong>Appointment:</strong> <span id="cancelAppointmentInfo">Dr. Priya Sharma - 25 June 2026, 10:30 AM</span></div>
+            <div><strong>Appointment:</strong> <span id="cancelAppointmentInfo">Dr. Aruna- 25 June 2026, 10:30 AM</span></div>
             <div style="margin-top:8px; padding:12px; background:#fff3cd; border-radius:8px; font-size:13px; color:#856404;">
                 <i class="fas fa-info-circle"></i> Cancellation is free of charge
             </div>
@@ -889,9 +876,9 @@
                     <i class="fas fa-clock text-teal"></i> Recent Appointments
                 </h4>
                 <div class="appointment-list" id="recentAppointments">
-                    <div class="appointment-card" data-id="2" data-doctor="Dr. Arjun Reddy" data-specialization="Dermatologist" data-date="18 June 2026" data-time="2:00 PM" data-status="completed">
+                    <div class="appointment-card" data-id="2" data-doctor="Dr. Saniya" data-specialization="Neurology" data-date="18 June 2026" data-time="2:00 PM" data-status="completed">
                         <div>
-                            <span class="appointment-doctor">Dr. Arjun Reddy <small>Dermatologist</small></span>
+                            <span class="appointment-doctor">Dr. Saniya <small>Neurology</small></span>
                             <span class="appointment-time">18 June 2026, 2:00 PM</span>
                         </div>
                         <span class="status-badge completed">Completed</span>
@@ -913,7 +900,7 @@
                     
                     <div class="appointment-card" data-id="3" data-doctor="Dr. Meera Nair" data-specialization="ENT" data-date="10 June 2026" data-time="4:15 PM" data-status="cancelled">
                         <div>
-                            <span class="appointment-doctor">Dr. Meera Nair <small>ENT</small></span>
+                            <span class="appointment-doctor">Dr. Bharath<small>Orthopedics</small></span>
                             <span class="appointment-time">10 June 2026, 4:15 PM</span>
                         </div>
                         <span class="status-badge cancelled">Cancelled</span>
@@ -1089,11 +1076,12 @@
             <div class="booking-form">
                 <label>Select Doctor</label>
                 <select id="doctorSelect" onchange="updateDoctorSummary()">
-                    <option value="0">Dr. Priya Sharma - Cardiologist</option>
-                    <option value="1">Dr. Arjun Reddy - Dermatologist</option>
-                    <option value="2">Dr. Meera Nair - ENT</option>
-                    <option value="3">Dr. Suresh Patel - Orthopedic</option>
-                    <option value="4">Dr. Ananya Singh - Gynecologist</option>
+                    <option value="0">Dr. Aruna - Cardiologist</option>
+                    <option value="1">Dr. Saniya  -Neurology</option>
+                    <option value="2">Dr. Bharath - Orthopedics</option>
+                    <option value="3">Dr. Jayachandra - Ophthalmology</option>
+                    <option value="4"> Dr. Sruthi- Pediatrics</option>
+                    <option value="4"> Dr. Sreedhar- Dentistry</option>
                 </select>
 
                 <label>Appointment Date</label>
@@ -1309,7 +1297,7 @@
 
             <div class="appointment-card" data-status="completed" data-id="h2">
                 <div>
-                    <span class="appointment-doctor">Dr. Arjun Reddy <small>Dermatologist</small></span>
+                    <span class="appointment-doctor"><Dr class="Saniya"></Dr><small>Neurology</small></span>
                     <span class="appointment-time">18 June 2026 · 2:00 PM</span>
                 </div>
                 <span class="status-badge completed">Completed</span>
@@ -1318,7 +1306,7 @@
 
             <div class="appointment-card" data-status="cancelled" data-id="h3">
                 <div>
-                    <span class="appointment-doctor">Dr. Meera Nair <small>ENT</small></span>
+                    <span class="appointment-doctor">Dr. Bharath<small>Orthopedics</small></span>
                     <span class="appointment-time">10 June 2026 · 4:15 PM</span>
                 </div>
                 <span class="status-badge cancelled">Cancelled</span>
@@ -1374,7 +1362,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
                             <strong>Dr. Arjun Reddy</strong>
-                            <span style="font-size:13px; color:#3f7484;">Dermatologist</span>
+                            <span style="font-size:13px; color:#3f7484;">Neurology</span>
                         </div>
                         <div style="color:#f5b342;">
                             <i class="fas fa-star"></i>

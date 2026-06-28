@@ -490,7 +490,7 @@ function saveProfile() {
 // ============================================
 const doctorsData = [
     { 
-        name: 'Dr. Priya Sharma', 
+        name: 'Dr. Aruna', 
         credentials: 'MBBS, MD', 
         specialization: 'Cardiologist', 
         experience: '18 years', 
@@ -501,9 +501,9 @@ const doctorsData = [
         slots: ['09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM', '04:00 PM']
     },
     { 
-        name: 'Dr. Arjun Reddy', 
+        name: 'Dr. Saniya', 
         credentials: 'MBBS, DDV', 
-        specialization: 'Dermatologist', 
+        specialization: 'Neurology', 
         experience: '12 years', 
         rating: 4.7, 
         reviews: 98, 
@@ -512,9 +512,9 @@ const doctorsData = [
         slots: ['09:00 AM', '11:00 AM', '01:00 PM', '03:00 PM', '05:00 PM']
     },
     { 
-        name: 'Dr. Meera Nair', 
+        name: 'Dr. Bharath', 
         credentials: 'MBBS, MS', 
-        specialization: 'ENT', 
+        specialization: 'Orthopedics', 
         experience: '15 years', 
         rating: 4.9, 
         reviews: 156, 
@@ -523,26 +523,37 @@ const doctorsData = [
         slots: ['10:00 AM', '12:00 PM', '02:00 PM', '04:00 PM']
     },
     { 
-        name: 'Dr. Suresh Patel', 
+        name: 'Dr.Jaya chandra', 
         credentials: 'MBBS, DNB', 
-        specialization: 'Orthopedic', 
+        specialization: 'Ophthalmology', 
         experience: '10 years', 
         rating: 4.6, 
         reviews: 84, 
         fee: 650,
-        availableDays: [1, 2, 3, 5],
+        availableDays: [ 2, 3,4 ],
         slots: ['08:00 AM', '10:00 AM', '01:00 PM', '03:00 PM']
     },
     { 
-        name: 'Dr. Ananya Singh', 
+        name: 'Dr. Sruthi', 
         credentials: 'MBBS, MD', 
         specialization: 'Gynecologist', 
         experience: '14 years', 
         rating: 4.8, 
         reviews: 112, 
         fee: 720,
-        availableDays: [1, 2, 3, 4, 5],
+        availableDays: [1,2,3,4,5],
         slots: ['09:00 AM', '11:00 AM', '02:00 PM', '05:00 PM']
+    },
+    {
+        name: "Dr. Sreedhar",
+        credentials: "BDS, MDS",
+        specialization: "Dentist",
+        experience: "16 years",
+        rating: 4.9,
+        reviews: 50,
+        fee: 850,
+        availableDays: [1,2,3,4,5],
+        slots: ["09:00 AM","10:00 AM","11:00 AM","02:00 PM","04:00 PM"]
     }
 ];
 
@@ -558,6 +569,14 @@ let currentYear = new Date().getFullYear();
 function updateDoctorSummary() {
     const index = parseInt(document.getElementById('doctorSelect').value);
     currentDoctorData = doctorsData[index];
+    document.getElementById("selectedDoctorName").innerHTML =
+`${currentDoctorData.name} <span style="font-size:15px;">${currentDoctorData.credentials}</span>`;
+
+document.getElementById("selectedDoctorCreds").innerHTML =
+`${currentDoctorData.specialization} · ${currentDoctorData.experience} experience`;
+
+document.getElementById("doctorFee").textContent =
+currentDoctorData.fee;
     
     if (currentDoctorData) {
         document.getElementById('selectedDoctorName').innerHTML = `${currentDoctorData.name} <span style="font-size:15px; font-weight:400; color:#1f6b7a;">${currentDoctorData.credentials}</span>`;
@@ -882,11 +901,12 @@ function openPaymentModal() {
     }
     
     const doctors = [
-        { name: 'Dr. Priya Sharma', fee: 800 },
-        { name: 'Dr. Arjun Reddy', fee: 700 },
-        { name: 'Dr. Meera Nair', fee: 750 },
-        { name: 'Dr. Suresh Patel', fee: 650 },
-        { name: 'Dr. Ananya Singh', fee: 720 }
+        { name: 'Dr. Aruna', fee: 800 },
+        { name: 'Dr. Saniya', fee: 700 },
+        { name: 'Dr. Bharath', fee: 750 },
+        { name: 'Dr.Jaya chandra', fee: 650 },
+        { name: 'Dr. Sruthi', fee: 720 },
+        { name: 'Dr. Sreedhar', fee: 720 }
     ];
     const index = parseInt(document.getElementById('doctorSelect').value);
     const doctor = doctors[index];
@@ -1081,7 +1101,7 @@ For real appointments, full details would be shown here.
         alert(details);
         showToast('Viewing appointment details', 'success');
     } else {
-        alert(`📋 Appointment Details\n━━━━━━━━━━━━━━━━━━━━━\n🩺 Doctor: Dr. Priya Sharma\n📅 Date: 25 June 2026\n⏰ Time: 10:30 AM\n📌 Status: Upcoming\n💳 Fee: ₹800\n━━━━━━━━━━━━━━━━━━━━━\n📌 Note: This is a demo appointment.`);
+        alert(`📋 Appointment Details\n━━━━━━━━━━━━━━━━━━━━━\n🩺 Doctor: Dr. Aruna\n📅 Date: 25 June 2026\n⏰ Time: 10:30 AM\n📌 Status: Upcoming\n💳 Fee: ₹800\n━━━━━━━━━━━━━━━━━━━━━\n📌 Note: This is a demo appointment.`);
         showToast('Viewing appointment details', 'success');
     }
 }
@@ -1090,7 +1110,7 @@ For real appointments, full details would be shown here.
 // SECTION 15: CANCEL APPOINTMENT
 // ============================================
 function openCancelModal() {
-    const doctor = document.getElementById('trackingDoctor')?.textContent || 'Dr. Priya Sharma';
+    const doctor = document.getElementById('trackingDoctor')?.textContent || 'Dr. Aruna';
     const date = document.getElementById('trackingDate')?.textContent || '25 June 2026, 10:30 AM';
     
     document.getElementById('cancelAppointmentInfo').textContent = `${doctor} - ${date}`;

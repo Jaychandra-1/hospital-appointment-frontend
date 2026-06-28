@@ -1,6 +1,8 @@
 // ==========================================================================
 // CORE APP STATE MEMORY INTERFACES & PREDEFINED DATASETS
 // ==========================================================================
+let appointments =
+JSON.parse(localStorage.getItem("appointments")) || [];
 function getRelativeDate(daysOffset) {
     const date = new Date();
     date.setDate(date.getDate() + daysOffset);
@@ -243,7 +245,14 @@ document.addEventListener("DOMContentLoaded", () => {
     initFormProcessors();
     loadProfile(); 
     
-    renderAppointmentsTable(APPOINTMENTS_DATA);
+    const doctorAppointments =
+APPOINTMENTS_DATA.filter(a=>
+
+a.doctorName===CURRENT_DOCTOR.name
+
+);
+
+renderAppointmentsTable(doctorAppointments);
     renderScheduleTable();
     updateDashboardGreeting();
     updateDashboardStats();
