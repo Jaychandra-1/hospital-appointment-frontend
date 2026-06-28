@@ -86,18 +86,7 @@
     padding: 12px 40px;
 }
 
-.brand{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-}
 
-.logo{
-    width: 55px;
-    height: 55px;
-    object-fit: contain;
-}
 
 .brand-name{
     font-size: 28px;
@@ -277,8 +266,20 @@
 
 .logo{
     width: 150px;
-    height: 55px;
+    height: 75px;
     object-fit: contain;
+}
+
+.nav-wrap{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 40px;
+}
+
+.nav-links{
+    display:flex;
+    gap:35px;
 }
 </style>
 </head>
@@ -290,20 +291,28 @@
 
 <div class="bg-fx" id="bgfx"></div>
 
-<nav>
-  <div class="nav-wrap">
-    <div class="brand"><div class="brand-mark"><i class="fas fa-heart-pulse"></i></div> MEDI CONNECT</div>
-    <div class="nav-links">
-      <a href="#departments">Department</a>
-      <a href="#doctors">Specialists</a>
-      <a href="#how-it-works">How it works</a>
-      <a href="#contact">Contact Us</a>
+  <nav>
+    <div class="nav-wrap">
+
+        <div class="brand">
+          <img src="logo.jpeg" class="logo" alt="Logo">
+            <span class="brand-name">MEDI CONNECT</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="#departments">Department</a>
+            <a href="#doctors">Specialists</a>
+            <a href="#how-it-works">How it works</a>
+            <a href="#contact">Contact Us</a>
+        </div>
+
+        <div class="nav-cta">
+            <button class="btn btn-primary" onclick="goToLogin()">
+                Sign in
+            </button>
+        </div>
+
     </div>
-    <div class="nav-cta">
-      <button class="btn btn-primary" onclick="goToLogin()">
-          Sign in
-      </button>
-  </div>
 </nav>
 
 <!-- HERO -->
@@ -440,10 +449,10 @@
 </section>
 
 <footer>
-  <div class="brand" style="justify-content:center"><div class="brand-mark"><i class="fas fa-heart-pulse"></i></div> MEDI CONNECT</div>
-  <div class="foot-links">
-    <a href="#">Privacy Policy</a><a href="#">Security</a><a href="#">HIPAA Compliance</a><a href="#">Terms of Service</a>
-  </div>
+  <div class="brand" style="justify-content:center;">
+    <img src="logo.jpeg" class="logo" alt="Logo">
+    <span class="brand-name">MEDI CONNECT</span>
+</div>
   <div>© 2026 Medi Connect. Redefining modern medicine with AI-driven care.</div>
 </footer>
 
