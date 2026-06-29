@@ -896,19 +896,7 @@ function initFormProcessors() {
     const loginForm = document.getElementById("login-form");
     const roleSelect = document.getElementById("login-role");
 
-if (roleSelect) {
 
-    roleSelect.addEventListener("change", function () {
-
-        if(this.value === "admin"){
-
-            window.location.href = "admin-dashboard/admin.html";
-
-        }
-
-    });
-
-}
     
     if (loginForm) {
         loginForm.addEventListener("submit", (e) => {
@@ -918,21 +906,19 @@ if (roleSelect) {
                 e.stopPropagation();
                 loginForm.classList.add("was-validated");
             } else {
-                const email = document.getElementById("login-id").value;
-                const password = document.getElementById("login-password").value;
-                const role = document.getElementById("login-role").value;
+               const email = document.getElementById("login-id").value.trim();
+            const password = document.getElementById("login-password").value.trim();
 
-                /* =====================
-   Admin Login
-===================== */
+               
 
-// if(role === "admin"){
-
-//     window.location.href = "admin-dashboard/admin.html";
-
-//     return;
-
-// }
+            // Admin Login
+if (
+    email.toLowerCase() === "admin@mediconnect.com" &&
+    password === "admin123"
+) {
+    window.location.href = "admin-dashboard/admin-dashboard.html";
+    return;
+}
 
 /* ==========================
    Role Redirect
