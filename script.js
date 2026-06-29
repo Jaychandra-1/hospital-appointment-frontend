@@ -1,654 +1,151 @@
-// ==========================================================================
-// CORE APP STATE MEMORY INTERFACES & PREDEFINED DATASETS
-// ==========================================================================
-function getRelativeDate(daysOffset) {
-    const date = new Date();
-    date.setDate(date.getDate() + daysOffset);
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
-
-const DOCTORS = [
-    { name: "Dr. Aruna", email: "aruna@mediconnect.com", password: "aruna123", department: "Cardiology", experience: "15 Years", fee: 800, phone: "+91 9876543210" },
-    { name: "Dr. Saniya", email: "saniya@mediconnect.com", password: "saniya123", department: "Neurology", experience: "12 Years", fee: 900, phone: "+91 9876543211" },
-    { name: "Dr. Bharath", email: "bharath@mediconnect.com", password: "bharath123", department: "Orthopedics", experience: "18 Years", fee: 1000, phone: "+91 9876543212" },
-    { name: "Dr. Jayachandhra", email: "jayachandhra@mediconnect.com", password: "jaya123", department: "Ophthalmology", experience: "14 Years", fee: 700, phone: "+91 9876543213" },
-    { name: "Dr. Sruthi", email: "sruthi@mediconnect.com", password: "sruthi123", department: "Pediatrics", experience: "10 Years", fee: 600, phone: "+91 9876543214" },
-    { name: "Dr. Sreedhar", email: "sreedhar@mediconnect.com", password: "sreedhar123", department: "Dentistry", experience: "16 Years", fee: 850, phone: "+91 9876543215" }
-];
-
-let CURRENT_DOCTOR = DOCTORS[0]; // Set default loaded doctor
-
-let APPOINTMENTS_DATA = [
-    // Cardiology (Dr. Aruna)
-    { id: "APT-201", patientName: "Jane Doe", age: 29, gender: "Female", date: getRelativeDate(0), time: "09:00 AM", department: "Cardiology", status: "Pending", priority: "Urgent", complaint: "Acute chest palpitations accompanied by localized shortness of breath." },
-    { id: "APT-202", patientName: "John Smith", age: 45, gender: "Male", date: getRelativeDate(0), time: "10:30 AM", department: "Cardiology", status: "Confirmed", priority: "Follow-up", complaint: "Routine follow-up regarding post-op healing tracking metrics." },
-    { id: "APT-205", patientName: "Sarah Wilson", age: 28, gender: "Female", date: getRelativeDate(0), time: "02:30 PM", department: "Cardiology", status: "Confirmed", priority: "Routine", complaint: "General cardiac health screening profile." },
-    { id: "APT-208", patientName: "James Taylor", age: 39, gender: "Male", date: getRelativeDate(1), time: "09:00 AM", department: "Cardiology", status: "Pending", priority: "Follow-up", complaint: "Blood pressure monitor recalibration check." },
-
-    // Neurology (Dr. Saniya)
-    { id: "APT-204", patientName: "Michael Brown", age: 52, gender: "Male", date: getRelativeDate(0), time: "01:00 PM", department: "Neurology", status: "Completed", priority: "Follow-up", complaint: "Migraine medication review and adjustment session." },
-    { id: "APT-209", patientName: "Patricia Anderson", age: 55, gender: "Female", date: getRelativeDate(1), time: "10:00 AM", department: "Neurology", status: "Confirmed", priority: "Urgent", complaint: "Sudden onset localized numbness in the left arm." },
-    { id: "APT-301", patientName: "Alice Miller", age: 62, gender: "Female", date: getRelativeDate(0), time: "09:30 AM", department: "Neurology", status: "Pending", priority: "Urgent", complaint: "Frequent memory lapses and confusion spells." },
-
-    // Orthopedics (Dr. Bharath)
-    { id: "APT-206", patientName: "Robert Johnson", age: 61, gender: "Male", date: getRelativeDate(0), time: "04:00 PM", department: "Orthopedics", status: "Pending", priority: "Urgent", complaint: "Severe acute knee joint inflammation and restricted mobility." },
-    { id: "APT-210", patientName: "David Thomas", age: 41, gender: "Male", date: getRelativeDate(1), time: "11:30 AM", department: "Orthopedics", status: "Pending", priority: "Routine", complaint: "Chronic lower back pain assessment." },
-    { id: "APT-302", patientName: "Kevin Vance", age: 35, gender: "Male", date: getRelativeDate(0), time: "11:00 AM", department: "Orthopedics", status: "Confirmed", priority: "Follow-up", complaint: "Post-fracture plaster removal and physical therapy planning." },
-
-    // Ophthalmology (Dr. Jayachandhra)
-    { id: "APT-303", patientName: "Grace Hopper", age: 70, gender: "Female", date: getRelativeDate(0), time: "10:00 AM", department: "Ophthalmology", status: "Confirmed", priority: "Routine", complaint: "Progressive blurry vision and cataract screening." },
-    { id: "APT-304", patientName: "Alan Turing", age: 42, gender: "Male", date: getRelativeDate(0), time: "01:30 PM", department: "Ophthalmology", status: "Pending", priority: "Urgent", complaint: "Foreign object entry in right eye with severe redness." },
-    { id: "APT-305", patientName: "Ada Lovelace", age: 28, gender: "Female", date: getRelativeDate(1), time: "03:00 PM", department: "Ophthalmology", status: "Completed", priority: "Follow-up", complaint: "Post-LASIK healing evaluation check." },
-
-    // Pediatrics (Dr. Sruthi)
-    { id: "APT-207", patientName: "Laura Martinez", age: 8, gender: "Female", date: getRelativeDate(0), time: "05:15 PM", department: "Pediatrics", status: "Cancelled", priority: "Routine", complaint: "Seasonal viral fever and persistent cough." },
-    { id: "APT-212", patientName: "William White", age: 12, gender: "Male", date: getRelativeDate(2), time: "03:45 PM", department: "Pediatrics", status: "Completed", priority: "Routine", complaint: "Scheduled structural vaccination series." },
-    { id: "APT-306", patientName: "Billy Kid", age: 5, gender: "Male", date: getRelativeDate(0), time: "02:00 PM", department: "Pediatrics", status: "Pending", priority: "Urgent", complaint: "Acute abdominal pain and vomiting." },
-
-    // Dentistry (Dr. Sreedhar)
-    { id: "APT-307", patientName: "Steve Rogers", age: 33, gender: "Male", date: getRelativeDate(0), time: "09:00 AM", department: "Dentistry", status: "Pending", priority: "Urgent", complaint: "Severe wisdom tooth pain and gum swelling." },
-    { id: "APT-308", patientName: "Tony Stark", age: 48, gender: "Male", date: getRelativeDate(0), time: "10:30 AM", department: "Dentistry", status: "Confirmed", priority: "Routine", complaint: "Dental scaling and routine oral hygiene check." },
-    { id: "APT-309", patientName: "Bruce Banner", age: 51, gender: "Male", date: getRelativeDate(1), time: "02:00 PM", department: "Dentistry", status: "Completed", priority: "Follow-up", complaint: "Root canal therapy second sitting." }
-];
-
-let SCHEDULE_DATA = [
-    { id: 1, day: "Mondays", time: "09:00 AM - 12:00 PM" },
-    { id: 2, day: "Wednesdays", time: "01:00 PM - 04:00 PM" },
-    { id: 3, day: "Fridays", time: "05:00 PM - 08:00 PM" }
-];
-
-let LEAVE_DATA = [
-    { id: 101, type: "Medical Leave", start: getRelativeDate(3), end: getRelativeDate(4), format: "multiple", reason: "Minor procedure and recovery.", emergency: false, status: "Approved" },
-    { id: 102, type: "Family Emergency", start: getRelativeDate(12), end: getRelativeDate(12), format: "single", reason: "Family matter requires immediate attention.", emergency: true, status: "Approved" },
-    { id: 103, type: "Conference / Training", start: getRelativeDate(20), end: getRelativeDate(22), format: "multiple", reason: "Attending annual cardiology symposium.", emergency: false, status: "Pending" }
-];
-
-const DOCTOR_REVIEWS = {
-    "aruna@mediconnect.com": {
-        avgRating: "4.9/5",
-        totalCount: "48 reviews",
-        satisfaction: "98%",
-        list: [
-            { name: "Amit S.", rating: 5, date: "June 25, 2026", text: "Dr. Aruna is extremely professional and polite. She listened to all my cardiac concerns patiently and explained the treatment workflow very clearly." },
-            { name: "Priya R.", rating: 5, date: "June 23, 2026", text: "Outstanding doctor! Her diagnosis of my mother's hypertension was highly accurate. Punctuality is great." },
-            { name: "Vikram K.", rating: 4, date: "June 20, 2026", text: "Very knowledgeable cardiologist. The consultation was detail-oriented. Clean clinic environment." },
-            { name: "Sneha D.", rating: 5, date: "June 18, 2026", text: "Excellent experience. She makes you feel very comfortable and explains everything in simple terms. Highly recommended!" }
-        ]
-    },
-    "saniya@mediconnect.com": {
-        avgRating: "4.8/5",
-        totalCount: "36 reviews",
-        satisfaction: "96%",
-        list: [
-            { name: "Rahul M.", rating: 5, date: "June 24, 2026", text: "Dr. Saniya is a wonderful neurologist. She treated my chronic migraine issues with great care. Very detailed explanation." },
-            { name: "Aditi G.", rating: 4, date: "June 22, 2026", text: "Very friendly and analytical. Helped resolve my sleep apnea queries and recommended a highly effective treatment plan." },
-            { name: "Rohan V.", rating: 5, date: "June 19, 2026", text: "Excellent medical knowledge and communication. She answered all my neurological health queries with utmost professionalism." },
-            { name: "Meera J.", rating: 5, date: "June 15, 2026", text: "She is extremely patient-centric. Her calm behavior and thorough diagnosis gave me great confidence during my recovery." }
-        ]
-    },
-    "bharath@mediconnect.com": {
-        avgRating: "4.9/5",
-        totalCount: "52 reviews",
-        satisfaction: "97%",
-        list: [
-            { name: "Suresh P.", rating: 5, date: "June 25, 2026", text: "Dr. Bharath is an exceptional orthopedist. My knee pain has significantly reduced after following his rehabilitation plan." },
-            { name: "Kiran S.", rating: 5, date: "June 21, 2026", text: "Highly professional orthopedic specialist. He explains the root cause of bone fractures and joints issues wonderfully." },
-            { name: "Deepa N.", rating: 4, date: "June 18, 2026", text: "Very good experience. He is punctual, professional, and provides highly practical advice regarding physical therapy." },
-            { name: "Arjun T.", rating: 5, date: "June 14, 2026", text: "Painless joint treatment! Excellent surgical guidance and post-op follow-up care. A truly reliable doctor." }
-        ]
-    },
-    "jayachandhra@mediconnect.com": {
-        avgRating: "4.7/5",
-        totalCount: "29 reviews",
-        satisfaction: "94%",
-        list: [
-            { name: "Gopal C.", rating: 5, date: "June 24, 2026", text: "Dr. Jayachandhra is a brilliant ophthalmologist. My cataract surgery went very smoothly. Exceptional precision and care." },
-            { name: "Lata K.", rating: 4, date: "June 22, 2026", text: "Good eye checkup experience. He prescribed correct spectacles power and gave excellent advice for dry eyes." },
-            { name: "Vijay D.", rating: 5, date: "June 17, 2026", text: "Very thorough examination of retina. He is highly patient, answering all questions about laser treatment clearly." },
-            { name: "Anjali S.", rating: 5, date: "June 14, 2026", text: "Very friendly and expert doctor. The clinic staff is also extremely helpful and well-organized." }
-        ]
-    },
-    "sruthi@mediconnect.com": {
-        avgRating: "4.8/5",
-        totalCount: "42 reviews",
-        satisfaction: "95%",
-        list: [
-            { name: "Ramesh B.", rating: 5, date: "June 25, 2026", text: "Dr. Sruthi is wonderful with children. My daughter felt very comfortable during her vaccination. Very gentle and patient." },
-            { name: "Nisha T.", rating: 5, date: "June 22, 2026", text: "She is highly caring and comforting. Explains baby nutrition and growth parameters in a very detailed manner." },
-            { name: "Karthik P.", rating: 4, date: "June 19, 2026", text: "Excellent pediatrician. Quick diagnosis of viral fever and very responsive to follow-up texts." },
-            { name: "Swati R.", rating: 5, date: "June 15, 2026", text: "Highly recommend Dr. Sruthi for any pediatric needs. Her friendly behavior immediately calms anxious children." }
-        ]
-    },
-    "sreedhar@mediconnect.com": {
-        avgRating: "4.9/5",
-        totalCount: "50 reviews",
-        satisfaction: "98%",
-        list: [
-            { name: "Manish K.", rating: 5, date: "June 24, 2026", text: "Dr. Sreedhar is an excellent dentist. My root canal was completely painless! Very advanced equipment and hygiene." },
-            { name: "Ritu A.", rating: 5, date: "June 21, 2026", text: "Exceptional scaling and cleaning service. He explains tooth care tips very thoroughly. Very punctual." },
-            { name: "Harish G.", rating: 4, date: "June 19, 2026", text: "Highly professional dentistry. Took great care in matching the crown color during my implant restoration." },
-            { name: "Pooja V.", rating: 5, date: "June 16, 2026", text: "Very gentle extraction process. He makes sure the patient is comfortable and explains post-op precautions clearly." }
-        ]
-    }
-};
-
-let SELECTED_APPOINTMENT_ID = null;
-let CURRENT_DASHBOARD_FILTER = 'today';
-let IS_AVAILABLE_TODAY = true;
-
-let currentDateRender = new Date(); 
-
-const departmentQuotes = {
-  "Cardiology": "Every heartbeat you protect brings hope to another family.",
-  "Neurology": "Your expertise restores clarity and confidence to every patient.",
-  "Pediatrics": "Your care shapes healthier futures for the next generation.",
-  "Orthopedics": "Every step a patient takes begins with your dedication.",
-  "Ophthalmology": "Helping patients see the beauty of the world with clear vision.",
-  "Dentistry": "Brightening lives one healthy smile at a time."
-};
-
-const departmentIcons = {
-  "Cardiology": "bi-capsule", // Fallback only, Cardiology dynamic banner renders the logo
-  "Neurology": "bi-activity",
-  "Pediatrics": "bi-emoji-smile-fill",
-  "Orthopedics": "bi-person-standing",
-  "Ophthalmology": "bi-eye-fill",
-  "Dentistry": "bi-tooth"
-};
-
-let statusChartInstance = null;
-let weeklyChartInstance = null;
-let departmentChartInstance = null;
-
-// ==========================================================================
-// PORTAL INITIALIZATION & ROUTING ROUTINES
-// ==========================================================================
-document.addEventListener("DOMContentLoaded", () => {
-    // Render floating background particles on load (using non-heart/non-cross icons)
-    const bgfx = document.getElementById('login-bg-fx');
-    if (bgfx) {
-        bgfx.innerHTML = "";
-        const iconList = ['bi-dna', 'bi-stethoscope', 'bi-capsule', 'bi-virus', 'bi-capsule-pill', 'bi-thermometer-half', 'bi-bandaid', 'bi-prescription2'];
-        for(let i=0; i<30; i++) {
-            const icon = document.createElement('i');
-            const randomIcon = iconList[Math.floor(Math.random() * iconList.length)];
-            icon.className = `float-ic bi ${randomIcon}`;
-            icon.style.left = Math.random() * 100 + '%';
-            icon.style.top = Math.random() * 100 + '%';
-            icon.style.animationDelay = (Math.random() * 8) + 's';
-            icon.style.animationDuration = (8 + Math.random() * 10) + 's';
-            icon.style.fontSize = (14 + Math.random() * 20) + 'px';
-            bgfx.appendChild(icon);
-        }
-    }
-
-    const sidebar = document.getElementById("sidebar");
-    const toggleBtn = document.getElementById("sidebar-toggle");
-    const closeBtn = document.getElementById("sidebar-close");
-    
-    if (toggleBtn && sidebar) {
-        toggleBtn.addEventListener("click", () => sidebar.classList.toggle("open"));
-    }
-    if (closeBtn && sidebar) {
-        closeBtn.addEventListener("click", () => sidebar.classList.remove("open"));
-    }
-
-    const searchInput = document.getElementById("appointmentSearch");
-    if (searchInput) {
-        searchInput.addEventListener("input", (e) => {
-            const term = e.target.value.toLowerCase();
-            const filtered = APPOINTMENTS_DATA.filter(apt => apt.patientName.toLowerCase().includes(term));
-            renderAppointmentsTable(filtered);
-        });
-    }
-
-    const dashboardSearchInput = document.getElementById("dashboardAppointmentSearch");
-    if (dashboardSearchInput) {
-        dashboardSearchInput.addEventListener("input", (e) => {
-            renderTodaysAppointments(e.target.value);
-        });
-    }
-
-    const availToggle = document.getElementById("availabilityToggle");
-    if (availToggle) {
-        availToggle.addEventListener("change", (e) => {
-            IS_AVAILABLE_TODAY = e.target.checked;
-            updateAvailabilityToggle();
-        });
-    }
-
-    document.addEventListener('click', (e) => {
-        const panel = document.getElementById('profile-dropdown-panel');
-        const toggle = document.getElementById('nav-profile-toggle');
-        if (panel && !panel.classList.contains('d-none')) {
-            if (!panel.contains(e.target) && !toggle.contains(e.target)) {
-                panel.classList.add('d-none');
-            }
-        }
-    });
-
-    // Check remember me pre-fill
-    const savedEmail = localStorage.getItem("remember_email");
-    const savedPassword = localStorage.getItem("remember_password");
-    if (savedEmail && savedPassword) {
-        const idInput = document.getElementById("login-id");
-        const pwInput = document.getElementById("login-password");
-        const remCheck = document.getElementById("rememberMe");
-        if (idInput) idInput.value = savedEmail;
-        if (pwInput) pwInput.value = savedPassword;
-        if (remCheck) remCheck.checked = true;
-    }
-
-    initNavigationListeners();
-    initFormProcessors();
-    loadProfile(); 
-    
-    renderAppointmentsTable(APPOINTMENTS_DATA);
-    renderScheduleTable();
-    updateDashboardGreeting();
-    updateDashboardStats();
-    renderTodaysAppointments();
-    renderDoctorReviews();
-    
-    renderMonthlyCalendar();
-    
-    // Photo Upload Listener
-    const photoUpload = document.getElementById('profile-photo-upload');
-    if (photoUpload) {
-        photoUpload.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const dataUrl = event.target.result;
-                    localStorage.setItem('doctorProfilePhoto_' + CURRENT_DOCTOR.email, dataUrl);
-                    updateProfilePhotoUI(dataUrl);
-                    const removePhotoContainer = document.getElementById('remove-photo-container');
-                    if (removePhotoContainer) removePhotoContainer.classList.remove('d-none');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    // Remove Photo Listener
-    const btnRemovePhoto = document.getElementById('btn-remove-photo');
-    if (btnRemovePhoto) {
-        btnRemovePhoto.addEventListener('click', function() {
-            localStorage.removeItem('doctorProfilePhoto_' + CURRENT_DOCTOR.email);
-            const photoUpload = document.getElementById('profile-photo-upload');
-            if (photoUpload) photoUpload.value = "";
-            loadProfile();
-            showToast('Profile Photo Removed Successfully');
-        });
-    }
-});
-
-function initNavigationListeners() {
-    document.querySelectorAll("[data-view]").forEach(anchor => {
-        anchor.addEventListener("click", (e) => {
-            e.preventDefault();
-            const targetedViewId = anchor.getAttribute("data-view");
-            switchView(targetedViewId);
-            
-            const sidebar = document.getElementById("sidebar");
-            if (sidebar) sidebar.classList.remove("open"); 
-        });
-    });
-}
-
-function switchView(viewId) {
-    document.querySelectorAll(".app-view").forEach(view => view.classList.add("d-none"));
-    
-    const activeSection = document.getElementById(`view-${viewId}`);
-    if (activeSection) activeSection.classList.remove("d-none");
-
-    document.querySelectorAll("[data-view]").forEach(anchor => {
-        if(anchor.getAttribute("data-view") === viewId) {
-            anchor.classList.add("active");
-        } else {
-            anchor.classList.remove("active");
-        }
-    });
-
-    if (viewId === "dashboard") {
-        updateDashboardGreeting();
-        updateDashboardStats();
-        renderTodaysAppointments();
-        renderDoctorReviews();
-    }
-    
-    if (viewId === "schedule") {
-        renderMonthlyCalendar();
-    }
-
-    if (viewId === "analytics") {
-        renderAnalytics();
-    }
-}
-
-// ==========================================================================
-// DYNAMIC EDITABLE PROFILE & DROPDOWN LOGIC
-// ==========================================================================
-function updateGlobalProfileUI() {
-    const nameInput = document.getElementById('prof-name');
-    const deptInput = document.getElementById('prof-domain');
-    const expInput = document.getElementById('prof-exp');
-    const emailInput = document.getElementById('prof-email');
-    const phoneInput = document.getElementById('prof-phone');
-
-    const name = nameInput ? nameInput.value : CURRENT_DOCTOR.name;
-    const dept = deptInput ? deptInput.value : CURRENT_DOCTOR.department;
-    const exp = expInput ? expInput.value : CURRENT_DOCTOR.experience;
-    const email = emailInput ? emailInput.value : CURRENT_DOCTOR.email;
-    const phone = phoneInput ? phoneInput.value : '+91 9876543210';
-
-    const navName = document.getElementById('nav-doc-name');
-    const navDept = document.getElementById('nav-doc-dept');
-    if(navName) navName.innerText = name;
-    if(navDept) navDept.innerText = dept;
-
-    const dropName = document.getElementById('drop-name');
-    const dropDept = document.getElementById('drop-dept');
-    const dropExp = document.getElementById('drop-exp');
-    const dropEmail = document.getElementById('drop-email');
-    const dropPhone = document.getElementById('drop-phone');
-    if(dropName) dropName.innerText = name;
-    if(dropDept) dropDept.innerText = dept;
-    if(dropExp) dropExp.innerText = exp;
-    if(dropEmail) dropEmail.innerText = email;
-    if(dropPhone) dropPhone.innerText = phone;
-
-    const displayName = document.getElementById('display-name');
-    const displayDomain = document.getElementById('display-domain');
-    if(displayName) displayName.innerText = name;
-    
-    if(displayDomain) {
-        if (dept.toLowerCase() === "cardiology") {
-            displayDomain.innerHTML = `<img src="logo.jpeg" alt="MEDI CONNECT" style="height: 16px; width: 16px; object-fit: contain; vertical-align: text-top; margin-right: 4px;"> ${dept}`;
-        } else {
-            let currentDeptIcon = departmentIcons[dept] || "bi-hospital-fill";
-            displayDomain.innerHTML = `<i class="bi ${currentDeptIcon} me-1"></i> ${dept}`;
-        }
-    }
-
-    // Update initials block
-    const initials = name.split(" ").map(n => n[0]).join("");
-    const initialsEl = document.getElementById('nav-doc-initials');
-    if (initialsEl) initialsEl.innerText = initials;
-    const dropInitials = document.getElementById('drop-initials');
-    if (dropInitials) dropInitials.innerText = initials;
-}
-
-function updateProfilePhotoUI(dataUrl) {
-    const profileImg = document.getElementById('profile-page-img');
-    if(profileImg) profileImg.src = dataUrl;
-
-    const navAvatar = document.getElementById('nav-doc-avatar');
-    const navInitials = document.getElementById('nav-doc-initials');
-    
-    if(navAvatar && navInitials) {
-        navAvatar.src = dataUrl;
-        navAvatar.classList.remove('d-none');
-        navAvatar.classList.add('d-md-block');
-        navInitials.classList.add('d-none');
-    }
-
-    const dropInitials = document.getElementById('drop-initials');
-    if(dropInitials) {
-        dropInitials.innerHTML = `<img src="${dataUrl}" class="rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">`;
-    }
-}
-
-function toggleDoctorProfilePanel(e) {
-    e.stopPropagation();
-    const panel = document.getElementById('profile-dropdown-panel');
-    if (panel) panel.classList.toggle('d-none');
-}
-
-// Fixed toggleEditMode to properly render domain badge based on updated input value
-function toggleEditMode(enable) {
-    const inputs = document.querySelectorAll('.profile-input');
-    const editBtn = document.getElementById('btn-edit-profile');
-    const actions = document.getElementById('edit-actions');
-
-    inputs.forEach(input => input.disabled = !enable);
-
-    if (enable) {
-        if(editBtn) editBtn.classList.add('d-none');
-        if(actions) actions.classList.remove('d-none');
-    } else {
-        if(editBtn) editBtn.classList.remove('d-none');
-        if(actions) actions.classList.add('d-none');
-        loadProfile(); 
-    }
-}
-
-function saveProfile() {
-    const data = {
-        name: document.getElementById('prof-name').value,
-        email: document.getElementById('prof-email').value,
-        phone: document.getElementById('prof-phone').value,
-        exp: document.getElementById('prof-exp').value,
-        domain: document.getElementById('prof-domain').value,
-        fee: document.getElementById('prof-fee').value
-    };
-    
-    localStorage.setItem('doctorProfileMaster_' + CURRENT_DOCTOR.email, JSON.stringify(data));
-    
-    updateGlobalProfileUI();
-    updateDashboardGreeting();
-    
-    toggleEditMode(false);
-    showToast('Profile Details Updated Successfully');
-}
-
-function loadProfile() {
-    const savedData = JSON.parse(localStorage.getItem('doctorProfileMaster_' + CURRENT_DOCTOR.email));
-    if (savedData) {
-        document.getElementById('prof-name').value = savedData.name;
-        document.getElementById('prof-email').value = savedData.email;
-        document.getElementById('prof-phone').value = savedData.phone;
-        document.getElementById('prof-exp').value = savedData.exp;
-        document.getElementById('prof-domain').value = savedData.domain;
-        document.getElementById('prof-fee').value = savedData.fee;
-    } else {
-        document.getElementById('prof-name').value = CURRENT_DOCTOR.name;
-        document.getElementById('prof-email').value = CURRENT_DOCTOR.email;
-        document.getElementById('prof-phone').value = CURRENT_DOCTOR.phone || "+91 9876543210";
-        document.getElementById('prof-exp').value = CURRENT_DOCTOR.experience || "10 Years";
-        document.getElementById('prof-domain').value = CURRENT_DOCTOR.department;
-        document.getElementById('prof-fee').value = CURRENT_DOCTOR.fee || 500;
-    }
-    
-    const savedPhoto = localStorage.getItem('doctorProfilePhoto_' + CURRENT_DOCTOR.email);
-    const removePhotoContainer = document.getElementById('remove-photo-container');
-    if (savedPhoto) {
-        updateProfilePhotoUI(savedPhoto);
-        if (removePhotoContainer) removePhotoContainer.classList.remove('d-none');
-    } else {
-        const defaultPhotos = {
-            "aruna@mediconnect.com": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=240",
-            "saniya@mediconnect.com": "https://images.unsplash.com/photo-1594824813573-246434de83fb?auto=format&fit=crop&q=80&w=240",
-            "bharath@mediconnect.com": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=240",
-            "jayachandhra@mediconnect.com": "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=240",
-            "sruthi@mediconnect.com": "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?auto=format&fit=crop&q=80&w=240",
-            "sreedhar@mediconnect.com": "https://images.unsplash.com/photo-1622834048635-61ecf7132c6c?auto=format&fit=crop&q=80&w=240"
-        };
-        updateProfilePhotoUI(defaultPhotos[CURRENT_DOCTOR.email] || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=240');
-        if (removePhotoContainer) removePhotoContainer.classList.add('d-none');
-    }
-
-    updateGlobalProfileUI();
-}
-
-function showToast(message) {
-    const toastEl = document.getElementById('profileToast');
-    const msgEl = document.getElementById('toastMessage');
-    if (toastEl && msgEl) {
-        msgEl.innerText = message;
-        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-        toast.show();
-    }
-}
-
-// ==========================================================================
-// DYNAMIC GREETING & DASHBOARD STATS LOGIC ENGINE
-// ==========================================================================
-function updateDashboardGreeting() {
-    const greetingEl = document.getElementById("dashboard-greeting");
-    const quoteEl = document.getElementById("dashboard-quote");
-    const summaryEl = document.getElementById("dashboard-summary");
-    const dateEl = document.getElementById("dashboard-date");
-    const iconWrapper = document.getElementById("department-icon-wrapper");
-
-    if (!greetingEl) return;
-
-    const currentHour = new Date().getHours();
-    let timeGreeting = "Good Evening";
-    let emoji = "🌙";
-
-    if (currentHour >= 5 && currentHour < 12) {
-        timeGreeting = "Good Morning";
-        emoji = "👋";
-    } else if (currentHour >= 12 && currentHour < 17) {
-        timeGreeting = "Good Afternoon";
-        emoji = "☀️";
-    } 
-
-    const nameInput = document.getElementById("prof-name");
-    const deptInput = document.getElementById("prof-domain");
-
-    const doctorName = nameInput && nameInput.value.trim() !== "" ? nameInput.value.trim() : CURRENT_DOCTOR.name;
-    const department = deptInput && deptInput.value.trim() !== "" ? deptInput.value.trim() : CURRENT_DOCTOR.department;
-
-    greetingEl.innerHTML = `${timeGreeting}, ${doctorName} ${emoji}`;
-    
-    if (quoteEl) {
-        let matchedKey = Object.keys(departmentQuotes).find(key => department.toLowerCase().includes(key.toLowerCase()));
-        quoteEl.textContent = matchedKey ? departmentQuotes[matchedKey] : "Your expertise and compassion make a difference every day.";
-    }
-
-    if (iconWrapper) {
-        updateDepartmentIllustration(department);
-    }
-
-    const today = new Date();
-    if (dateEl) {
-        dateEl.textContent = today.toLocaleDateString("en-US", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        });
-    }
-
-    if (summaryEl) {
-        const todayStr = getRelativeDate(0);
-        const doctorAppointments = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
-        const todaysApts = doctorAppointments.filter(apt => apt.date === todayStr);
-        const totalToday = todaysApts.length;
-        const followUps = todaysApts.filter(apt => apt.priority === "Follow-up").length;
-        summaryEl.textContent = `You have ${totalToday} appointments scheduled today, including ${followUps} follow-up consultations.`;
-    }
-}
-
-function updateDashboardStats() {
-    const todayCountEl = document.getElementById("stats-today-count");
-    const pendingCountEl = document.getElementById("stats-pending-count");
-    const completedCountEl = document.getElementById("stats-completed-count");
-    const cancelledCountEl = document.getElementById("stats-cancelled-count");
-
-    const todayStr = getRelativeDate(0);
-    const doctorAppointments = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
-
-    const todayCount = doctorAppointments.filter(apt => apt.date === todayStr).length;
-    const pendingCount = doctorAppointments.filter(apt => apt.status === "Pending").length;
-    const completedCount = doctorAppointments.filter(apt => apt.status === "Completed").length;
-    const cancelledCount = doctorAppointments.filter(apt => apt.status === "Cancelled").length;
-
-    if (todayCountEl) todayCountEl.textContent = todayCount;
-    if (pendingCountEl) pendingCountEl.textContent = pendingCount;
-    if (completedCountEl) completedCountEl.textContent = completedCount;
-    if (cancelledCountEl) cancelledCountEl.textContent = cancelledCount;
-}
-
-function filterAppointments(filterType) {
-    CURRENT_DASHBOARD_FILTER = filterType;
-
-    document.querySelectorAll('.dashboard-stat-card').forEach(card => {
-        if(card.getAttribute('data-filter') === filterType) {
-            card.classList.add('active-stat-card');
-        } else {
-            card.classList.remove('active-stat-card');
-        }
-    });
-
-    const titleEl = document.getElementById('dashboard-table-title');
-    if (titleEl) {
-        if(filterType === 'today') titleEl.innerText = "Today's Appointments";
-        else if(filterType === 'Pending') titleEl.innerText = "Pending Appointments";
-        else if(filterType === 'Completed') titleEl.innerText = "Completed Appointments";
-        else if(filterType === 'Cancelled') titleEl.innerText = "Cancelled Appointments";
-    }
-
-    renderTodaysAppointments();
-}
-
-function renderTodaysAppointments(searchTerm = '') {
-    const tbody = document.getElementById("dashboardAppointmentTableBody");
-    if (!tbody) return;
-    tbody.innerHTML = "";
-
-    const todayStr = getRelativeDate(0);
-    let filtered = APPOINTMENTS_DATA.filter(apt => apt.department.toLowerCase() === CURRENT_DOCTOR.department.toLowerCase());
-
-    if (CURRENT_DASHBOARD_FILTER === 'today') {
-        filtered = filtered.filter(apt => apt.date === todayStr);
-    } else {
-        filtered = filtered.filter(apt => apt.status === CURRENT_DASHBOARD_FILTER);
-    }
-
-    if (searchTerm.trim() !== "") {
-        const term = searchTerm.toLowerCase();
-        filtered = filtered.filter(apt => apt.patientName.toLowerCase().includes(term));
-    }
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No appointments found matching targeted schedule queries.</td></tr>`;
+// ============================================
+// VIEW APPOINTMENT DETAILS (Backend Ready)
+// ============================================
+function viewAppointmentDetails(appointmentId) {
+    // FRONTEND DEMO MODE - Remove this when connecting to backend
+    const card = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
+    if (card) {
+        const doctor = card.querySelector('.appointment-doctor')?.textContent?.trim() || 'Unknown Doctor';
+        const time = card.querySelector('.appointment-time')?.textContent?.trim() || 'Unknown Time';
+        const status = card.querySelector('.status-badge')?.textContent?.trim() || 'Unknown Status';
+        
+        // DEMO: Show alert (REMOVE THIS WHEN CONNECTING TO BACKEND)
+        const details = `
+📋 Appointment Details
+━━━━━━━━━━━━━━━━━━━━━
+🩺 Doctor: ${doctor}
+📅 Date & Time: ${time}
+📌 Status: ${status}
+💳 Fee: ₹${document.getElementById('modalAppointmentFee')?.textContent || '800'}
+━━━━━━━━━━━━━━━━━━━━━
+📌 Note: This is a demo appointment. 
+For real appointments, full details would be shown here.
+        `;
+        alert(details);
+        showToast('Viewing appointment details', 'success');
         return;
     }
-
-    filtered.forEach(apt => {
-        let priorityBadge = "";
-        if(apt.priority === "Urgent") priorityBadge = "🔴 Urgent";
-        else if(apt.priority === "Follow-up") priorityBadge = "🟡 Follow-up";
-        else priorityBadge = "🟢 Routine";
-
-        let statusBadge = "";
-        switch (apt.status) {
-            case "Pending": statusBadge = `<span class="badge bg-warning-subtle text-warning border border-warning border-opacity-25 px-2 py-1 rounded">Pending</span>`; break;
-            case "Confirmed": statusBadge = `<span class="badge bg-primary-subtle text-primary border border-primary border-opacity-25 px-2 py-1 rounded">Confirmed</span>`; break;
-            case "Completed": statusBadge = `<span class="badge bg-success-subtle text-success border border-success border-opacity-25 px-2 py-1 rounded">Completed</span>`; break;
-            case "Cancelled": statusBadge = `<span class="badge bg-danger-subtle text-danger border border-danger border-opacity-25 px-2 py-1 rounded">Cancelled</span>`; break;
+    
+    // BACKEND INTEGRATION - Uncomment when connecting to backend
+    /*
+    try {
+        // Show loading state
+        showToast('Loading appointment details...', 'info');
+        
+        // Fetch from backend API
+        const response = await fetch(`/api/appointments/${appointmentId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getAuthToken(),
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch appointment details');
         }
+        
+        const data = await response.json();
+        
+        // Open appointment details in a modal or new page
+        openAppointmentDetailsModal(data);
+        
+    } catch (error) {
+        showToast('Error loading appointment details', 'error');
+        console.error('Error:', error);
+    }
+    */
+}
 
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="fw-bold text-dark border-bottom-0 ps-4">${apt.patientName}</td>
-            <td class="border-bottom-0">${apt.date}</td>
-            <td class="border-bottom-0">${apt.time}</td>
-            <td class="fw-medium border-bottom-0">${priorityBadge}</td>
-            <td class="border-bottom-0">${statusBadge}</td>
-            <td class="text-end border-bottom-0 pe-4">
-                <div class="btn-group gap-1 shadow-sm rounded">
-                    <button class="btn btn-sm btn-outline-primary transition-card" onclick="loadPatientDetails('${apt.id}')"><i class="bi bi-folder2-open"></i> EHR</button>
-                    <button class="btn btn-sm btn-outline-secondary transition-card" onclick="loadStatusUpdater('${apt.id}')"><i class="bi bi-sliders"></i> Status</button>
+// ============================================
+// VIEW REPORT (Backend Ready)
+// ============================================
+function viewReport(reportName, doctor, date) {
+    // FRONTEND DEMO MODE - Remove this when connecting to backend
+    const details = `
+📄 Report Details
+━━━━━━━━━━━━━━━━━━━━━
+📋 Report: ${reportName}
+👨‍⚕️ Doctor: ${doctor}
+📅 Date: ${date}
+📌 Status: Available for viewing
+━━━━━━━━━━━━━━━━━━━━━
+📌 This is a demo report view. 
+In production, the full report would be displayed here.
+    `;
+    alert(details);
+    showToast(`Viewing ${reportName}`, 'success');
+    
+    // BACKEND INTEGRATION - Uncomment when connecting to backend
+    /*
+    try {
+        // Show loading state
+        showToast('Loading report...', 'info');
+        
+        // Fetch report from backend
+        const response = await fetch(`/api/reports/${encodeURIComponent(reportName)}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getAuthToken(),
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch report');
+        }
+        
+        const data = await response.json();
+        
+        // Open report in new window, modal, or PDF viewer
+        if (data.url) {
+            window.open(data.url, '_blank');
+        } else {
+            // Display in modal
+            openReportModal(data);
+        }
+        
+    } catch (error) {
+        showToast('Error loading report', 'error');
+        console.error('Error:', error);
+    }
+    */
+}
+
+// ============================================
+// VIEW APPOINTMENT DETAILS MODAL (For Backend)
+// ============================================
+function openAppointmentDetailsModal(data) {
+    // Create a modal to show real appointment details
+    // This would replace the alert() with a proper UI
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 700px;">
+            <h2><i class="fas fa-calendar-check text-teal"></i> Appointment Details</h2>
+            <div style="margin: 20px 0;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div><strong>Appointment ID:</strong> ${data.id}</div>
+                    <div><strong>Doctor:</strong> ${data.doctorName}</div>
+                    <div><strong>Specialization:</strong> ${data.specialization}</div>
+                    <div><strong>Patient:</strong> ${data.patientName}</div>
+                    <div><strong>Date:</strong> ${data.date}</div>
+                    <div><strong>Time:</strong> ${data.time}</div>
+                    <div><strong>Status:</strong> <span class="status-badge ${data.status}">${data.status}</span></div>
+                    <div><strong>Fee:</strong> ₹${data.fee}</div>
+                    <div style="grid-column: span 2;"><strong>Symptoms:</strong> ${data.symptoms || 'Not specified'}</div>
+                    <div style="grid-column: span 2;"><strong>Notes:</strong> ${data.notes || 'No additional notes'}</div>
                 </div>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="this.closest('.modal-overlay').remove()">Close</button>
+                <button class="btn-primary" onclick="this.closest('.modal-overlay').remove()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // ==========================================================================

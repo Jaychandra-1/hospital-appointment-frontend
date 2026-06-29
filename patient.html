@@ -13,7 +13,7 @@
 <body>
 
 <!-- ============================================
-     PROFESSIONAL LOGIN MODAL
+     PROFESSIONAL LOGIN MODAL (GMAIL ONLY - NO SOCIAL OPTIONS)
      ============================================ -->
 <div id="loginModal" class="modal-overlay login-overlay active">
     <div class="login-container">
@@ -48,11 +48,12 @@
                     <p>Sign in to manage your healthcare journey</p>
                 </div>
 
-                <form id="loginForm" onsubmit="handleLogin(event)">
+                <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
                     <div class="form-group">
                         <label for="loginEmail"><i class="fas fa-envelope"></i> Email Address</label>
-                        <input type="email" id="loginEmail" placeholder="demo@mediconnect.com" value="demo@mediconnect.com" />
+                        <input type="email" id="loginEmail" placeholder="demo@gmail.com" value="demo@gmail.com" />
                         <span class="error-text" id="loginEmailError">Please enter a valid email</span>
+                        <span class="error-text" id="loginEmailFormatError" style="display:none;">Only @gmail.com email addresses are allowed</span>
                     </div>
 
                     <div class="form-group">
@@ -74,22 +75,9 @@
                         <a href="#" class="forgot-link" onclick="openForgotModal(); return false;">Forgot Password?</a>
                     </div>
 
-                    <button type="submit" class="btn-primary login-btn">
+                    <button type="submit" class="btn-primary login-btn" id="loginSubmitBtn">
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </button>
-
-                    <div class="login-divider">
-                        <span>or continue with</span>
-                    </div>
-
-                    <div class="login-social">
-                        <button type="button" class="social-btn google" onclick="showToast('Google login coming soon!', 'info')">
-                            <i class="fab fa-google"></i> Google
-                        </button>
-                        <button type="button" class="social-btn apple" onclick="showToast('Apple login coming soon!', 'info')">
-                            <i class="fab fa-apple"></i> Apple
-                        </button>
-                    </div>
 
                     <div class="login-footer">
                         <p>Don't have an account? <a href="#" onclick="openRegisterModal(); return false;">Register Now</a></p>
@@ -101,7 +89,7 @@
 </div>
 
 <!-- ============================================
-     REGISTER MODAL
+     REGISTER MODAL (GMAIL ONLY)
      ============================================ -->
 <div id="registerModal" class="modal-overlay register-overlay">
     <div class="register-container">
@@ -116,7 +104,7 @@
                     <button class="register-close" onclick="closeRegisterModal()">&times;</button>
                 </div>
 
-                <form id="registerForm" onsubmit="handleRegister(event)">
+                <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="regFullName"><i class="fas fa-user"></i> Full Name</label>
@@ -152,6 +140,7 @@
                         <label for="regEmail"><i class="fas fa-envelope"></i> Email Address</label>
                         <input type="email" id="regEmail" placeholder="john.doe@gmail.com" required />
                         <span class="error-text" id="regEmailError">Please enter a valid email address</span>
+                        <span class="error-text" id="regEmailFormatError" style="display:none;">Only @gmail.com email addresses are allowed</span>
                     </div>
 
                     <div class="form-row">
@@ -188,7 +177,7 @@
                         <span class="error-text" id="regTermsError">You must agree to the terms</span>
                     </div>
 
-                    <button type="submit" class="btn-primary register-btn">
+                    <button type="submit" class="btn-primary register-btn" id="registerSubmitBtn">
                         <i class="fas fa-user-plus"></i> Create Account
                     </button>
 
@@ -202,7 +191,7 @@
 </div>
 
 <!-- ============================================
-     FORGOT PASSWORD MODAL
+     FORGOT PASSWORD MODAL (GMAIL ONLY)
      ============================================ -->
 <div id="forgotModal" class="modal-overlay forgot-overlay">
     <div class="forgot-container">
@@ -218,13 +207,14 @@
                 </div>
 
                 <div id="forgotStepEmail" class="step active">
-                    <form id="forgotEmailForm" onsubmit="sendOTP(event)">
+                    <form id="forgotEmailForm" onsubmit="sendOTP(event)" novalidate>
                         <div class="form-group">
                             <label for="forgotEmail"><i class="fas fa-envelope"></i> Email Address</label>
-                            <input type="email" id="forgotEmail" placeholder="demo@mediconnect.com" required />
+                            <input type="email" id="forgotEmail" placeholder="demo@gmail.com" required />
                             <span class="error-text" id="forgotEmailError">Please enter a valid email</span>
+                            <span class="error-text" id="forgotEmailFormatError" style="display:none;">Only @gmail.com email addresses are allowed</span>
                         </div>
-                        <button type="submit" class="btn-primary btn-send-otp">
+                        <button type="submit" class="btn-primary btn-send-otp" id="forgotSubmitBtn">
                             <i class="fas fa-paper-plane"></i> Send OTP
                         </button>
                         <div style="text-align:center; margin-top:12px;">
@@ -396,7 +386,7 @@
 </div>
 
 <!-- ============================================
-     RATING MODAL (Only accessible from Reviews section)
+     RATING MODAL
      ============================================ -->
 <div id="ratingModal" class="modal-overlay">
     <div class="modal-content">
@@ -824,13 +814,16 @@
 </div>
 
 <!-- ============================================
-     MAIN DASHBOARD
+     MAIN DASHBOARD (WITH PATIENT DASHBOARD HEADER)
      ============================================ -->
 <div class="dashboard" id="mainDashboard" style="display:none;">
     <div class="header">
         <div class="logo-area">
             <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
-            <span class="logo-text">MediConnect</span>
+            <div class="logo-text-wrapper">
+                <span class="logo-text">MediConnect</span>
+                <span class="logo-subtext">Patient Dashboard</span>
+            </div>
         </div>
         <div class="header-actions">
             <div class="notification-bell" onclick="switchPage('notifications')">
@@ -964,7 +957,7 @@
                 </div>
                 <div class="profile-info">
                     <h2 id="profileName">Demo Patient</h2>
-                    <p id="profileEmail">demo@mediconnect.com</p>
+                    <p id="profileEmail">demo@gmail.com</p>
                     <span class="profile-status">Active Patient</span>
                 </div>
                 <button class="btn-secondary edit-profile-btn" onclick="toggleEditProfile()">
@@ -1000,7 +993,7 @@
                 </div>
                 <div class="profile-field">
                     <label>Email (read-only)</label>
-                    <input type="email" value="demo@mediconnect.com" readonly id="email" disabled />
+                    <input type="email" value="demo@gmail.com" readonly id="email" disabled />
                 </div>
                 <div class="profile-field">
                     <label>Blood Group</label>
@@ -1345,7 +1338,7 @@
         </div>
     </div>
 
-    <!-- REVIEWS PAGE (All rating/review functionality here) -->
+    <!-- REVIEWS PAGE -->
     <div id="page-ratings" class="page">
         <div style="background:white; border-radius:28px; padding:24px; border:1px solid #e4f0f5; margin-bottom:24px;">
             <h4 style="color:#0b3b47; margin-bottom:16px;">
