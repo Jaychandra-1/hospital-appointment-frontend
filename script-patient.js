@@ -62,25 +62,48 @@ function togglePasswordVisibility(inputId) {
 // SECTION 3: EMAIL VALIDATION FUNCTION (GMAIL ONLY)
 // ============================================
 function validateEmailFormat(email) {
+<<<<<<< Updated upstream
     email = email.trim();
     
+=======
+    // Trim the email
+    email = email.trim();
+    
+    // Check for empty
+>>>>>>> Stashed changes
     if (email.length === 0) {
         return { valid: false, message: 'Email is required' };
     }
     
+<<<<<<< Updated upstream
+=======
+    // Check for spaces
+>>>>>>> Stashed changes
     if (/\s/.test(email)) {
         return { valid: false, message: 'Email must not contain spaces' };
     }
     
+<<<<<<< Updated upstream
+=======
+    // Check for @ symbol (must have exactly one @)
+>>>>>>> Stashed changes
     const atCount = (email.match(/@/g) || []).length;
     if (atCount !== 1) {
         return { valid: false, message: 'Email must contain exactly one @ symbol' };
     }
     
+<<<<<<< Updated upstream
+=======
+    // Split into local and domain parts
+>>>>>>> Stashed changes
     const parts = email.split('@');
     const local = parts[0];
     const domain = parts[1];
     
+<<<<<<< Updated upstream
+=======
+    // Check local part (must have at least 1 character)
+>>>>>>> Stashed changes
     if (local.length === 0) {
         return { valid: false, message: 'Email missing local part (before @)' };
     }
@@ -91,10 +114,21 @@ function validateEmailFormat(email) {
         return { valid: false, message: 'Local part cannot start or end with a dot' };
     }
     
+<<<<<<< Updated upstream
+=======
+    // Check domain
+>>>>>>> Stashed changes
     if (domain.length === 0) {
         return { valid: false, message: 'Email missing domain (after @)' };
     }
     
+<<<<<<< Updated upstream
+=======
+    // ============================================
+    // GMAIL ONLY VALIDATION
+    // ============================================
+    // Must be exactly "gmail.com"
+>>>>>>> Stashed changes
     if (domain.toLowerCase() !== 'gmail.com') {
         return { valid: false, message: 'Only @gmail.com email addresses are allowed' };
     }
@@ -225,6 +259,10 @@ function handleLogin(event) {
     document.getElementById('loginPasswordError').classList.remove('show');
     document.getElementById('loginEmailFormatError').style.display = 'none';
     
+<<<<<<< Updated upstream
+=======
+    // Validate email format first
+>>>>>>> Stashed changes
     const validationResult = validateEmailFormat(email);
     if (!validationResult.valid) {
         document.getElementById('loginEmailFormatError').textContent = validationResult.message;
@@ -271,6 +309,10 @@ function handleRegister(event) {
     
     const email = document.getElementById('regEmail').value.trim();
     
+<<<<<<< Updated upstream
+=======
+    // Validate email format
+>>>>>>> Stashed changes
     const validationResult = validateEmailFormat(email);
     if (!validationResult.valid) {
         document.getElementById('regEmailFormatError').textContent = validationResult.message;
@@ -280,6 +322,10 @@ function handleRegister(event) {
         return;
     }
     
+<<<<<<< Updated upstream
+=======
+    // Additional validation checks
+>>>>>>> Stashed changes
     const fullName = document.getElementById('regFullName').value.trim();
     const age = document.getElementById('regAge').value;
     const dob = document.getElementById('regDob').value;
@@ -288,6 +334,10 @@ function handleRegister(event) {
     const confirmPassword = document.getElementById('regConfirmPassword').value;
     const terms = document.getElementById('regTermsCheck').checked;
     
+<<<<<<< Updated upstream
+=======
+    // Reset all error messages
+>>>>>>> Stashed changes
     document.querySelectorAll('#registerForm .error-text').forEach(el => el.classList.remove('show'));
     
     if (!fullName || fullName.length < 2) {
@@ -308,6 +358,10 @@ function handleRegister(event) {
         return;
     }
     
+<<<<<<< Updated upstream
+=======
+    // Check if DOB is in future
+>>>>>>> Stashed changes
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const selectedDate = new Date(dob);
@@ -442,6 +496,10 @@ function sendOTP(event) {
     document.getElementById('forgotEmailError').classList.remove('show');
     document.getElementById('forgotEmailFormatError').style.display = 'none';
     
+<<<<<<< Updated upstream
+=======
+    // Validate email format
+>>>>>>> Stashed changes
     const validationResult = validateEmailFormat(email);
     if (!validationResult.valid) {
         document.getElementById('forgotEmailFormatError').textContent = validationResult.message;
@@ -2092,9 +2150,15 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ MediConnect Patient Dashboard initialized successfully');
     console.log('📌 Keyboard shortcuts: Ctrl+1-8 for navigation, Escape to close modals');
     console.log('📌 Demo Login: demo@gmail.com / demo123');
+    console.log('📌 Email Validation Rules:');
+    console.log('   • ONLY @gmail.com addresses are allowed');
+    console.log('   • No spaces allowed');
+    console.log('   • Must contain exactly one @');
+    console.log('   • Local part: min 2 chars, no leading/trailing dots');
     
     document.getElementById('mainDashboard').style.display = 'none';
     
+    // Set up email validation event listeners for ALL forms
     const loginEmail = document.getElementById('loginEmail');
     if (loginEmail) {
         loginEmail.addEventListener('input', validateLoginEmail);
