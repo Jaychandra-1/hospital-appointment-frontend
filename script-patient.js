@@ -2147,17 +2147,6 @@ document.addEventListener('keydown', function(e) {
 // SECTION 34: INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ MediConnect Patient Dashboard initialized successfully');
-    console.log('📌 Keyboard shortcuts: Ctrl+1-8 for navigation, Escape to close modals');
-    console.log('📌 Demo Login: demo@gmail.com / demo123');
-    console.log('📌 Email Validation Rules:');
-    console.log('   • ONLY @gmail.com addresses are allowed');
-    console.log('   • No spaces allowed');
-    console.log('   • Must contain exactly one @');
-    console.log('   • Local part: min 2 chars, no leading/trailing dots');
-    
-    document.getElementById('mainDashboard').style.display = 'none';
-    
     // Set up email validation event listeners for ALL forms
     const loginEmail = document.getElementById('loginEmail');
     if (loginEmail) {
